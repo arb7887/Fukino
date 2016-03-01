@@ -5,10 +5,13 @@ using System.Text;
 
 namespace GreatGame
 {
-    abstract class Unit : ICollidable, IDamageable
+    class Unit : ICollidable, IDamageable
     {
-        int size, visionRange, attackRange, attack, defense, speed;
-        double health;
+        // Feilds
+        private String name;
+        private int size, visionRange, attackRange, attack, defense, speed;
+        private double health;
+
         enum Alignment
         {
             Player,
@@ -16,7 +19,7 @@ namespace GreatGame
             Neutral
         }
 
-        public Unit()
+        public Unit(String name, int health, int speed, int range, int damage)
         {
 
         }
@@ -30,6 +33,8 @@ namespace GreatGame
         {
             return false;
         }
+
+        // Methods
 
         public void TakeDamage(double damage)
         {
