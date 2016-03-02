@@ -25,7 +25,8 @@ namespace GreatGame
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            
+
+            FileInput<Unit> listOfUnits = new FileInput<Unit>("units.txt");
 
             Content.RootDirectory = "Content";
         }
@@ -59,10 +60,7 @@ namespace GreatGame
         /// UnloadContent will be called once per game and is the place to unload
         /// game-specific content.
         /// </summary>
-        protected override void UnloadContent()
-        {
-            // TODO: Unload any non ContentManager content here
-        }
+        protected override void UnloadContent() { }
 
         /// <summary>
         /// Allows the game to run logic such as updating the world,
@@ -74,7 +72,6 @@ namespace GreatGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
 
             base.Update(gameTime);
         }
@@ -86,8 +83,9 @@ namespace GreatGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            spriteBatch.Begin();
 
-            // TODO: Add your drawing code here
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }

@@ -10,7 +10,7 @@ namespace GreatGame
     {
         // Fields
         private String fileName;
-        private List<T> list;
+        private List<Unit> unitList;
 
         public string FileName { get { return this.fileName; } }
 
@@ -22,32 +22,31 @@ namespace GreatGame
         public FileInput(String fileName)
         {
             this.fileName = fileName;
-            this.list = new List<T>();
+            this.unitList = new List<Unit>();
         }
 
         // Read file method
-        public void Load()
+        public void LoadUnit()
         {
-
             using (Stream inputStream = File.OpenRead(fileName))
-            using (BinaryReader input = new BinaryReader(inputStream))
+            using (StreamReader input = new StreamReader(inputStream))
             {
                 //Get number of units and the num of attributes
-                int numData = input.ReadInt32();
-                int numAttributes = input.ReadInt32();
+                int numData = (int.Parse(input.ReadLine()));
+                int numAttributes = (int.Parse(input.ReadLine()));
 
                 for (int i = 0; i < numData; i++)
                 {
                     // Read in the data
-                    string name = input.ReadString();
-                    int health = input.ReadInt32();
-                    int speed = input.ReadInt32();
-                    int range = input.ReadInt32();
-                    int dps = input.ReadInt32();
+                    string name = input.ReadLine();
+                    int health = (int.Parse(input.ReadLine()));
+                    int speed = (int.Parse(input.ReadLine()));
+                    int range = (int.Parse(input.ReadLine()));
+                    int dps = (int.Parse(input.ReadLine()));
 
                     // Make a new unit and add it to the list
                     Unit newUnit = new Unit(name, health, speed, range, dps);
-                    list.Add(newUnit);
+                    unitList.Add(newUnit);
                 }
             }
         }
