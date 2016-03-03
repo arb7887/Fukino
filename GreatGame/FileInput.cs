@@ -14,6 +14,8 @@ namespace GreatGame
 
         public string FileName { get { return this.fileName; } }
 
+        public List<Unit> UnitList { get { return this.unitList; } }
+
         /// <summary>
         /// This class will have a list of whatever kind of object 
         /// is passed in with the parameters

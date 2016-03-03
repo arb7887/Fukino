@@ -11,22 +11,23 @@ namespace GreatGame
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        SpriteFont font;
 
-        enum GameStates
+        private SpriteFont font;
+        private FileInput<Unit> listOfUnits;    // The list of units
+
+        private enum GameStates
         {
             Menu,
             Select,
             Game,
             GameOver
         }
-        GameStates currentState;
+
+        private GameStates currentState;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-
-            FileInput<Unit> listOfUnits = new FileInput<Unit>("units.txt");
 
             Content.RootDirectory = "Content";
         }
@@ -39,7 +40,8 @@ namespace GreatGame
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            // Instantiates the list of units
+            listOfUnits = new FileInput<Unit>("Units.txt");
 
             base.Initialize();
         }
@@ -53,7 +55,9 @@ namespace GreatGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            // Load in the list of units from the file here
+            listOfUnits.LoadUnit();
+            
         }
 
         /// <summary>
@@ -82,7 +86,7 @@ namespace GreatGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Green);
             spriteBatch.Begin();
 
             spriteBatch.End();
