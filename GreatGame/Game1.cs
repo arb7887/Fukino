@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace GreatGame
 {
@@ -24,6 +25,10 @@ namespace GreatGame
         }
 
         private GameStates currentState;
+        MouseState currentMouse;
+        MouseState previousMouse;
+        Unit test;
+        Point destination;
 
         public Game1()
         {
@@ -41,8 +46,10 @@ namespace GreatGame
         protected override void Initialize()
         {
             // Instantiates the list of units
+            currentState = GameStates.Game;
             listOfUnits = new FileInput<Unit>("Units.txt");
-
+            test = new Unit("Test", 10, 10, 10, 10);
+            this.IsMouseVisible = true;
             base.Initialize();
         }
 
@@ -56,8 +63,8 @@ namespace GreatGame
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Load in the list of units from the file here
-            listOfUnits.LoadUnit();
-            
+            //listOfUnits.LoadUnit();
+            test.Texture = Content.Load<Texture2D>("Kamui");
         }
 
         /// <summary>
@@ -75,23 +82,63 @@ namespace GreatGame
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-
+            switch (currentState)
+            {
+                case GameStates.Game:
+                    previousMouse = currentMouse;
+                    currentMouse = Mouse.GetState();
+                    /*if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
+                    {
+                        if ((previousMouse.X >= test.Size.X) && previousMouse.X <= (test.Size.X + 10) && previousMouse.Y >= test.Size.Y && previousMouse.Y <= (previousMouse.Y + 10))
+                        {
+                            test.IsSelected = true;
+                        }
+                        else
+                        {
+                            test.IsSelected = false;
+                        }
+                    }*/
+                    if (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released)
+                    {
+                        destination = new Point(previousMouse.X, previousMouse.Y);
+                        test.ProcessInput(destination);
+                        test.IsMoving = true;
+                    }
+                    else if (test.IsMoving)
+                    {
+                        test.ProcessInput(destination);
+                    }
+                    break;
+            }
+            
+            MouseState mouse = Mouse.GetState();
             base.Update(gameTime);
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Green);
             spriteBatch.Begin();
-
+            spriteBatch.Draw(test.Texture, test.Position, Color.White);
             spriteBatch.End();
 
             base.Draw(gameTime);
         }
     }
+
+    /*protected bool IsMouseOver(Unit u)
+    {
+        if ((previousMouse.X >= u.Size.X) && previousMouse.X <= (u.Size.X + 10) &&
+                previousMouse.Y >= u.Size.Y && previousMouse.Y <= (previousMouse.Y + 10))
+        {
+            return true;
+        }
+        return false;
+    }*/
+
+    /// <summary>
+    /// This is called when the game should draw itself.
+    /// </summary>
+    /// <param name="gameTime">Provides a snapshot of timing values.</param>
+
 }
