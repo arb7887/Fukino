@@ -63,7 +63,7 @@ namespace GreatGame
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Load in the list of units from the file here
-            //listOfUnits.LoadUnit();
+            listOfUnits.LoadUnit();
             test.Texture = Content.Load<Texture2D>("Kamui");
         }
 

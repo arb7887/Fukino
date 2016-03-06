@@ -11,12 +11,12 @@ namespace GreatGame
     class Unit : ICollidable, IDamageable
     {
         // Fields
-        public String name;
-        public int visionRange, attackRange, attack, defense, speed, x, y;
-        public double health;
-        public Boolean isSelected, isMoving;
-        public Rectangle position;
-        public Texture2D texture;
+        private String name;
+        private int visionRange, attackRange, attack, defense, speed, x, y;
+        private double health;
+        private Boolean isSelected, isMoving;
+        private Rectangle position;
+        private Texture2D texture;
 
         enum Alignment
         {
