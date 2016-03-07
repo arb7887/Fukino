@@ -52,5 +52,15 @@ namespace GreatGame
                 }
             }
         }
+
+        public override string ToString()
+        {
+            String names = "";
+            for(int i = 0; i < unitList.Count; i++)
+            {
+                names += unitList[i].Name;
+            }
+            return names;
+        }
     }
 }

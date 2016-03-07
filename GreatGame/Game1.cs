@@ -16,7 +16,9 @@ namespace GreatGame
         SpriteBatch spriteBatch;
 
         private SpriteFont font;
+
         private FileInput<Unit> listOfUnits;    // The list of units
+        private List<Unit> userSelectedUnits;   // The list of units that the user has selected
 
         private enum GameStates
         {
@@ -27,6 +29,7 @@ namespace GreatGame
         }
 
         private GameStates currentState;
+
         MouseState currentMouse;
         MouseState previousMouse;
         Unit test;
@@ -41,7 +44,6 @@ namespace GreatGame
         SpriteFont buttonFont;
 
         List<ClassSelectButton> classSelectors;
-
 
         public Game1()
         {
@@ -67,7 +69,9 @@ namespace GreatGame
             
             // Load in the Units.txt file, this works now
             listOfUnits = new FileInput<Unit>("Content/Units.txt");
-            listOfUnits.LoadUnit();
+            //listOfUnits.LoadUnit();
+            
+
             currentState = GameStates.Menu;
 
             exit = new MenuButton(new Rectangle(10, 10, 100, 50), null, "Exit", Color.White, null);
@@ -94,6 +98,7 @@ namespace GreatGame
             buttonTexture = Content.Load<Texture2D>("ExampleButtonA.png");
             pointerTexture = Content.Load<Texture2D>("Mouse_pointer_small.png");
             buttonFont = Content.Load<SpriteFont>("buttonFont");
+            font = Content.Load<SpriteFont>("Arial14");
 
             for(int i = 0; i < 6; i++)
             {
@@ -109,7 +114,7 @@ namespace GreatGame
             
 
             // Load in the list of units from the file here
-            //listOfUnits.LoadUnit();
+            listOfUnits.LoadUnit();
             test.Texture = Content.Load<Texture2D>("Kamui");
 
         }
@@ -203,16 +208,27 @@ namespace GreatGame
             switch (currentState)
             {
                 case GameStates.Menu:
+                    if (listOfUnits.UnitList.Count > 0)
+                    {
+                        spriteBatch.DrawString(font, listOfUnits.UnitList[0].Name, Vector2.Zero, Color.Black);
+                    }
+
                     exit.Draw(spriteBatch);
                     play.Draw(spriteBatch);
                     options.Draw(spriteBatch);
+
+                   // spriteBatch.DrawString(font, listOfUnits.ToString(), Vector2.Zero, Color.Black);
+
                     break;
                 case GameStates.Game:
+                    //GraphicsDevice.Clear(Color.Green);
                     spriteBatch.Draw(test.Texture, test.Position, Color.White);
                     break;
                 case GameStates.GameOver:
+                    // Print out some info about the score and stuff
                     break;
                 case GameStates.Select:
+
                     for (int i = 0; i < classSelectors.Count; i++)
                         classSelectors[i].Draw(spriteBatch);
                     play.Draw(spriteBatch);
@@ -220,7 +236,7 @@ namespace GreatGame
             }
 
 
-            spriteBatch.Draw(pointerTexture, new Rectangle(ms.X, ms.Y, pointerTexture.Width, pointerTexture.Height), Color.White);
+           // spriteBatch.Draw(pointerTexture, new Rectangle(ms.X, ms.Y, pointerTexture.Width, pointerTexture.Height), Color.White);
 
             spriteBatch.End();
 

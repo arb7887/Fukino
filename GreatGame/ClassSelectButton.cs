@@ -12,20 +12,28 @@ namespace GreatGame
     {
         private List<MenuButton> classOptions;
         private bool clicked;
+        private FileInput<Unit> listOfUnits;
 
         public bool Clicked { get { return clicked; } set { clicked = value; } }
 
         public ClassSelectButton(Rectangle loc, Texture2D t, string n, Color s,  SpriteFont sf)
             :base(loc, t, n, s, sf)
         {
+            listOfUnits = new FileInput<Unit>("Content/Units.txt");
+            listOfUnits.LoadUnit();
+
+
             classOptions = new List<MenuButton>();
-            for(int i = 0; i < 9; i++)
+
+            for(int i = 0; i < listOfUnits.UnitList.Count(); i++)
             {
+                // This now loads from the notepad document instead
                 String temp = "";
-                switch (i)
+                temp = listOfUnits.UnitList[i].Name;
+               /* switch (i)
                 {
                     case 0:
-                        temp = "Rifle";
+                        temp = listOfUnits.UnitList[i].Name;
                         break;
                     case 1:
                         temp = "Shotgun";
@@ -51,7 +59,7 @@ namespace GreatGame
                     case 8:
                         temp = "Buff";
                         break;
-                }
+                }*/
                 classOptions.Add(new MenuButton(loc, t, temp, s, sf, false));
                 classOptions[i].Y -= 50 * (i + 1);
             }

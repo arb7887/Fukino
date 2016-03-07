@@ -38,6 +38,8 @@ namespace GreatGame
             position = new Rectangle(x, y, 50, 50);
         }
 
+        public String Name { get { return name; } }
+
         public int X
         {
             get
@@ -145,6 +147,8 @@ namespace GreatGame
         {
 
         }
+
+
 
         public void ProcessInput(Point mouseLoc)
         {
