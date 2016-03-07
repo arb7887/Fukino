@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+
 namespace GreatGame
 {
     /// <summary>
@@ -25,6 +26,10 @@ namespace GreatGame
         }
 
         private GameStates currentState;
+        MouseState currentMouse;
+        MouseState previousMouse;
+        Unit test;
+        Point destination;
 
         Texture2D buttonTexture;
         MenuButton exit;
@@ -61,6 +66,10 @@ namespace GreatGame
             play = new MenuButton(new Rectangle(10, 110, 100, 50),null, "Play", Color.White, null);
             classSelectors = new List<ClassSelectButton>();
 
+            listOfUnits = new FileInput<Unit>("Units.txt");
+            test = new Unit("Test", 10, 10, 10, 10);
+
+            this.IsMouseVisible = true;
             base.Initialize();
         }
 
@@ -80,7 +89,7 @@ namespace GreatGame
 
             for(int i = 0; i < 6; i++)
             {
-                classSelectors.Add(new ClassSelectButton(new Rectangle(100 + (110* i), GraphicsDevice.Viewport.Height - 60, 100, 50), buttonTexture, "Select", Color.White, buttonFont));
+                classSelectors.Add(new ClassSelectButton(new Rectangle(50 + (100* i), GraphicsDevice.Viewport.Height - 60, 100, 50), buttonTexture, "Select", Color.White, buttonFont));
             }
             exit.Texture = buttonTexture;
             play.Texture = buttonTexture;
@@ -92,7 +101,7 @@ namespace GreatGame
 
             // Load in the list of units from the file here
             //listOfUnits.LoadUnit();
-            
+            test.Texture = Content.Load<Texture2D>("Kamui");
         }
 
         /// <summary>
@@ -123,12 +132,35 @@ namespace GreatGame
                     if (play.CheckClicked(ms))
                     {
                         currentState = GameStates.Select;
-                        play.X = 760;
+                        play.X = 650;
                         play.Y = GraphicsDevice.Viewport.Height - 60;
                     }
                         
                     break;
                 case GameStates.Game:
+                    previousMouse = currentMouse;
+                    currentMouse = Mouse.GetState();
+                    /*if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
+                    {
+                        if ((previousMouse.X >= test.Size.X) && previousMouse.X <= (test.Size.X + 10) && previousMouse.Y >= test.Size.Y && previousMouse.Y <= (previousMouse.Y + 10))
+                        {
+                            test.IsSelected = true;
+                        }
+                        else
+                        {
+                            test.IsSelected = false;
+                        }
+                    }*/
+                    if (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released)
+                    {
+                        destination = new Point(previousMouse.X, previousMouse.Y);
+                        test.ProcessInput(destination);
+                        test.IsMoving = true;
+                    }
+                    else if (test.IsMoving)
+                    {
+                        test.ProcessInput(destination);
+                    }
                     break;
                 case GameStates.GameOver:
                     break;
@@ -147,20 +179,16 @@ namespace GreatGame
                         currentState = GameStates.Game;
                     break;
             }
+            
+            MouseState mouse = Mouse.GetState();
 
             base.Update(gameTime);
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Green);
-            spriteBatch.Begin();
-
-            
+            spriteBatch.Begin();           
 
             switch (currentState)
             {
@@ -170,6 +198,7 @@ namespace GreatGame
                     options.Draw(spriteBatch);
                     break;
                 case GameStates.Game:
+                    spriteBatch.Draw(test.Texture, test.Position, Color.White);
                     break;
                 case GameStates.GameOver:
                     break;
@@ -182,9 +211,26 @@ namespace GreatGame
 
 
             spriteBatch.Draw(pointerTexture, new Rectangle(ms.X, ms.Y, pointerTexture.Width, pointerTexture.Height), Color.White);
+
             spriteBatch.End();
 
             base.Draw(gameTime);
         }
     }
+
+    /*protected bool IsMouseOver(Unit u)
+    {
+        if ((previousMouse.X >= u.Size.X) && previousMouse.X <= (u.Size.X + 10) &&
+                previousMouse.Y >= u.Size.Y && previousMouse.Y <= (previousMouse.Y + 10))
+        {
+            return true;
+        }
+        return false;
+    }*/
+
+    /// <summary>
+    /// This is called when the game should draw itself.
+    /// </summary>
+    /// <param name="gameTime">Provides a snapshot of timing values.</param>
+
 }
