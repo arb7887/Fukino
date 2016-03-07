@@ -33,6 +33,9 @@ namespace GreatGame
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = 1920;
+            graphics.PreferredBackBufferHeight = 1080;
+            graphics.ToggleFullScreen();
 
             Content.RootDirectory = "Content";
         }
@@ -47,7 +50,8 @@ namespace GreatGame
         {
             // Instantiates the list of units
             currentState = GameStates.Game;
-            listOfUnits = new FileInput<Unit>("Units.txt");
+            
+            listOfUnits = new FileInput<Unit>("Content/Units.txt");
             test = new Unit("Test", 10, 10, 10, 10);
             this.IsMouseVisible = true;
             base.Initialize();
@@ -65,6 +69,7 @@ namespace GreatGame
             // Load in the list of units from the file here
             listOfUnits.LoadUnit();
             test.Texture = Content.Load<Texture2D>("Kamui");
+
         }
 
         /// <summary>
