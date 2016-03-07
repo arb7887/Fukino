@@ -12,7 +12,8 @@ namespace GreatGame
     {
         // Fields
         private String name;
-        private int visionRange, attackRange, attack, defense, speed, x, y;
+        private int visionRange, attackRange, attack, defense, x, y;
+        private double speed;
         private double health;
         private Boolean isSelected, isMoving;
         private Rectangle position;
@@ -25,7 +26,7 @@ namespace GreatGame
             Neutral
         }
 
-        public Unit(String name, int health, int speed, int attackRange, int attack)
+        public Unit(String name, int health, double speed, int attackRange, int attack)
         {
             this.name = name;
             this.health = health;
@@ -99,7 +100,7 @@ namespace GreatGame
             }
         }
 
-        public int Speed
+        public double Speed
         {
             get
             {
