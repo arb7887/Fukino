@@ -11,12 +11,22 @@ namespace GreatGame
     class Unit : ICollidable, IDamageable
     {
         // Fields
+<<<<<<< HEAD
         public String name;
         public int visionRange, attackRange, attack, defense, speed;
         public double health;
         public Boolean isSelected, isMoving;
         public Vector2 position;
         public Texture2D texture;
+=======
+        private String name;
+        private int visionRange, attackRange, attack, defense, x, y;
+        private double speed;
+        private double health;
+        private Boolean isSelected, isMoving;
+        private Rectangle position;
+        private Texture2D texture;
+>>>>>>> origin/master
 
         enum Alignment
         {
@@ -25,7 +35,7 @@ namespace GreatGame
             Neutral
         }
 
-        public Unit(String name, int health, int speed, int attackRange, int attack)
+        public Unit(String name, int health, double speed, int attackRange, int attack)
         {
             this.name = name;
             this.health = health;
@@ -36,7 +46,13 @@ namespace GreatGame
             isMoving = false;
             position = new Vector2(0, 0);
         }
+<<<<<<< HEAD
         /*
+=======
+
+        public String Name { get { return name; } }
+
+>>>>>>> origin/master
         public int X
         {
             get
@@ -99,7 +115,7 @@ namespace GreatGame
             }
         }
 
-        public int Speed
+        public double Speed
         {
             get
             {
@@ -145,7 +161,13 @@ namespace GreatGame
 
         }
 
+<<<<<<< HEAD
         public void ProcessInput(Vector2 mouseLoc)
+=======
+
+
+        public void ProcessInput(Point mouseLoc)
+>>>>>>> origin/master
         {
             Vector2 distance = new Vector2(mouseLoc.X - position.X, mouseLoc.Y - position.Y);
             if (distance.Length() < speed)

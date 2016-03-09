@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 
 namespace GreatGame
 {
@@ -10,11 +11,14 @@ namespace GreatGame
     /// </summary>
     public class Game1 : Game
     {
+        // Fields
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
         private SpriteFont font;
+
         private FileInput<Unit> listOfUnits;    // The list of units
+        private List<Unit> userSelectedUnits;   // The list of units that the user has selected
 
         private enum GameStates
         {
@@ -25,16 +29,31 @@ namespace GreatGame
         }
 
         private GameStates currentState;
+
         MouseState currentMouse;
         MouseState previousMouse;
         Unit test;
         Vector2 destination;
 
+        Texture2D buttonTexture;
+        MenuButton exit;
+        MenuButton options;
+        MenuButton play;
+        MouseState ms;
+        Texture2D pointerTexture;
+        SpriteFont buttonFont;
+
+        List<ClassSelectButton> classSelectors;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = 1920;
+            graphics.PreferredBackBufferHeight = 1080;
+           // graphics.ToggleFullScreen();
 
             Content.RootDirectory = "Content";
+            
         }
 
         /// <summary>
@@ -47,9 +66,25 @@ namespace GreatGame
         {
             // Instantiates the list of units
             currentState = GameStates.Game;
-            listOfUnits = new FileInput<Unit>("Units.txt");
+            
+            // Load in the Units.txt file, this works now
+            listOfUnits = new FileInput<Unit>("Content/Units.txt");
+            //listOfUnits.LoadUnit();
+            
+
+            currentState = GameStates.Menu;
+
+            exit = new MenuButton(new Rectangle(10, 10, 100, 50), null, "Exit", Color.White, null);
+            options = new MenuButton(new Rectangle(10, 60, 100, 50), null, "Options", Color.White, null);
+            play = new MenuButton(new Rectangle(10, 110, 100, 50),null, "Play", Color.White, null);
+            classSelectors = new List<ClassSelectButton>();
+
             test = new Unit("Test", 10, 10, 10, 10);
+<<<<<<< HEAD
             test.Position = new Vector2(0, 0);
+=======
+
+>>>>>>> origin/master
             this.IsMouseVisible = true;
             base.Initialize();
         }
@@ -63,9 +98,29 @@ namespace GreatGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            
+            buttonTexture = Content.Load<Texture2D>("ExampleButtonA.png");
+            pointerTexture = Content.Load<Texture2D>("Mouse_pointer_small.png");
+            buttonFont = Content.Load<SpriteFont>("buttonFont");
+            font = Content.Load<SpriteFont>("Arial14");
+
+            for(int i = 0; i < 6; i++)
+            {
+                classSelectors.Add(new ClassSelectButton(new Rectangle(50 + (100* i), GraphicsDevice.Viewport.Height - 60, 100, 50), buttonTexture, "Select", Color.White, buttonFont));
+            }
+
+            exit.Texture = buttonTexture;
+            play.Texture = buttonTexture;
+            options.Texture = buttonTexture;
+            exit.Font = buttonFont;
+            play.Font = buttonFont;
+            options.Font = buttonFont;
+            
+
             // Load in the list of units from the file here
-            //listOfUnits.LoadUnit();
+            listOfUnits.LoadUnit();
             test.Texture = Content.Load<Texture2D>("Kamui");
+
         }
 
         /// <summary>
@@ -83,8 +138,24 @@ namespace GreatGame
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            ms = Mouse.GetState();
+            
             switch (currentState)
             {
+                case GameStates.Menu:
+                    if (exit.CheckClicked(ms))
+                        Exit();
+                    if (options.CheckClicked(ms))
+                        options.Shade = Color.Blue;
+                    if (play.CheckClicked(ms))
+                    {
+                        currentState = GameStates.Select;
+                        play.X = 650;
+                        play.Y = GraphicsDevice.Viewport.Height - 60;
+                    }
+                        
+                    break;
                 case GameStates.Game:
                     previousMouse = currentMouse;
                     currentMouse = Mouse.GetState();
@@ -110,17 +181,72 @@ namespace GreatGame
                         test.ProcessInput(destination);
                     }
                     break;
+                case GameStates.GameOver:
+                    break;
+                case GameStates.Select:
+                    for (int i = 0; i < classSelectors.Count; i++)
+                        classSelectors[i].CheckClicked(ms);
+                    bool selected = true; ;
+                    for (int i = 0; i < classSelectors.Count; i++)
+                        if (classSelectors[i].Name == "Select")
+                            selected = false;
+                    if (selected)
+                        play.Enabled = true;
+                    else
+                        play.Enabled = false; 
+                    if (play.CheckClicked(ms))
+                        currentState = GameStates.Game;
+                    break;
             }
             
             MouseState mouse = Mouse.GetState();
+
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Green);
+<<<<<<< HEAD
             spriteBatch.Begin();
             spriteBatch.Draw(test.Texture, new Rectangle((int)test.position.X, (int)test.position.Y, 50, 50), Color.White);
+=======
+            spriteBatch.Begin();           
+
+            switch (currentState)
+            {
+                case GameStates.Menu:
+                    if (listOfUnits.UnitList.Count > 0)
+                    {
+                        spriteBatch.DrawString(font, listOfUnits.UnitList[0].Name, Vector2.Zero, Color.Black);
+                    }
+
+                    exit.Draw(spriteBatch);
+                    play.Draw(spriteBatch);
+                    options.Draw(spriteBatch);
+
+                   // spriteBatch.DrawString(font, listOfUnits.ToString(), Vector2.Zero, Color.Black);
+
+                    break;
+                case GameStates.Game:
+                    //GraphicsDevice.Clear(Color.Green);
+                    spriteBatch.Draw(test.Texture, test.Position, Color.White);
+                    break;
+                case GameStates.GameOver:
+                    // Print out some info about the score and stuff
+                    break;
+                case GameStates.Select:
+
+                    for (int i = 0; i < classSelectors.Count; i++)
+                        classSelectors[i].Draw(spriteBatch);
+                    play.Draw(spriteBatch);
+                    break;
+            }
+
+
+           // spriteBatch.Draw(pointerTexture, new Rectangle(ms.X, ms.Y, pointerTexture.Width, pointerTexture.Height), Color.White);
+
+>>>>>>> origin/master
             spriteBatch.End();
             base.Draw(gameTime);
         }
