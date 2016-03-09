@@ -28,7 +28,7 @@ namespace GreatGame
         MouseState currentMouse;
         MouseState previousMouse;
         Unit test;
-        Point destination;
+        Vector2 destination;
 
         public Game1()
         {
@@ -49,6 +49,7 @@ namespace GreatGame
             currentState = GameStates.Game;
             listOfUnits = new FileInput<Unit>("Units.txt");
             test = new Unit("Test", 10, 10, 10, 10);
+            test.Position = new Vector2(0, 0);
             this.IsMouseVisible = true;
             base.Initialize();
         }
@@ -100,7 +101,7 @@ namespace GreatGame
                     }*/
                     if (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released)
                     {
-                        destination = new Point(previousMouse.X, previousMouse.Y);
+                        destination = new Vector2(previousMouse.X, previousMouse.Y);
                         test.ProcessInput(destination);
                         test.IsMoving = true;
                     }
@@ -119,9 +120,8 @@ namespace GreatGame
         {
             GraphicsDevice.Clear(Color.Green);
             spriteBatch.Begin();
-            spriteBatch.Draw(test.Texture, test.Position, Color.White);
+            spriteBatch.Draw(test.Texture, new Rectangle((int)test.position.X, (int)test.position.Y, 50, 50), Color.White);
             spriteBatch.End();
-
             base.Draw(gameTime);
         }
     }

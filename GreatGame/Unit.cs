@@ -12,10 +12,10 @@ namespace GreatGame
     {
         // Fields
         public String name;
-        public int visionRange, attackRange, attack, defense, speed, x, y;
+        public int visionRange, attackRange, attack, defense, speed;
         public double health;
         public Boolean isSelected, isMoving;
-        public Rectangle position;
+        public Vector2 position;
         public Texture2D texture;
 
         enum Alignment
@@ -34,9 +34,9 @@ namespace GreatGame
             this.attack = attack;
             isSelected = false;
             isMoving = false;
-            position = new Rectangle(x, y, 50, 50);
+            position = new Vector2(0, 0);
         }
-
+        /*
         public int X
         {
             get
@@ -46,7 +46,7 @@ namespace GreatGame
             set
             {
                 x = value;
-                position = new Rectangle(x, y, position.Width, position.Height);
+                position = new Vector2(x, y);
             }
         }
 
@@ -59,10 +59,10 @@ namespace GreatGame
             set
             {
                 y = value;
-                position = new Rectangle(x, y, position.Width, position.Height);
+                position = new Vector2(x, y);
             }
         }
-
+        */
         public Boolean IsSelected
         {
             get
@@ -87,7 +87,7 @@ namespace GreatGame
             }
         }
 
-        public Rectangle Position
+        public Vector2 Position
         {
             get
             {
@@ -145,14 +145,20 @@ namespace GreatGame
 
         }
 
-        public void ProcessInput(Point mouseLoc)
+        public void ProcessInput(Vector2 mouseLoc)
         {
-                double xDiff = mouseLoc.X - X;
-                double yDiff = mouseLoc.Y - Y;
-                double angle = Math.Atan2(yDiff, xDiff) * (180 / Math.PI);
-                X += (int)(Speed * Math.Cos(angle));
-                Y += (int)(Speed * Math.Sin(angle));
+            Vector2 distance = new Vector2(mouseLoc.X - position.X, mouseLoc.Y - position.Y);
+            if (distance.Length() < speed)
+            {
+                position = mouseLoc;
+                isMoving = false;
+            }
+            else
+            {
+                distance.Normalize();
+                Vector2 toMove = new Vector2((int)(distance.X * speed), (int)(distance.Y * speed));
+                position += toMove;
+            }
         }
-
     }
 }
