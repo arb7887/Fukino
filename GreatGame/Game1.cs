@@ -48,9 +48,6 @@ namespace GreatGame
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = 1920;
-            graphics.PreferredBackBufferHeight = 1080;
-           // graphics.ToggleFullScreen();
 
             Content.RootDirectory = "Content";
             
@@ -65,14 +62,11 @@ namespace GreatGame
         protected override void Initialize()
         {
             // Instantiates the list of units
-            currentState = GameStates.Game;
+            currentState = GameStates.Menu;
             
             // Load in the Units.txt file, this works now
             listOfUnits = new FileInput<Unit>("Content/Units.txt");
             //listOfUnits.LoadUnit();
-            
-
-            currentState = GameStates.Menu;
 
             exit = new MenuButton(new Rectangle(10, 10, 100, 50), null, "Exit", Color.White, null);
             options = new MenuButton(new Rectangle(10, 60, 100, 50), null, "Options", Color.White, null);
@@ -80,11 +74,8 @@ namespace GreatGame
             classSelectors = new List<ClassSelectButton>();
 
             test = new Unit("Test", 10, 10, 10, 10);
-<<<<<<< HEAD
-            test.Position = new Vector2(0, 0);
-=======
 
->>>>>>> origin/master
+            test.Position = new Vector2(0, 0);
             this.IsMouseVisible = true;
             base.Initialize();
         }
@@ -207,11 +198,8 @@ namespace GreatGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Green);
-<<<<<<< HEAD
-            spriteBatch.Begin();
-            spriteBatch.Draw(test.Texture, new Rectangle((int)test.position.X, (int)test.position.Y, 50, 50), Color.White);
-=======
-            spriteBatch.Begin();           
+
+            spriteBatch.Begin();    
 
             switch (currentState)
             {
@@ -230,7 +218,7 @@ namespace GreatGame
                     break;
                 case GameStates.Game:
                     //GraphicsDevice.Clear(Color.Green);
-                    spriteBatch.Draw(test.Texture, test.Position, Color.White);
+                    spriteBatch.Draw(test.Texture, new Rectangle((int)test.position.X, (int)test.position.Y, 50, 50), Color.White);
                     break;
                 case GameStates.GameOver:
                     // Print out some info about the score and stuff
@@ -245,8 +233,6 @@ namespace GreatGame
 
 
            // spriteBatch.Draw(pointerTexture, new Rectangle(ms.X, ms.Y, pointerTexture.Width, pointerTexture.Height), Color.White);
-
->>>>>>> origin/master
             spriteBatch.End();
             base.Draw(gameTime);
         }
