@@ -68,6 +68,7 @@ namespace GreatGame
             
             // Load in the Units.txt file, this works now
             listOfUnits = new FileInput<Unit>("Content/Units.txt");
+            userSelectedUnits = new List<Unit>();
             //listOfUnits.LoadUnit();
 
             exit = new MenuButton(new Rectangle(10, 10, 100, 50), null, "Exit", Color.White, null);
@@ -152,18 +153,23 @@ namespace GreatGame
                 case GameStates.Game:
                     previousMouse = currentMouse;
                     currentMouse = Mouse.GetState();
-                    /*if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
+                    if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
                     {
-                        if ((previousMouse.X >= test.Size.X) && previousMouse.X <= (test.Size.X + 10) && previousMouse.Y >= test.Size.Y && previousMouse.Y <= (previousMouse.Y + 10))
+                        if ((previousMouse.X >= test.Position.X) && previousMouse.X <= (test.Position.X + 50)
+                            && previousMouse.Y >= test.Position.Y && previousMouse.Y <= (test.Position.Y + 50))
                         {
                             test.IsSelected = true;
+                            test.color = Color.Cyan;
+                            userSelectedUnits.Add(test);
                         }
                         else
                         {
                             test.IsSelected = false;
+                            test.color = Color.White;
+                            userSelectedUnits.Clear();
                         }
-                    }*/
-                    if (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released)
+                    }
+                    if (test.IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
                     {
                         destination = new Vector2(previousMouse.X, previousMouse.Y);
                         test.ProcessInput(destination);
@@ -220,7 +226,7 @@ namespace GreatGame
                     break;
                 case GameStates.Game:
                     //GraphicsDevice.Clear(Color.Green);
-                    spriteBatch.Draw(test.Texture, new Rectangle((int)test.position.X, (int)test.position.Y, 50, 50), Color.White);
+                    spriteBatch.Draw(test.Texture, new Rectangle((int)test.position.X, (int)test.position.Y, 50, 50), test.UnitColor);
                     break;
                 case GameStates.GameOver:
                     // Print out some info about the score and stuff

@@ -17,6 +17,7 @@ namespace GreatGame
         public Boolean isSelected, isMoving;
         public Vector2 position;
         public Texture2D texture;
+        public Color color;
 
         enum Alignment
         {
@@ -35,6 +36,7 @@ namespace GreatGame
             isSelected = false;
             isMoving = false;
             position = new Vector2(0, 0);
+            color = Color.White;
         }
         public String Name { get { return name; } }
 
@@ -123,6 +125,12 @@ namespace GreatGame
             {
                 isMoving = value;
             }
+        }
+
+        public Color UnitColor
+        {
+            get { return color; }
+            set { color = value; }
         }
 
         public bool IsColliding(Unit u)
