@@ -30,36 +30,38 @@ namespace GreatGame
                 // This now loads from the notepad document instead
                 String temp = "";
                 temp = listOfUnits.UnitList[i].Name;
-               /* switch (i)
-                {
-                    case 0:
-                        temp = listOfUnits.UnitList[i].Name;
-                        break;
-                    case 1:
-                        temp = "Shotgun";
-                        break;
-                    case 2:
-                        temp = "Alien";
-                        break;
-                    case 3:
-                        temp = "Engineer";
-                        break;
-                    case 4:
-                        temp = "Minigun";
-                        break;
-                    case 5:
-                        temp = "Assasin";
-                        break;
-                    case 6:
-                        temp = "Sniper";
-                        break;
-                    case 7:
-                        temp = "Medic";
-                        break;
-                    case 8:
-                        temp = "Buff";
-                        break;
-                }*/
+                #region
+                /* switch (i)
+                 {
+                     case 0:
+                         temp = listOfUnits.UnitList[i].Name;
+                         break;
+                     case 1:
+                         temp = "Shotgun";
+                         break;
+                     case 2:
+                         temp = "Alien";
+                         break;
+                     case 3:
+                         temp = "Engineer";
+                         break;
+                     case 4:
+                         temp = "Minigun";
+                         break;
+                     case 5:
+                         temp = "Assasin";
+                         break;
+                     case 6:
+                         temp = "Sniper";
+                         break;
+                     case 7:
+                         temp = "Medic";
+                         break;
+                     case 8:
+                         temp = "Buff";
+                         break;
+                 }*/
+                #endregion
                 classOptions.Add(new MenuButton(loc, t, temp, s, sf, false));
                 classOptions[i].Y -= 50 * (i + 1);
             }

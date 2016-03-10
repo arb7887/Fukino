@@ -48,6 +48,8 @@ namespace GreatGame
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
 
             Content.RootDirectory = "Content";
             
@@ -76,6 +78,7 @@ namespace GreatGame
             test = new Unit("Test", 10, 10, 10, 10);
 
             test.Position = new Vector2(0, 0);
+
             this.IsMouseVisible = true;
             base.Initialize();
         }
@@ -89,13 +92,15 @@ namespace GreatGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            
+            // Load in the list of units from the file here
+            listOfUnits.LoadUnit();
+
             buttonTexture = Content.Load<Texture2D>("ExampleButtonA.png");
             pointerTexture = Content.Load<Texture2D>("Mouse_pointer_small.png");
             buttonFont = Content.Load<SpriteFont>("buttonFont");
             font = Content.Load<SpriteFont>("Arial14");
 
-            for(int i = 0; i < 6; i++)
+            for(int i = 0; i < listOfUnits.ListCount; i++)
             {
                 classSelectors.Add(new ClassSelectButton(new Rectangle(50 + (100* i), GraphicsDevice.Viewport.Height - 60, 100, 50), buttonTexture, "Select", Color.White, buttonFont));
             }
@@ -107,9 +112,6 @@ namespace GreatGame
             play.Font = buttonFont;
             options.Font = buttonFont;
             
-
-            // Load in the list of units from the file here
-            listOfUnits.LoadUnit();
             test.Texture = Content.Load<Texture2D>("Kamui");
 
         }
