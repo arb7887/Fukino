@@ -130,6 +130,7 @@ namespace GreatGame
                         currentState = GameStates.Game;
                     break;
                 case GameStates.Game:
+
                     if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
                     {
                         if ((previousMouse.X >= test.Position.X) && previousMouse.X <= (test.Position.X + 50)
@@ -185,6 +186,7 @@ namespace GreatGame
                     // End of Second Test Unit's Movement Code
                     break;
                 case GameStates.GameOver:
+                    // Check for if the user has hit enter to return to title screen
                     break;
             }
             
