@@ -17,8 +17,9 @@ namespace GreatGame
 
         private SpriteFont font;
 
-        private FileInput<Unit> listOfUnits;    // The list of units
+        private FileInput listOfUnits;    // The list of units
         private List<Unit> userSelectedUnits;   // The list of units that the user has selected
+        private List<String> userSelectedNames; // This is the lsit of names from the buttons that the user picks on the menu screen
 
         Texture2D buttonTexture;
         SpriteFont buttonFont;
@@ -43,9 +44,11 @@ namespace GreatGame
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+
+            // Make the screen bigger
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
-
+            // Make full screen when we get to the point of that
             Content.RootDirectory = "Content";
             
         }
@@ -63,10 +66,11 @@ namespace GreatGame
 
             menu = new MenuHandler(MenuStates.Main);
             menu.initialize();
+
             // Load in the Units.txt file, this works now
-            listOfUnits = new FileInput<Unit>("Content/Units.txt");
+            listOfUnits = new FileInput("Content/Units.txt");
             userSelectedUnits = new List<Unit>();
-            //listOfUnits.LoadUnit();
+            userSelectedNames = new List<string>();
 
             test = new Unit("Test", 10, 10, 10, 10);
             test2 = new Unit("Test2", 15, 15, 15, 15);
@@ -86,8 +90,7 @@ namespace GreatGame
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            // Load in the list of units from the file here
-            listOfUnits.LoadUnit();
+
             buttonTexture = Content.Load<Texture2D>("ExampleButtonA.png");
             buttonFont = Content.Load<SpriteFont>("buttonFont");
             menu.LoadContent(buttonTexture, buttonFont, GraphicsDevice);
@@ -96,6 +99,7 @@ namespace GreatGame
             
             // Load in the list of units from the file here
             listOfUnits.LoadUnit();
+            
             
             test.Texture = Content.Load<Texture2D>("Kamui");
             test2.Texture = Content.Load<Texture2D>("Kamui");
@@ -127,7 +131,13 @@ namespace GreatGame
                     if (menu.ExitGame)
                         Exit();
                     if (menu.StartGame)
+                    {
                         currentState = GameStates.Game;
+                        // Load in the list of class selected units and add them to the list of units in 
+                        // This game one class's list called 'userSelectedUnits'
+                        SetUnitsFromButtons();
+                    }
+                        
                     break;
                 case GameStates.Game:
 
@@ -204,10 +214,6 @@ namespace GreatGame
             switch (currentState)
             {
                 case GameStates.Menu:
-                    if (listOfUnits.UnitList.Count > 0)
-                    {
-                        spriteBatch.DrawString(font, listOfUnits.UnitList[0].Name, Vector2.Zero, Color.Black);
-                    }
                     menu.Draw(spriteBatch);
                     break;
                 case GameStates.Game:
@@ -215,15 +221,37 @@ namespace GreatGame
                     spriteBatch.Draw(test.Texture, new Rectangle((int)test.position.X, (int)test.position.Y, 50, 50), test.UnitColor);
                     //Second Test Unit:
                     spriteBatch.Draw(test2.Texture, new Rectangle((int)test2.position.X, (int)test2.position.Y, 50, 50), test2.UnitColor);
+
+                    spriteBatch.DrawString(font, userSelectedUnits[1].health.ToString(), Vector2.Zero, Color.Black);
                     break;
                 case GameStates.GameOver:
                     // Print out some info about the score and stuff
                     break;
             }
+
             spriteBatch.End();
             base.Draw(gameTime);
         }
+
+        // Sets the listOfUnits to whatever the buttons are that the player has selected on the screen
+        public void SetUnitsFromButtons()
+        {
+            userSelectedNames = menu.GetButtonNames();
+            for (int i = 0; i < userSelectedNames.Count; i++)
+            {
+                // Go through and find the actual unit object with the same name as the button
+                for (int j = 0; j < listOfUnits.ListCount; j++)
+                {
+                    if (userSelectedNames[i] == listOfUnits.UnitList[j].Name)
+                    {
+                        userSelectedUnits.Add(listOfUnits.UnitList[j]);
+                    }
+                }
+            }
+        }
     }
+
+
 
     /*protected bool IsMouseOver(Unit u)
     {

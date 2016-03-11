@@ -11,6 +11,9 @@ namespace GreatGame
     class Unit : ICollidable, IDamageable
     {
         // Fields
+
+        #region Fields
+        
         public String name;
         public int visionRange, attackRange, attack, defense;
         public double health, speed;
@@ -18,7 +21,9 @@ namespace GreatGame
         public Vector2 position;
         public Texture2D texture;
         public Color color;
+        #endregion
 
+        // FSM for the alignment of this class
         enum Alignment
         {
             Player,
@@ -38,8 +43,10 @@ namespace GreatGame
             position = new Vector2(0, 0);
             color = Color.White;
         }
-        public String Name { get { return name; } }
 
+        // Properties
+        #region Properties
+        public String Name { get { return name; } }
         /*
         public int X
         {
@@ -142,7 +149,7 @@ namespace GreatGame
         {
             return false;
         }
-
+        #endregion
         // Methods
 
         public void TakeDamage(double damage)

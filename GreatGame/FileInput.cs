@@ -6,7 +6,7 @@ using System.IO;
 
 namespace GreatGame
 {
-    class FileInput<T>
+    class FileInput
     {
         // Fields
         private String fileName;
@@ -15,6 +15,7 @@ namespace GreatGame
         public string FileName { get { return this.fileName; } }
 
         public List<Unit> UnitList { get { return this.unitList; } }
+
         public int ListCount { get { return unitList.Count; } }
 
         /// <summary>
@@ -54,6 +55,11 @@ namespace GreatGame
             }
         }
 
+        /// <summary>
+        /// Overrides the ToString in order to return a string that has all of the names of the units...
+        /// This is kinda useless a little bit but we shall see
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             String names = "";
