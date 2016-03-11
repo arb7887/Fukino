@@ -37,6 +37,7 @@ namespace GreatGame
         MouseState currentMouse;
         MouseState previousMouse;
         Unit test;
+        Unit test2;
         Vector2 destination;
 
         public Game1()
@@ -68,8 +69,10 @@ namespace GreatGame
             //listOfUnits.LoadUnit();
 
             test = new Unit("Test", 10, 10, 10, 10);
+            test2 = new Unit("Test2", 15, 15, 15, 15);
 
             test.Position = new Vector2(0, 0);
+            test2.Position = new Vector2(200, 200);
 
             this.IsMouseVisible = true;
             base.Initialize();
@@ -95,7 +98,7 @@ namespace GreatGame
             listOfUnits.LoadUnit();
             
             test.Texture = Content.Load<Texture2D>("Kamui");
-
+            test2.Texture = Content.Load<Texture2D>("Kamui");
         }
 
         /// <summary>
@@ -140,8 +143,23 @@ namespace GreatGame
                         {
                             test.IsSelected = false;
                             test.color = Color.White;
-                            userSelectedUnits.Clear();
+                            userSelectedUnits.Remove(test);
                         }
+                        // Second Test Unit's Selection code
+                        if ((previousMouse.X >= test2.Position.X) && previousMouse.X <= (test2.Position.X + 50)
+                            && previousMouse.Y >= test2.Position.Y && previousMouse.Y <= (test2.Position.Y + 50))
+                        {
+                            test2.IsSelected = true;
+                            test2.color = Color.Cyan;
+                            userSelectedUnits.Add(test2);
+                        }
+                        else
+                        {
+                            test2.IsSelected = false;
+                            test2.color = Color.White;
+                            userSelectedUnits.Remove(test2);
+                        }
+                        // End of Second Test Unit's Selection Code
                     }
                     if (test.IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
                     {
@@ -153,6 +171,18 @@ namespace GreatGame
                     {
                         test.ProcessInput(destination);
                     }
+                    // Second Test Unit's Movement Code
+                    if (test2.IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
+                    {
+                        destination = new Vector2(previousMouse.X, previousMouse.Y);
+                        test2.ProcessInput(destination);
+                        test2.IsMoving = true;
+                    }
+                    else if (test2.IsMoving)
+                    {
+                        test2.ProcessInput(destination);
+                    }
+                    // End of Second Test Unit's Movement Code
                     break;
                 case GameStates.GameOver:
                     break;
@@ -181,6 +211,8 @@ namespace GreatGame
                 case GameStates.Game:
                     //GraphicsDevice.Clear(Color.Green);
                     spriteBatch.Draw(test.Texture, new Rectangle((int)test.position.X, (int)test.position.Y, 50, 50), test.UnitColor);
+                    //Second Test Unit:
+                    spriteBatch.Draw(test2.Texture, new Rectangle((int)test2.position.X, (int)test2.position.Y, 50, 50), test2.UnitColor);
                     break;
                 case GameStates.GameOver:
                     // Print out some info about the score and stuff
