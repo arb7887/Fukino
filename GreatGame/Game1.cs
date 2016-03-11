@@ -222,7 +222,7 @@ namespace GreatGame
                     //Second Test Unit:
                     spriteBatch.Draw(test2.Texture, new Rectangle((int)test2.position.X, (int)test2.position.Y, 50, 50), test2.UnitColor);
 
-                    spriteBatch.DrawString(font, userSelectedUnits[1].health.ToString(), Vector2.Zero, Color.Black);
+                    //spriteBatch.DrawString(font, userSelectedUnits[1].health.ToString(), Vector2.Zero, Color.Black);
                     break;
                 case GameStates.GameOver:
                     // Print out some info about the score and stuff
