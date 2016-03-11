@@ -45,6 +45,7 @@
     <Compile Include="ICollidable.cs" />
     <Compile Include="IDamagable.cs" />
     <Compile Include="MenuButton.cs" />
+    <Compile Include="MenuHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Terrain.cs" />
