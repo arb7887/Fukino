@@ -178,5 +178,16 @@ namespace GreatGame
                 position += toMove;
             }
         }
+
+        public void Update()
+        {
+            // Check the position of the mouse, to see if it is clicked on for movement or not
+        }
+
+        public void Draw(SpriteBatch sb)
+        {
+            // Basic draw function for the units class
+            sb.Draw(texture, new Rectangle((int)position.X, (int)position.Y, 50, 50), color);
+        }
     }
 }

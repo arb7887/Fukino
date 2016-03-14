@@ -20,7 +20,7 @@ namespace GreatGame
         public ClassSelectButton(Rectangle loc, Texture2D t, string n, Color s,  SpriteFont sf)
             :base(loc, t, n, s, sf)
         {
-            listOfUnits = new FileInput("Content/Units.txt");
+            listOfUnits = new FileInput("Content/Units.txt", "Textures.txt");
             listOfUnits.LoadUnit();
 
 

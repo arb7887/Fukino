@@ -10,11 +10,15 @@ namespace GreatGame
     {
         // Fields
         private String fileName;
+        private String fileNameTexture;
         private List<Unit> unitList;
+        private List<String> textureList;
 
         public string FileName { get { return this.fileName; } }
+        public String FileNameTexture { get { return this.fileNameTexture; } }
 
         public List<Unit> UnitList { get { return this.unitList; } }
+        public List<String> TextureList { get { return this.textureList; } }
 
         public int ListCount { get { return unitList.Count; } }
 
@@ -23,10 +27,12 @@ namespace GreatGame
         /// is passed in with the parameters
         /// </summary>
         /// <param name="fileName"></param>
-        public FileInput(String fileName)
+        public FileInput(String fileName, String fileNameTextures)
         {
             this.fileName = fileName;
+            this.fileNameTexture = fileNameTextures;
             this.unitList = new List<Unit>();
+            this.textureList = new List<String>();
         }
 
         // Read file method
@@ -51,6 +57,21 @@ namespace GreatGame
                     // Make a new unit and add it to the list
                     Unit newUnit = new Unit(name, health, speed, range, dps);
                     unitList.Add(newUnit);
+                }
+            }
+        }
+
+        public void LoadTextures()
+        {
+            using (Stream inputStream = File.OpenRead(fileNameTexture))
+            using (StreamReader input = new StreamReader(inputStream))
+            {
+                int numData = (int.Parse(input.ReadLine()));
+
+                for(int i = 0; i < numData; i++)
+                {
+                    String textureName = input.ReadLine();
+                    textureList.Add(textureName);
                 }
             }
         }

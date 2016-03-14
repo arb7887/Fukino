@@ -15,9 +15,11 @@ namespace GreatGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        // Make the Game Manager
+        private GameManager manager;
+
         private SpriteFont font;
 
-        private FileInput listOfUnits;    // The list of units
         private List<Unit> userSelectedUnits;   // The list of units that the user has selected
         private List<String> userSelectedNames; // This is the lsit of names from the buttons that the user picks on the menu screen
 
@@ -25,6 +27,9 @@ namespace GreatGame
         SpriteFont buttonFont;
 
         MenuHandler menu;
+        // Mouse stuff
+        MouseState currentMouse;
+        MouseState previousMouse;
 
         private enum GameStates
         {
@@ -35,8 +40,7 @@ namespace GreatGame
 
         private GameStates currentState;
 
-        MouseState currentMouse;
-        MouseState previousMouse;
+
         Unit test;
         Unit test2;
         Vector2 destination;
@@ -44,7 +48,6 @@ namespace GreatGame
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-
             // Make the screen bigger
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
@@ -61,14 +64,17 @@ namespace GreatGame
         /// </summary>
         protected override void Initialize()
         {
+            // Make a new Game Manager
+            manager = new GameManager("Content/Units.txt", "Content/Textures.txt");
+
             // Instantiates the list of units
             currentState = GameStates.Menu;
 
-            menu = new MenuHandler(MenuStates.Main);
-            menu.initialize();
+            //manager.Menu = new MenuHandler(MenuStates.Main);
+            manager.Menu.initialize();
+
 
             // Load in the Units.txt file, this works now
-            listOfUnits = new FileInput("Content/Units.txt");
             userSelectedUnits = new List<Unit>();
             userSelectedNames = new List<string>();
 
@@ -90,19 +96,24 @@ namespace GreatGame
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
+             
             buttonTexture = Content.Load<Texture2D>("ExampleButtonA.png");
             buttonFont = Content.Load<SpriteFont>("buttonFont");
-            menu.LoadContent(buttonTexture, buttonFont, GraphicsDevice);
+            manager.Menu.LoadContent(buttonTexture, buttonFont, GraphicsDevice);
 
             font = Content.Load<SpriteFont>("Arial14");
             
-            // Load in the list of units from the file here
-            listOfUnits.LoadUnit();
-            
-            
-            test.Texture = Content.Load<Texture2D>("Kamui");
-            test2.Texture = Content.Load<Texture2D>("Kamui");
+            // Load in the list of units from the files here
+            manager.LoadContent();
+
+            for (int i = 0; i < manager.AllUnits.TextureList.Count; i++)
+            {
+                Texture2D newTexture = Content.Load<Texture2D>(manager.AllUnits.TextureList[i]);
+                manager.UnitTextures.Add(newTexture);
+            }
+
+            test.Texture = manager.UnitTextures[0];
+            test2.Texture = manager.UnitTextures[1];
         }
 
         /// <summary>
@@ -127,10 +138,10 @@ namespace GreatGame
             switch (currentState)
             {
                 case GameStates.Menu:
-                    menu.Update(currentMouse, GraphicsDevice);
-                    if (menu.ExitGame)
+                    manager.Menu.Update(currentMouse, GraphicsDevice);
+                    if (manager.Menu.ExitGame)
                         Exit();
-                    if (menu.StartGame)
+                    if (manager.Menu.StartGame)
                     {
                         currentState = GameStates.Game;
                         // Load in the list of class selected units and add them to the list of units in 
@@ -140,7 +151,7 @@ namespace GreatGame
                         
                     break;
                 case GameStates.Game:
-
+                    // Call all of the untis update functions
                     if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
                     {
                         if ((previousMouse.X >= test.Position.X) && previousMouse.X <= (test.Position.X + 50)
@@ -214,7 +225,7 @@ namespace GreatGame
             switch (currentState)
             {
                 case GameStates.Menu:
-                    menu.Draw(spriteBatch);
+                    manager.Menu.Draw(spriteBatch);
                     break;
                 case GameStates.Game:
                     //GraphicsDevice.Clear(Color.Green);
@@ -222,7 +233,8 @@ namespace GreatGame
                     //Second Test Unit:
                     spriteBatch.Draw(test2.Texture, new Rectangle((int)test2.position.X, (int)test2.position.Y, 50, 50), test2.UnitColor);
 
-                    //spriteBatch.DrawString(font, userSelectedUnits[1].health.ToString(), Vector2.Zero, Color.Black);
+
+                    spriteBatch.DrawString(font, manager.Player1Units[0].Name, Vector2.Zero, Color.Black); 
                     break;
                 case GameStates.GameOver:
                     // Print out some info about the score and stuff
@@ -236,15 +248,15 @@ namespace GreatGame
         // Sets the listOfUnits to whatever the buttons are that the player has selected on the screen
         public void SetUnitsFromButtons()
         {
-            userSelectedNames = menu.GetButtonNames();
+            userSelectedNames = manager.Menu.GetButtonNames();
             for (int i = 0; i < userSelectedNames.Count; i++)
             {
                 // Go through and find the actual unit object with the same name as the button
-                for (int j = 0; j < listOfUnits.ListCount; j++)
+                for (int j = 0; j < manager.AllUnits.ListCount; j++)
                 {
-                    if (userSelectedNames[i] == listOfUnits.UnitList[j].Name)
+                    if (userSelectedNames[i] == manager.AllUnits.UnitList[j].Name)
                     {
-                        userSelectedUnits.Add(listOfUnits.UnitList[j]);
+                        manager.Player1Units.Add(manager.AllUnits.UnitList[j]);
                     }
                 }
             }
