@@ -20,6 +20,7 @@ namespace GreatGame
         public Boolean isSelected, isMoving;
         public Vector2 position;
         public Texture2D texture;
+        public Vector2 destination;
         public Color color;
         #endregion
 
@@ -176,6 +177,37 @@ namespace GreatGame
                 distance.Normalize();
                 Vector2 toMove = new Vector2((int)(distance.X * speed), (int)(distance.Y * speed));
                 position += toMove;
+            }
+        }
+
+        public void Update(GameTime gt, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits)
+        {
+
+            if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
+            {
+                if ((previousMouse.X >= Position.X) && previousMouse.X <= (Position.X + 50)
+                    && previousMouse.Y >= Position.Y && previousMouse.Y <= (Position.Y + 50))
+                {
+                    IsSelected = true;
+                    color = Color.Cyan;
+                    userSelectedUnits.Add(this);
+                }
+                else
+                {
+                    IsSelected = false;
+                    color = Color.White;
+                    userSelectedUnits.Remove(this);
+                }
+            }
+            if (IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
+            {
+                destination = new Vector2(previousMouse.X, previousMouse.Y);
+                ProcessInput(destination);
+                IsMoving = true;
+            }
+            else if (IsMoving)
+            {
+                ProcessInput(destination);
             }
         }
     }
