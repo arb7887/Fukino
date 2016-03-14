@@ -44,9 +44,6 @@ namespace GreatGame
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = 1280;
-            graphics.PreferredBackBufferHeight = 720;
-
             Content.RootDirectory = "Content";
             
         }
@@ -69,10 +66,10 @@ namespace GreatGame
             userSelectedUnits = new List<Unit>();
             //listOfUnits.LoadUnit();
             unitList = new List<Unit>();
-            test = new Unit("Test", 10, 10, 10, 10);
+            test = new Unit("Test", 10, 10, 100, 10);
             test.size = 50;
             unitList.Add(test);
-            test2 = new Unit("Test2", 15, 15, 15, 15);
+            test2 = new Unit("Test2", 15, 15, 50, 15);
             test2.size = 50;
             unitList.Add(test2);
 
@@ -162,6 +159,13 @@ namespace GreatGame
                         else if (unitList[i].IsMoving)
                         {
                             unitList[i].ProcessInput(destination);
+                        }
+                        for (int j = 0; j < unitList.Count; j++)
+                        {
+                            if (i != j)
+                            {
+                                unitList[i].AttackUnit(unitList[j]);
+                            }
                         }
                     }
                     break;

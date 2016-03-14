@@ -154,8 +154,12 @@ namespace GreatGame
 
         public void AttackUnit(Unit u)
         {
-            u.health -= attack;
-            Console.WriteLine(name + " has attacked " + u.name + " for " + attack + " damage!");
+            Vector2 distance = new Vector2(position.X - u.Position.X, position.Y - u.position.Y);
+            if (distance.Length() <= attackRange)
+            {
+                u.health -= attack;
+                Console.WriteLine(name + " has attacked " + u.name + " for " + attack + " damage!");
+            }
         }
 
         public void ProcessInput(Vector2 mouseLoc)
