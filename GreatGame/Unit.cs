@@ -12,10 +12,11 @@ namespace GreatGame
     {
         // Fields
         public String name;
-        public int visionRange, attackRange, attack, defense;
+        public int visionRange, attackRange, attack, defense, size;
         public double health, speed;
         public Boolean isSelected, isMoving;
         public Vector2 position;
+        public Vector2 center;
         public Texture2D texture;
         public Color color;
 
@@ -36,6 +37,7 @@ namespace GreatGame
             isSelected = false;
             isMoving = false;
             position = new Vector2(0, 0);
+            center = new Vector2(position.X + size/ 2, position.Y + size / 2);
             color = Color.White;
         }
         public String Name { get { return name; } }
@@ -150,18 +152,18 @@ namespace GreatGame
             health -= damage;
         }
 
-        public void Attack(Unit u)
+        public void AttackUnit(Unit u)
         {
-
+            u.health -= attack;
+            Console.WriteLine(name + " has attacked " + u.name + " for " + attack + " damage!");
         }
-
 
         public void ProcessInput(Vector2 mouseLoc)
         {
-            Vector2 distance = new Vector2(mouseLoc.X - position.X, mouseLoc.Y - position.Y);
+            Vector2 distance = new Vector2(mouseLoc.X - position.X - size/2, mouseLoc.Y - position.Y - size/2);
             if (distance.Length() < speed)
             {
-                position = mouseLoc;
+                position = new Vector2(mouseLoc.X - (size/2), mouseLoc.Y - (size/2));
                 isMoving = false;
             }
             else

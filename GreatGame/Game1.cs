@@ -38,6 +38,7 @@ namespace GreatGame
         MouseState previousMouse;
         Unit test;
         Unit test2;
+        List<Unit> unitList;
         Vector2 destination;
 
         public Game1()
@@ -59,7 +60,7 @@ namespace GreatGame
         protected override void Initialize()
         {
             // Instantiates the list of units
-            currentState = GameStates.Menu;
+            currentState = GameStates.Game;
 
             menu = new MenuHandler(MenuStates.Main);
             menu.initialize();
@@ -67,11 +68,15 @@ namespace GreatGame
             listOfUnits = new FileInput<Unit>("Content/Units.txt");
             userSelectedUnits = new List<Unit>();
             //listOfUnits.LoadUnit();
-
+            unitList = new List<Unit>();
             test = new Unit("Test", 10, 10, 10, 10);
+            test.size = 50;
+            unitList.Add(test);
             test2 = new Unit("Test2", 15, 15, 15, 15);
+            test2.size = 50;
+            unitList.Add(test2);
 
-            test.Position = new Vector2(0, 0);
+            test.Position = new Vector2(50, 50);
             test2.Position = new Vector2(200, 200);
 
             this.IsMouseVisible = true;
@@ -129,61 +134,36 @@ namespace GreatGame
                     if (menu.StartGame)
                         currentState = GameStates.Game;
                     break;
-                case GameStates.Game:
-
-                    if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
+                case GameStates.Game:                    
+                    for (int i = 0; i < unitList.Count; i++)
                     {
-                        if ((previousMouse.X >= test.Position.X) && previousMouse.X <= (test.Position.X + 50)
-                            && previousMouse.Y >= test.Position.Y && previousMouse.Y <= (test.Position.Y + 50))
+                        if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
                         {
-                            test.IsSelected = true;
-                            test.color = Color.Cyan;
-                            userSelectedUnits.Add(test);
-                        }
-                        else
+                            if ((previousMouse.X >= unitList[i].Position.X) && previousMouse.X <= (unitList[i].Position.X + unitList[i].size)
+                            && previousMouse.Y >= unitList[i].Position.Y && previousMouse.Y <= (unitList[i].Position.Y + unitList[i].size))
+                            {
+                                unitList[i].IsSelected = true;
+                                unitList[i].color = Color.Cyan;
+                                userSelectedUnits.Add(unitList[i]);
+                            }
+                            else
+                            {
+                                unitList[i].IsSelected = false;
+                                unitList[i].color = Color.White;
+                                userSelectedUnits.Remove(unitList[i]);
+                            }
+                        }                            
+                        if (unitList[i].IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
                         {
-                            test.IsSelected = false;
-                            test.color = Color.White;
-                            userSelectedUnits.Remove(test);
+                            destination = new Vector2(previousMouse.X, previousMouse.Y);
+                            unitList[i].ProcessInput(destination);
+                            unitList[i].IsMoving = true;
                         }
-                        // Second Test Unit's Selection code
-                        if ((previousMouse.X >= test2.Position.X) && previousMouse.X <= (test2.Position.X + 50)
-                            && previousMouse.Y >= test2.Position.Y && previousMouse.Y <= (test2.Position.Y + 50))
+                        else if (unitList[i].IsMoving)
                         {
-                            test2.IsSelected = true;
-                            test2.color = Color.Cyan;
-                            userSelectedUnits.Add(test2);
+                            unitList[i].ProcessInput(destination);
                         }
-                        else
-                        {
-                            test2.IsSelected = false;
-                            test2.color = Color.White;
-                            userSelectedUnits.Remove(test2);
-                        }
-                        // End of Second Test Unit's Selection Code
                     }
-                    if (test.IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
-                    {
-                        destination = new Vector2(previousMouse.X, previousMouse.Y);
-                        test.ProcessInput(destination);
-                        test.IsMoving = true;
-                    }
-                    else if (test.IsMoving)
-                    {
-                        test.ProcessInput(destination);
-                    }
-                    // Second Test Unit's Movement Code
-                    if (test2.IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
-                    {
-                        destination = new Vector2(previousMouse.X, previousMouse.Y);
-                        test2.ProcessInput(destination);
-                        test2.IsMoving = true;
-                    }
-                    else if (test2.IsMoving)
-                    {
-                        test2.ProcessInput(destination);
-                    }
-                    // End of Second Test Unit's Movement Code
                     break;
                 case GameStates.GameOver:
                     // Check for if the user has hit enter to return to title screen
@@ -212,9 +192,10 @@ namespace GreatGame
                     break;
                 case GameStates.Game:
                     //GraphicsDevice.Clear(Color.Green);
-                    spriteBatch.Draw(test.Texture, new Rectangle((int)test.position.X, (int)test.position.Y, 50, 50), test.UnitColor);
-                    //Second Test Unit:
-                    spriteBatch.Draw(test2.Texture, new Rectangle((int)test2.position.X, (int)test2.position.Y, 50, 50), test2.UnitColor);
+                    for (int i = 0; i < unitList.Count; i++)
+                    {
+                        spriteBatch.Draw(unitList[i].Texture, new Rectangle((int)unitList[i].position.X, (int)unitList[i].position.Y, unitList[i].size, unitList[i].size), unitList[i].UnitColor);
+                    }
                     break;
                 case GameStates.GameOver:
                     // Print out some info about the score and stuff
@@ -224,16 +205,6 @@ namespace GreatGame
             base.Draw(gameTime);
         }
     }
-
-    /*protected bool IsMouseOver(Unit u)
-    {
-        if ((previousMouse.X >= u.Size.X) && previousMouse.X <= (u.Size.X + 10) &&
-                previousMouse.Y >= u.Size.Y && previousMouse.Y <= (previousMouse.Y + 10))
-        {
-            return true;
-        }
-        return false;
-    }*/
 
     /// <summary>
     /// This is called when the game should draw itself.
