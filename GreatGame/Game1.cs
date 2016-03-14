@@ -39,7 +39,6 @@ namespace GreatGame
         MouseState previousMouse;
         Unit test;
         Unit test2;
-        Vector2 destination;
 
         public Game1()
         {
