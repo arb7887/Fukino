@@ -28,7 +28,6 @@ namespace GreatGame
         private MouseState currentMouse;
         private MouseState previousMouse;
 
-
         // Properties
         public FileInput AllUnits { get { return this.allUnits; } }
         public List<Unit> Player1Units
@@ -80,7 +79,7 @@ namespace GreatGame
 
         // Call the unit's update method
         // Call the Map's update method
-        public void Update()
+        public void Update(GameTime gameTime, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits)
         {
             // Loop through both of the arrays of units and call the Unit's update function
             switch (gameState)
@@ -91,7 +90,7 @@ namespace GreatGame
                     // Call the updates on all of the units in the players list
                     for(int i = 0; i < player1Units.Count; i++)
                     {
-                        player1Units[i].Update();
+                        player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits);
                     }
                     break;
                 case (GameState.Paused):

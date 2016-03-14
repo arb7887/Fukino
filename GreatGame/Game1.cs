@@ -43,7 +43,6 @@ namespace GreatGame
 
         Unit test;
         Unit test2;
-        Vector2 destination;
 
         public Game1()
         {
@@ -151,60 +150,9 @@ namespace GreatGame
                         
                     break;
                 case GameStates.Game:
-                    // Call all of the untis update functions
-                    if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
-                    {
-                        if ((previousMouse.X >= test.Position.X) && previousMouse.X <= (test.Position.X + 50)
-                            && previousMouse.Y >= test.Position.Y && previousMouse.Y <= (test.Position.Y + 50))
-                        {
-                            test.IsSelected = true;
-                            test.color = Color.Cyan;
-                            userSelectedUnits.Add(test);
-                        }
-                        else
-                        {
-                            test.IsSelected = false;
-                            test.color = Color.White;
-                            userSelectedUnits.Remove(test);
-                        }
-                        // Second Test Unit's Selection code
-                        if ((previousMouse.X >= test2.Position.X) && previousMouse.X <= (test2.Position.X + 50)
-                            && previousMouse.Y >= test2.Position.Y && previousMouse.Y <= (test2.Position.Y + 50))
-                        {
-                            test2.IsSelected = true;
-                            test2.color = Color.Cyan;
-                            userSelectedUnits.Add(test2);
-                        }
-                        else
-                        {
-                            test2.IsSelected = false;
-                            test2.color = Color.White;
-                            userSelectedUnits.Remove(test2);
-                        }
-                        // End of Second Test Unit's Selection Code
-                    }
-                    if (test.IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
-                    {
-                        destination = new Vector2(previousMouse.X, previousMouse.Y);
-                        test.ProcessInput(destination);
-                        test.IsMoving = true;
-                    }
-                    else if (test.IsMoving)
-                    {
-                        test.ProcessInput(destination);
-                    }
-                    // Second Test Unit's Movement Code
-                    if (test2.IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
-                    {
-                        destination = new Vector2(previousMouse.X, previousMouse.Y);
-                        test2.ProcessInput(destination);
-                        test2.IsMoving = true;
-                    }
-                    else if (test2.IsMoving)
-                    {
-                        test2.ProcessInput(destination);
-                    }
-                    // End of Second Test Unit's Movement Code
+                    manager.Update(gameTime, previousMouse, currentMouse, userSelectedUnits);
+                    test.Update(gameTime, previousMouse, currentMouse, userSelectedUnits);
+                    test2.Update(gameTime, previousMouse, currentMouse, userSelectedUnits);
                     break;
                 case GameStates.GameOver:
                     // Check for if the user has hit enter to return to title screen
@@ -262,22 +210,4 @@ namespace GreatGame
             }
         }
     }
-
-
-
-    /*protected bool IsMouseOver(Unit u)
-    {
-        if ((previousMouse.X >= u.Size.X) && previousMouse.X <= (u.Size.X + 10) &&
-                previousMouse.Y >= u.Size.Y && previousMouse.Y <= (previousMouse.Y + 10))
-        {
-            return true;
-        }
-        return false;
-    }*/
-
-    /// <summary>
-    /// This is called when the game should draw itself.
-    /// </summary>
-    /// <param name="gameTime">Provides a snapshot of timing values.</param>
-
 }
