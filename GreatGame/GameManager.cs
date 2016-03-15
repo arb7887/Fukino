@@ -51,19 +51,23 @@ namespace GreatGame
             player1Units = new List<Unit>();
             player2Units = new List<Unit>();
             unitTextures = new List<Texture2D>();
-            gameState = GameState.Menu;
+            gameState = GameState.Game;
             menu = new MenuHandler(MenuStates.Main);
 
         }
 
         public void Initialize()
         {
-            // Make all of the units in the list have those textures
-            /*for (int i = 0; i < player1Units.Count; i++)
+            int x = 0;
+            int y = 0;
+            // Set all of the player1 units textures to the same thing
+            for(int i = 0; i < player1Units.Count; i++)
             {
-                
-            }*/
-
+                player1Units[i].Texture = unitTextures[0];
+                player1Units[i].Position = new Vector2(x, y);
+                x += 100;
+                y += 100;
+            }
             
         }
         

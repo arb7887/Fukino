@@ -45,6 +45,12 @@ namespace GreatGame
             color = Color.White;
         }
 
+        public Unit(Unit newUnit)
+            : this(newUnit.name, (int)newUnit.health, newUnit.Speed, newUnit.attackRange, newUnit.attack)
+        {
+
+        }
+
         // Properties
         #region Properties
         public String Name { get { return name; } }

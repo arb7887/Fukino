@@ -146,13 +146,14 @@ namespace GreatGame
                         // Load in the list of class selected units and add them to the list of units in 
                         // This game one class's list called 'userSelectedUnits'
                         SetUnitsFromButtons();
+                        manager.Initialize();
                     }
                         
                     break;
                 case GameStates.Game:
                     manager.Update(gameTime, previousMouse, currentMouse, userSelectedUnits);
-                    test.Update(gameTime, previousMouse, currentMouse, userSelectedUnits);
-                    test2.Update(gameTime, previousMouse, currentMouse, userSelectedUnits);
+                    //test.Update(gameTime, previousMouse, currentMouse, userSelectedUnits);
+                    //test2.Update(gameTime, previousMouse, currentMouse, userSelectedUnits);
                     break;
                 case GameStates.GameOver:
                     // Check for if the user has hit enter to return to title screen
@@ -177,10 +178,11 @@ namespace GreatGame
                     break;
                 case GameStates.Game:
                     //GraphicsDevice.Clear(Color.Green);
-                    spriteBatch.Draw(test.Texture, new Rectangle((int)test.position.X, (int)test.position.Y, 50, 50), test.UnitColor);
+                    //spriteBatch.Draw(test.Texture, new Rectangle((int)test.position.X, (int)test.position.Y, 50, 50), test.UnitColor);
                     //Second Test Unit:
-                    spriteBatch.Draw(test2.Texture, new Rectangle((int)test2.position.X, (int)test2.position.Y, 50, 50), test2.UnitColor);
+                    //spriteBatch.Draw(test2.Texture, new Rectangle((int)test2.position.X, (int)test2.position.Y, 50, 50), test2.UnitColor);
 
+                    manager.Draw(spriteBatch);
 
                     spriteBatch.DrawString(font, manager.Player1Units[0].Name, Vector2.Zero, Color.Black); 
                     break;
