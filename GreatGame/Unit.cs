@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GreatGame
 {
-    class Unit : IDamageable
+    class Unit
     {
         // Fields
 
@@ -23,6 +23,7 @@ namespace GreatGame
         public Vector2 destination;
         public Color color;
         private BoundingSphere bounds;
+        private double rateOfFire;
         #endregion
 
         // FSM for the alignment of this class
@@ -33,13 +34,14 @@ namespace GreatGame
             Neutral
         }
 
-        public Unit(String name, int health, double speed, int attackRange, int attack)
+        public Unit(String name, int health, double speed, int attackRange, int attack, double rateOfFire)
         {
             this.name = name;
             this.health = health;
             this.speed = speed;
             this.attackRange = attackRange;
             this.attack = attack;
+            this.rateOfFire = rateOfFire;
             isSelected = false;
             isMoving = false;
             position = new Vector2(0, 0);
@@ -47,7 +49,7 @@ namespace GreatGame
         }
 
         public Unit(Unit newUnit)
-            : this(newUnit.name, (int)newUnit.health, newUnit.Speed, newUnit.attackRange, newUnit.attack)
+            : this(newUnit.name, (int)newUnit.health, newUnit.Speed, newUnit.attackRange, newUnit.attack, newUnit.rateOfFire)
         {
 
         }
@@ -68,6 +70,8 @@ namespace GreatGame
                 isSelected = value;
             }
         }
+
+        public Double RateOfFire { get { return this.rateOfFire; } set { this.rateOfFire = value; } }
 
         public Texture2D Texture
         {

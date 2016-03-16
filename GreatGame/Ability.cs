@@ -5,8 +5,16 @@ using System.Text;
 
 namespace GreatGame
 {
-    interface IDamageable
+    class Ability
     {
-        void TakeDamage(double damage);
+        // Fields
+
+        public Ability()
+        {
+
+        }
+
+
+
     }
 }

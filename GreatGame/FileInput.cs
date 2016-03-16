@@ -53,9 +53,10 @@ namespace GreatGame
                     double speed = (double.Parse(input.ReadLine()));
                     int range = (int.Parse(input.ReadLine()));
                     int dps = (int.Parse(input.ReadLine()));
+                    double rateOfFire = (double.Parse(input.ReadLine()));
 
                     // Make a new unit and add it to the list
-                    Unit newUnit = new Unit(name, health, speed, range, dps);
+                    Unit newUnit = new Unit(name, health, speed, range, dps, rateOfFire);
                     unitList.Add(newUnit);
                 }
             }

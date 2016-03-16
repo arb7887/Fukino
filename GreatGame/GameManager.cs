@@ -97,7 +97,7 @@ namespace GreatGame
         /// <param name="currentMouse"></param>
         /// <param name="userSelectedUnits"></param>
         /// <param name="graphics"></param>
-        public void Update(GameTime gameTime, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits, GraphicsDevice graphics)
+        public void Update(GameTime gameTime, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits, GraphicsDevice graphics, KeyboardState kbState)
         {
             // Loop through both of the arrays of units and call the Unit's update function
             switch (curGameState)
@@ -123,12 +123,22 @@ namespace GreatGame
                     }
 
                     // Check for the button push of some key pause the game
-
+                   /* if (kbState.IsKeyDown(Keys.P))
+                    {
+                        curGameState = GameState.Paused;
+                    }
                     // Check to see if they pushed a button to use a special ability
-
+                    if (kbState.IsKeyDown(Keys.Q))
+                    {
+                        // Whatever unit is selected, call the units ability use method
+                    }*/
                     break;
                 case (GameState.Paused):
                     // Check to see if the paused button is pressed again
+                    if (kbState.IsKeyDown(Keys.P))
+                    {
+                        curGameState = GameState.Game;
+                    }
                     // A button to give up, which will set you to game over
                     break;
                 case(GameState.GameOver):
@@ -154,10 +164,13 @@ namespace GreatGame
                     {
                         player1Units[i].Draw(sb, font);
                     }
+
                     sb.DrawString(font, Player1String(), Vector2.Zero, Color.Black);
                     break;
                 case (GameState.Paused):
                     // Show some text about the current score, and the current untis health and what not
+                    sb.DrawString(font, "Paused! Press P to Continue", new Vector2(500, 500), Color.Black);
+                    
                     break;
                 case (GameState.GameOver):
                     // Show the teams score and the points and stuff
