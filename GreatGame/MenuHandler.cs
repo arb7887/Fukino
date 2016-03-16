@@ -15,6 +15,7 @@ namespace GreatGame
     class MenuHandler
     {
         private MenuStates currentState;
+        private int numUnits;
 
         Texture2D buttonTexture;
         MenuButton exit;
@@ -22,12 +23,16 @@ namespace GreatGame
         MenuButton play;
         SpriteFont buttonFont;
 
-        List<ClassSelectButton> classSelectors;
+        private List<ClassSelectButton> classSelectors;
+        private List<String> userSelectedNames;
 
+        public List<String> UserSelectedNames { get { return this.userSelectedNames; } set { this.userSelectedNames = value; } }
         private bool exitGame;
         public bool ExitGame { get { return exitGame; } }
         private bool startGame;
         public bool StartGame { get { return startGame; } }
+        public int NumUnits { get { return this.numUnits; } }
+        public List<ClassSelectButton> ClassSelectors { get { return this.classSelectors; } }
 
         public MenuHandler(MenuStates startState)
         {
@@ -41,14 +46,15 @@ namespace GreatGame
             play = new MenuButton(new Rectangle(10, 110, 100, 50), null, "Play", Color.White, null);
             classSelectors = new List<ClassSelectButton>();
             exitGame = false;
+            numUnits = 6;
         }
 
         public void LoadContent(Texture2D bt, SpriteFont bf, GraphicsDevice gd)
         {
             buttonFont = bf;
             buttonTexture = bt;
-
-            for (int i = 0; i < 6; i++)
+            // Six is the number of units that we want the player to be able to control
+            for (int i = 0; i < numUnits; i++)
             {
                 classSelectors.Add(new ClassSelectButton(new Rectangle(50 + (100 * i), gd.Viewport.Height - 60, 100, 50), buttonTexture, "Select", Color.White, buttonFont));
             }
@@ -85,10 +91,13 @@ namespace GreatGame
                 case MenuStates.Select:
                     for (int i = 0; i < classSelectors.Count; i++)
                         classSelectors[i].CheckClicked(ms);
-                    bool selected = true; ;
+
+                    bool selected = true;
+
                     for (int i = 0; i < classSelectors.Count; i++)
                         if (classSelectors[i].Name == "Select")
                             selected = false;
+
                     if (selected)
                         play.Enabled = true;
                     else
@@ -119,6 +128,18 @@ namespace GreatGame
                     play.Draw(sb);
                     break;
             }
+        }
+
+        public List<String> GetButtonNames()
+        {
+            List<String> names = new List<String>();
+            for(int i = 0; i < numUnits; i++)
+            {
+                // Get the name of all the class selector buttons, which should be the names of the units
+                // And add that to this lsit of strings
+                names.Add(classSelectors[i].Name);
+            }
+            return names;
         }
     }
 }

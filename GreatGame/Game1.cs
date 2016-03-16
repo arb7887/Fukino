@@ -15,35 +15,39 @@ namespace GreatGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        // Make the Game Manager
+        private GameManager manager;
+
         private SpriteFont font;
 
-        private FileInput<Unit> listOfUnits;    // The list of units
         private List<Unit> userSelectedUnits;   // The list of units that the user has selected
 
         Texture2D buttonTexture;
         SpriteFont buttonFont;
 
-        MenuHandler menu;
-
-        private enum GameStates
-        {
-            Menu,
-            Game,
-            GameOver
-        }
-
-        private GameStates currentState;
-
+        // Mouse stuff
         MouseState currentMouse;
         MouseState previousMouse;
+<<<<<<< HEAD
         Unit test;
         Unit test2;
         List<Unit> unitList;
         Vector2 destination;
+=======
+>>>>>>> origin/master
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+<<<<<<< HEAD
+=======
+
+            // Make the screen bigger
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
+            // Make full screen when we get to the point of that
+
+>>>>>>> origin/master
             Content.RootDirectory = "Content";
             
         }
@@ -56,14 +60,19 @@ namespace GreatGame
         /// </summary>
         protected override void Initialize()
         {
-            // Instantiates the list of units
-            currentState = GameStates.Game;
+            // Make a new Game Manager
+            manager = new GameManager("Content/Units.txt", "Content/Textures.txt", currentMouse, previousMouse);
 
-            menu = new MenuHandler(MenuStates.Main);
-            menu.initialize();
+            // Instantiates the list of units
+<<<<<<< HEAD
+            currentState = GameStates.Game;
+=======
+            manager.Menu.initialize();
+>>>>>>> origin/master
+
             // Load in the Units.txt file, this works now
-            listOfUnits = new FileInput<Unit>("Content/Units.txt");
             userSelectedUnits = new List<Unit>();
+<<<<<<< HEAD
             //listOfUnits.LoadUnit();
             unitList = new List<Unit>();
             test = new Unit("Test", 10, 10, 100, 10);
@@ -75,6 +84,8 @@ namespace GreatGame
 
             test.Position = new Vector2(50, 50);
             test2.Position = new Vector2(200, 200);
+=======
+>>>>>>> origin/master
 
             this.IsMouseVisible = true;
             base.Initialize();
@@ -88,19 +99,21 @@ namespace GreatGame
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            // Load in the list of units from the file here
-            listOfUnits.LoadUnit();
+             
             buttonTexture = Content.Load<Texture2D>("ExampleButtonA.png");
             buttonFont = Content.Load<SpriteFont>("buttonFont");
-            menu.LoadContent(buttonTexture, buttonFont, GraphicsDevice);
+            manager.Menu.LoadContent(buttonTexture, buttonFont, GraphicsDevice);
 
             font = Content.Load<SpriteFont>("Arial14");
             
-            // Load in the list of units from the file here
-            listOfUnits.LoadUnit();
-            
-            test.Texture = Content.Load<Texture2D>("Kamui");
-            test2.Texture = Content.Load<Texture2D>("Kamui");
+            // Load in the list of units from the files here
+            manager.LoadContent();
+
+            for (int i = 0; i < manager.AllUnits.TextureList.Count; i++)
+            {
+                Texture2D newTexture = Content.Load<Texture2D>(manager.AllUnits.TextureList[i]);
+                manager.UnitTextures.Add(newTexture);
+            }
         }
 
         /// <summary>
@@ -119,9 +132,11 @@ namespace GreatGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+
             previousMouse = currentMouse;
             currentMouse = Mouse.GetState();
 
+<<<<<<< HEAD
             switch (currentState)
             {
                 case GameStates.Menu:
@@ -174,17 +189,28 @@ namespace GreatGame
                     break;
             }
             
+=======
+            // Call the managers update method
+            manager.Update(gameTime, previousMouse, currentMouse, userSelectedUnits, GraphicsDevice);
+
+>>>>>>> origin/master
             MouseState mouse = Mouse.GetState();
 
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// This is the draw method for our Game1 class
+        /// This really just calls the GameManager's draw class
+        /// </summary>
+        /// <param name="gameTime"></param>
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Green);
 
-            spriteBatch.Begin();    
+            spriteBatch.Begin();
 
+<<<<<<< HEAD
             switch (currentState)
             {
                 case GameStates.Menu:
@@ -205,14 +231,23 @@ namespace GreatGame
                     // Print out some info about the score and stuff
                     break;
             }
+=======
+            // Call the managers Draw method
+            manager.Draw(spriteBatch, font);
+            
+>>>>>>> origin/master
             spriteBatch.End();
+
             base.Draw(gameTime);
         }
     }
+<<<<<<< HEAD
 
     /// <summary>
     /// This is called when the game should draw itself.
     /// </summary>
     /// <param name="gameTime">Provides a snapshot of timing values.</param>
 
+=======
+>>>>>>> origin/master
 }

@@ -12,14 +12,15 @@ namespace GreatGame
     {
         private List<MenuButton> classOptions;
         private bool clicked;
-        private FileInput<Unit> listOfUnits;
+        private FileInput listOfUnits;
 
         public bool Clicked { get { return clicked; } set { clicked = value; } }
+        
 
         public ClassSelectButton(Rectangle loc, Texture2D t, string n, Color s,  SpriteFont sf)
             :base(loc, t, n, s, sf)
         {
-            listOfUnits = new FileInput<Unit>("Content/Units.txt");
+            listOfUnits = new FileInput("Content/Units.txt", "Textures.txt");
             listOfUnits.LoadUnit();
 
 
@@ -72,7 +73,7 @@ namespace GreatGame
         {
             if (!Enabled)
                 return false;
-
+            
             if (clicked)
             {//if you're already active (ie. been clicked) wait for a class to be selected
                 CheckClassClicked(ms);

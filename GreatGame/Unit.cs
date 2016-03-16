@@ -11,6 +11,7 @@ namespace GreatGame
     class Unit : ICollidable, IDamageable
     {
         // Fields
+<<<<<<< HEAD
         public String name;
         public int visionRange, attackRange, attack, defense, size;
         public double health, speed;
@@ -19,8 +20,22 @@ namespace GreatGame
         public Vector2 center;
         public Texture2D texture;
         public Color color;
+=======
+>>>>>>> origin/master
 
-        enum Alignment
+        #region Fields        
+        private String name;
+        private int visionRange, attackRange, attack, defense;
+        private double health, speed;
+        private Boolean isSelected, isMoving;
+        private Vector2 position;
+        private Texture2D texture;
+        private Vector2 destination;
+        private Color color;
+        #endregion
+
+        // FSM for the alignment of this class
+        enum Tag
         {
             Player,
             Enemy,
@@ -40,35 +55,18 @@ namespace GreatGame
             center = new Vector2(position.X + size/ 2, position.Y + size / 2);
             color = Color.White;
         }
+
+        public Unit(Unit newUnit)
+            : this(newUnit.name, (int)newUnit.health, newUnit.Speed, newUnit.attackRange, newUnit.attack)
+        {
+
+        }
+
+        // Properties
+        #region Properties
         public String Name { get { return name; } }
-
-        /*
-        public int X
-        {
-            get
-            {
-                return x;
-            }
-            set
-            {
-                x = value;
-                position = new Vector2(x, y);
-            }
-        }
-
-        public int Y
-        {
-            get
-            {
-                return y;
-            }
-            set
-            {
-                y = value;
-                position = new Vector2(x, y);
-            }
-        }
-        */
+        
+        
         public Boolean IsSelected
         {
             get
@@ -144,6 +142,7 @@ namespace GreatGame
         {
             return false;
         }
+        #endregion
 
         // Methods
 
@@ -176,6 +175,54 @@ namespace GreatGame
                 Vector2 toMove = new Vector2((int)(distance.X * speed), (int)(distance.Y * speed));
                 position += toMove;
             }
+        }
+
+
+        public void Draw(SpriteBatch sb, SpriteFont font)
+        {
+            // Basic draw function for the units class
+            sb.DrawString(font, this.name, new Vector2(this.position.X, this.position.Y - 10), Color.Black);
+
+            sb.DrawString(font, "HEALTH: " + this.health, new Vector2(this.position.X, this.position.Y - 20), Color.Black);
+
+            sb.Draw(texture, new Rectangle((int)position.X, (int)position.Y, 50, 50), color);
+
+        }
+
+        public void Update(GameTime gt, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits)
+        {
+
+            if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
+            {
+                if ((previousMouse.X >= Position.X) && previousMouse.X <= (Position.X + 50)
+                    && previousMouse.Y >= Position.Y && previousMouse.Y <= (Position.Y + 50))
+                {
+                    IsSelected = true;
+                    color = Color.Cyan;
+                    userSelectedUnits.Add(this);
+                }
+                else
+                {
+                    IsSelected = false;
+                    color = Color.White;
+                    userSelectedUnits.Remove(this);
+                }
+            }
+            if (IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
+            {
+                destination = new Vector2(previousMouse.X, previousMouse.Y);
+                ProcessInput(destination);
+                IsMoving = true;
+            }
+            else if (IsMoving)
+            {
+                ProcessInput(destination);
+            }
+        }
+
+        public override string ToString()
+        {
+            return this.name;
         }
     }
 }
