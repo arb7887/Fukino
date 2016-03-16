@@ -104,12 +104,14 @@ namespace GreatGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            KeyboardState kbState = Keyboard.GetState();
+            
 
             previousMouse = currentMouse;
             currentMouse = Mouse.GetState();
 
             // Call the managers update method
-            manager.Update(gameTime, previousMouse, currentMouse, userSelectedUnits, GraphicsDevice);
+            manager.Update(gameTime, previousMouse, currentMouse, userSelectedUnits, GraphicsDevice, kbState);
 
             MouseState mouse = Mouse.GetState();
 

@@ -11,6 +11,7 @@ namespace GreatGame
     class Unit
     {
         // Fields
+<<<<<<< HEAD
         private String name;
         private int visionRange, attackRange, attack, defense, size;
         private double health, speed, rateOfFire, remainingDelay;
@@ -20,6 +21,22 @@ namespace GreatGame
         private Vector2 destination;
         private Texture2D texture;
         private Color color;
+=======
+
+        #region Fields
+        
+        public String name;
+        public int visionRange, attackRange, attack, defense;
+        public double health, speed;
+        public Boolean isSelected, isMoving;
+        public Vector2 position;
+        public Texture2D texture;
+        public Vector2 destination;
+        public Color color;
+        private BoundingSphere bounds;
+        private double rateOfFire;
+        #endregion
+>>>>>>> origin/master
 
         // FSM for the alignment of this class
         enum Tag
@@ -66,6 +83,8 @@ namespace GreatGame
                 isSelected = value;
             }
         }
+
+        public Double RateOfFire { get { return this.rateOfFire; } set { this.rateOfFire = value; } }
 
         public Texture2D Texture
         {
@@ -121,11 +140,17 @@ namespace GreatGame
             set { color = value; }
         }
 
-        public bool IsColliding(Unit u)
+        public BoundingSphere Bounds { get { return bounds; } }
+        #endregion
+        // Methods
+        public Boolean checkCollision()
         {
+            if (Bounds.Intersects(bounds))
+                return true;
             return false;
         }
 
+<<<<<<< HEAD
         public double RateOfFire
         {
             get
@@ -136,10 +161,14 @@ namespace GreatGame
             {
                 rateOfFire = value;
             } 
+=======
+        public Boolean checkCollision(Unit u)
+        {
+            if (u.Bounds.Intersects(bounds))
+                return true;
+            return false;
+>>>>>>> origin/master
         }
-        #endregion
-
-        // Methods
 
         public void TakeDamage(double damage)
         {
