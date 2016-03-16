@@ -126,9 +126,9 @@ namespace GreatGame
         public BoundingSphere Bounds { get { return bounds; } }
         #endregion
         // Methods
-        public Boolean checkCollision(Wall w)
+        public Boolean checkCollision()
         {
-            if (w.Bounds.Intersects(bounds))
+            if (Bounds.Intersects(bounds))
                 return true;
             return false;
         }

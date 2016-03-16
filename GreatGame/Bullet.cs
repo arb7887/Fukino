@@ -5,7 +5,7 @@ using System.Text;
 
 namespace GreatGame
 {
-    class Bullet : ICollidable
+    class Bullet
     {
         enum Alignment
         {
@@ -19,7 +19,7 @@ namespace GreatGame
             return false;
         }
 
-        public bool IsColliding(Terrain t)
+        public bool IsColliding()
         {
             return false;
         }
