@@ -8,31 +8,18 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GreatGame
 {
-    class Unit : ICollidable, IDamageable
+    class Unit
     {
         // Fields
-<<<<<<< HEAD
-        public String name;
-        public int visionRange, attackRange, attack, defense, size;
-        public double health, speed;
-        public Boolean isSelected, isMoving;
-        public Vector2 position;
-        public Vector2 center;
-        public Texture2D texture;
-        public Color color;
-=======
->>>>>>> origin/master
-
-        #region Fields        
         private String name;
-        private int visionRange, attackRange, attack, defense;
-        private double health, speed;
+        private int visionRange, attackRange, attack, defense, size;
+        private double health, speed, rateOfFire, remainingDelay;
         private Boolean isSelected, isMoving;
         private Vector2 position;
-        private Texture2D texture;
+        private Vector2 center;
         private Vector2 destination;
+        private Texture2D texture;
         private Color color;
-        #endregion
 
         // FSM for the alignment of this class
         enum Tag
@@ -42,13 +29,14 @@ namespace GreatGame
             Neutral
         }
 
-        public Unit(String name, int health, double speed, int attackRange, int attack)
+        public Unit(String name, int health, double speed, int attackRange, int attack, double rateOfFire)
         {
             this.name = name;
             this.health = health;
             this.speed = speed;
             this.attackRange = attackRange;
             this.attack = attack;
+            this.rateOfFire = rateOfFire;
             isSelected = false;
             isMoving = false;
             position = new Vector2(0, 0);
@@ -57,7 +45,7 @@ namespace GreatGame
         }
 
         public Unit(Unit newUnit)
-            : this(newUnit.name, (int)newUnit.health, newUnit.Speed, newUnit.attackRange, newUnit.attack)
+            : this(newUnit.name, (int)newUnit.health, newUnit.Speed, newUnit.attackRange, newUnit.attack, newUnit.rateOfFire)
         {
 
         }
@@ -138,9 +126,16 @@ namespace GreatGame
             return false;
         }
 
-        public bool IsColliding(Terrain t)
+        public double RateOfFire
         {
-            return false;
+            get
+            {
+                return rateOfFire;
+            }
+            set
+            {
+                rateOfFire = value;
+            } 
         }
         #endregion
 
@@ -151,13 +146,23 @@ namespace GreatGame
             health -= damage;
         }
 
-        public void AttackUnit(Unit u)
+        public void AttackUnit(Unit u, GameTime gt)
         {
             Vector2 distance = new Vector2(position.X - u.Position.X, position.Y - u.position.Y);
-            if (distance.Length() <= attackRange)
+            double timer = gt.ElapsedGameTime.TotalSeconds;
+            remainingDelay -= timer;
+            if (remainingDelay <= 0)
             {
-                u.health -= attack;
-                Console.WriteLine(name + " has attacked " + u.name + " for " + attack + " damage!");
+                if (distance.Length() <= attackRange)
+                {
+                    u.health -= attack;
+                    Console.WriteLine(name + " has attacked " + u.name + " for " + attack + " damage!");
+                }
+                remainingDelay = rateOfFire;
+            }
+            if (u.health <= 0)
+            {
+                Console.WriteLine(u.name + " has died");
             }
         }
 
@@ -189,7 +194,7 @@ namespace GreatGame
 
         }
 
-        public void Update(GameTime gt, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits)
+        public void Update(GameTime gt, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits, List<Unit> enemyUnits)
         {
 
             if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
@@ -217,6 +222,10 @@ namespace GreatGame
             else if (IsMoving)
             {
                 ProcessInput(destination);
+            }
+            foreach (Unit u in enemyUnits)
+            {
+                AttackUnit(u, gt);
             }
         }
 
