@@ -24,7 +24,9 @@ namespace GreatGame
         SpriteFont buttonFont;
 
         private List<ClassSelectButton> classSelectors;
+        private List<String> userSelectedNames;
 
+        public List<String> UserSelectedNames { get { return this.userSelectedNames; } set { this.userSelectedNames = value; } }
         private bool exitGame;
         public bool ExitGame { get { return exitGame; } }
         private bool startGame;

@@ -25,7 +25,7 @@ namespace GreatGame
         #endregion
 
         // FSM for the alignment of this class
-        enum Alignment
+        enum Tag
         {
             Player,
             Enemy,
@@ -187,9 +187,10 @@ namespace GreatGame
         }
 
 
-        public void Draw(SpriteBatch sb)
+        public void Draw(SpriteBatch sb, SpriteFont font)
         {
             // Basic draw function for the units class
+            sb.DrawString(font, this.name, new Vector2(this.position.X, this.position.Y - 10), Color.Black);
             sb.Draw(texture, new Rectangle((int)position.X, (int)position.Y, 50, 50), color);
 
         }

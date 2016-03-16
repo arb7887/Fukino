@@ -26,7 +26,6 @@ namespace GreatGame
         Texture2D buttonTexture;
         SpriteFont buttonFont;
 
-        MenuHandler menu;
         // Mouse stuff
         MouseState currentMouse;
         MouseState previousMouse;
@@ -137,7 +136,9 @@ namespace GreatGame
             switch (currentState)
             {
                 case GameStates.Menu:
-                    manager.Menu.Update(currentMouse, GraphicsDevice);
+                    manager.Update(gameTime, previousMouse, currentMouse, userSelectedUnits, GraphicsDevice);
+                    //manager.Menu.Update(currentMouse, GraphicsDevice);
+                    /*
                     if (manager.Menu.ExitGame)
                         Exit();
                     if (manager.Menu.StartGame)
@@ -145,15 +146,13 @@ namespace GreatGame
                         currentState = GameStates.Game;
                         // Load in the list of class selected units and add them to the list of units in 
                         // This game one class's list called 'userSelectedUnits'
-                        SetUnitsFromButtons();
+                        manager.SetUnitsFromButtons();
                         manager.Initialize();
-                    }
+                    }*/
                         
                     break;
                 case GameStates.Game:
-                    manager.Update(gameTime, previousMouse, currentMouse, userSelectedUnits);
-                    //test.Update(gameTime, previousMouse, currentMouse, userSelectedUnits);
-                    //test2.Update(gameTime, previousMouse, currentMouse, userSelectedUnits);
+                    manager.Update(gameTime, previousMouse, currentMouse, userSelectedUnits, GraphicsDevice);
                     break;
                 case GameStates.GameOver:
                     // Check for if the user has hit enter to return to title screen
@@ -165,6 +164,11 @@ namespace GreatGame
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// This is the draw method for our Game1 class
+        /// This really just calls the GameManager's draw class
+        /// </summary>
+        /// <param name="gameTime"></param>
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Green);
@@ -174,17 +178,10 @@ namespace GreatGame
             switch (currentState)
             {
                 case GameStates.Menu:
-                    manager.Menu.Draw(spriteBatch);
+                    manager.Draw(spriteBatch, font);
                     break;
                 case GameStates.Game:
-                    //GraphicsDevice.Clear(Color.Green);
-                    //spriteBatch.Draw(test.Texture, new Rectangle((int)test.position.X, (int)test.position.Y, 50, 50), test.UnitColor);
-                    //Second Test Unit:
-                    //spriteBatch.Draw(test2.Texture, new Rectangle((int)test2.position.X, (int)test2.position.Y, 50, 50), test2.UnitColor);
-
-                    manager.Draw(spriteBatch);
-
-                    spriteBatch.DrawString(font, manager.Player1Units[0].Name, Vector2.Zero, Color.Black); 
+                    manager.Draw(spriteBatch, font);
                     break;
                 case GameStates.GameOver:
                     // Print out some info about the score and stuff
@@ -195,6 +192,8 @@ namespace GreatGame
             base.Draw(gameTime);
         }
 
+
+        /*
         // Sets the listOfUnits to whatever the buttons are that the player has selected on the screen
         public void SetUnitsFromButtons()
         {
@@ -210,6 +209,6 @@ namespace GreatGame
                     }
                 }
             }
-        }
+        }*/
     }
 }
