@@ -12,16 +12,15 @@ namespace GreatGame
     {
         // Fields
 
-        #region Fields
-        
-        public String name;
-        public int visionRange, attackRange, attack, defense;
-        public double health, speed;
-        public Boolean isSelected, isMoving;
-        public Vector2 position;
-        public Texture2D texture;
-        public Vector2 destination;
-        public Color color;
+        #region Fields        
+        private String name;
+        private int visionRange, attackRange, attack, defense;
+        private double health, speed;
+        private Boolean isSelected, isMoving;
+        private Vector2 position;
+        private Texture2D texture;
+        private Vector2 destination;
+        private Color color;
         #endregion
 
         // FSM for the alignment of this class
@@ -54,33 +53,8 @@ namespace GreatGame
         // Properties
         #region Properties
         public String Name { get { return name; } }
-        /*
-        public int X
-        {
-            get
-            {
-                return x;
-            }
-            set
-            {
-                x = value;
-                position = new Vector2(x, y);
-            }
-        }
-
-        public int Y
-        {
-            get
-            {
-                return y;
-            }
-            set
-            {
-                y = value;
-                position = new Vector2(x, y);
-            }
-        }
-        */
+        
+        
         public Boolean IsSelected
         {
             get
@@ -157,6 +131,7 @@ namespace GreatGame
             return false;
         }
         #endregion
+
         // Methods
 
         public void TakeDamage(double damage)
@@ -191,6 +166,9 @@ namespace GreatGame
         {
             // Basic draw function for the units class
             sb.DrawString(font, this.name, new Vector2(this.position.X, this.position.Y - 10), Color.Black);
+
+            sb.DrawString(font, "HEALTH: " + this.health, new Vector2(this.position.X, this.position.Y - 20), Color.Black);
+
             sb.Draw(texture, new Rectangle((int)position.X, (int)position.Y, 50, 50), color);
 
         }
@@ -224,6 +202,11 @@ namespace GreatGame
             {
                 ProcessInput(destination);
             }
+        }
+
+        public override string ToString()
+        {
+            return this.name;
         }
     }
 }

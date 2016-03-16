@@ -21,7 +21,6 @@ namespace GreatGame
         private SpriteFont font;
 
         private List<Unit> userSelectedUnits;   // The list of units that the user has selected
-        private List<String> userSelectedNames; // This is the lsit of names from the buttons that the user picks on the menu screen
 
         Texture2D buttonTexture;
         SpriteFont buttonFont;
@@ -30,26 +29,15 @@ namespace GreatGame
         MouseState currentMouse;
         MouseState previousMouse;
 
-        private enum GameStates
-        {
-            Menu,
-            Game,
-            GameOver
-        }
-
-        private GameStates currentState;
-
-
-        Unit test;
-        Unit test2;
-
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+
             // Make the screen bigger
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
             // Make full screen when we get to the point of that
+
             Content.RootDirectory = "Content";
             
         }
@@ -63,24 +51,13 @@ namespace GreatGame
         protected override void Initialize()
         {
             // Make a new Game Manager
-            manager = new GameManager("Content/Units.txt", "Content/Textures.txt");
+            manager = new GameManager("Content/Units.txt", "Content/Textures.txt", currentMouse, previousMouse);
 
             // Instantiates the list of units
-            currentState = GameStates.Menu;
-
-            //manager.Menu = new MenuHandler(MenuStates.Main);
             manager.Menu.initialize();
-
 
             // Load in the Units.txt file, this works now
             userSelectedUnits = new List<Unit>();
-            userSelectedNames = new List<string>();
-
-            test = new Unit("Test", 10, 10, 10, 10);
-            test2 = new Unit("Test2", 15, 15, 15, 15);
-
-            test.Position = new Vector2(0, 0);
-            test2.Position = new Vector2(200, 200);
 
             this.IsMouseVisible = true;
             base.Initialize();
@@ -109,9 +86,6 @@ namespace GreatGame
                 Texture2D newTexture = Content.Load<Texture2D>(manager.AllUnits.TextureList[i]);
                 manager.UnitTextures.Add(newTexture);
             }
-
-            test.Texture = manager.UnitTextures[0];
-            test2.Texture = manager.UnitTextures[1];
         }
 
         /// <summary>
@@ -130,35 +104,13 @@ namespace GreatGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+
             previousMouse = currentMouse;
             currentMouse = Mouse.GetState();
 
-            switch (currentState)
-            {
-                case GameStates.Menu:
-                    manager.Update(gameTime, previousMouse, currentMouse, userSelectedUnits, GraphicsDevice);
-                    //manager.Menu.Update(currentMouse, GraphicsDevice);
-                    /*
-                    if (manager.Menu.ExitGame)
-                        Exit();
-                    if (manager.Menu.StartGame)
-                    {
-                        currentState = GameStates.Game;
-                        // Load in the list of class selected units and add them to the list of units in 
-                        // This game one class's list called 'userSelectedUnits'
-                        manager.SetUnitsFromButtons();
-                        manager.Initialize();
-                    }*/
-                        
-                    break;
-                case GameStates.Game:
-                    manager.Update(gameTime, previousMouse, currentMouse, userSelectedUnits, GraphicsDevice);
-                    break;
-                case GameStates.GameOver:
-                    // Check for if the user has hit enter to return to title screen
-                    break;
-            }
-            
+            // Call the managers update method
+            manager.Update(gameTime, previousMouse, currentMouse, userSelectedUnits, GraphicsDevice);
+
             MouseState mouse = Mouse.GetState();
 
             base.Update(gameTime);
@@ -173,42 +125,14 @@ namespace GreatGame
         {
             GraphicsDevice.Clear(Color.Green);
 
-            spriteBatch.Begin();    
+            spriteBatch.Begin();
 
-            switch (currentState)
-            {
-                case GameStates.Menu:
-                    manager.Draw(spriteBatch, font);
-                    break;
-                case GameStates.Game:
-                    manager.Draw(spriteBatch, font);
-                    break;
-                case GameStates.GameOver:
-                    // Print out some info about the score and stuff
-                    break;
-            }
-
+            // Call the managers Draw method
+            manager.Draw(spriteBatch, font);
+            
             spriteBatch.End();
+
             base.Draw(gameTime);
         }
-
-
-        /*
-        // Sets the listOfUnits to whatever the buttons are that the player has selected on the screen
-        public void SetUnitsFromButtons()
-        {
-            userSelectedNames = manager.Menu.GetButtonNames();
-            for (int i = 0; i < userSelectedNames.Count; i++)
-            {
-                // Go through and find the actual unit object with the same name as the button
-                for (int j = 0; j < manager.AllUnits.ListCount; j++)
-                {
-                    if (userSelectedNames[i] == manager.AllUnits.UnitList[j].Name)
-                    {
-                        manager.Player1Units.Add(manager.AllUnits.UnitList[j]);
-                    }
-                }
-            }
-        }*/
     }
 }

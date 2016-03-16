@@ -11,6 +11,7 @@ namespace GreatGame
     class GameManager
     {
         // Fields
+        #region Fields
         // List of units for the players to choose from
         private FileInput allUnits;   
         // Lists of the players 1 and 2 units
@@ -29,22 +30,23 @@ namespace GreatGame
         // Mouse stuff
         private MouseState currentMouse;
         private MouseState previousMouse;
+        #endregion
 
+
+        #region Properties
         // Properties
         public GameState CurGameState { get { return this.curGameState; } set { this.curGameState = value; } }
         public FileInput AllUnits { get { return this.allUnits; } }
-        public List<Unit> Player1Units
-        {
-            get { return this.player1Units; }
-            set { this.player1Units = value; }
-        }
+        public List<Unit> Player1Units {get { return this.player1Units; } set { this.player1Units = value; } }
         public List<Unit> Player2Units { get { return this.player2Units; } }
         public List<Texture2D> UnitTextures { get { return this.unitTextures; } set { this.unitTextures = value; } }
         public MenuHandler Menu { get { return this.menu; } set { this.menu = value; } }
 
+        #endregion
+
 
         // Take in a string with a file name, and move all the file input to here
-        public GameManager(String fileName, String texturesFileName)
+        public GameManager(String fileName, String texturesFileName, MouseState curMouse, MouseState prevMosue)
         {
             allUnits = new FileInput(fileName, texturesFileName);
             player1Units = new List<Unit>();
@@ -55,17 +57,24 @@ namespace GreatGame
 
         }
 
+        /// <summary>
+        /// Eventually htis method will be used to match the names up to the different textures and stuff
+        /// </summary>
         public void Initialize()
         {
             int x = 0;
-            int y = 0;
+            int textCount = 0;
             // Set all of the player1 units textures to the same thing
             for(int i = 0; i < player1Units.Count; i++)
             {
-                player1Units[i].Texture = unitTextures[0];
-                player1Units[i].Position = new Vector2(x, y);
+                if(textCount >= 3)
+                {
+                    textCount = 0;
+                }
+                player1Units[i].Texture = unitTextures[textCount];
+                player1Units[i].Position = new Vector2(x + 10, 100);
+                textCount++;
                 x += 100;
-                y += 100;
             }
             
         }
@@ -80,8 +89,14 @@ namespace GreatGame
             allUnits.LoadTextures();            
         }
 
-        // Call the unit's update method
-        // Call the Map's update method
+        /// <summary>
+        /// This method loops through all the units in the player1 list, and calls their update method
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="previousMouse"></param>
+        /// <param name="currentMouse"></param>
+        /// <param name="userSelectedUnits"></param>
+        /// <param name="graphics"></param>
         public void Update(GameTime gameTime, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits, GraphicsDevice graphics)
         {
             // Loop through both of the arrays of units and call the Unit's update function
@@ -106,10 +121,19 @@ namespace GreatGame
                     {
                         player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits);
                     }
+
+                    // Check for the button push of some key pause the game
+
+                    // Check to see if they pushed a button to use a special ability
+
                     break;
                 case (GameState.Paused):
+                    // Check to see if the paused button is pressed again
+                    // A button to give up, which will set you to game over
                     break;
                 case(GameState.GameOver):
+                    // Check to see if the user has pushed something to go back to the main menu
+                    // Show a button to go back to the menu
                     break;
             }
         }
@@ -130,10 +154,13 @@ namespace GreatGame
                     {
                         player1Units[i].Draw(sb, font);
                     }
+                    sb.DrawString(font, Player1String(), Vector2.Zero, Color.Black);
                     break;
                 case (GameState.Paused):
+                    // Show some text about the current score, and the current untis health and what not
                     break;
                 case (GameState.GameOver):
+                    // Show the teams score and the points and stuff
                     break;
             }
         }
@@ -149,10 +176,20 @@ namespace GreatGame
                 {
                     if (menu.UserSelectedNames[i] == this.AllUnits.UnitList[j].Name)
                     {
-                        this.Player1Units.Add(this.AllUnits.UnitList[j]);
+                        player1Units.Add(new Unit(allUnits.UnitList[j]));
                     }
                 }
             }
+        }
+
+        public string Player1String()
+        {
+            string thing = "";
+            for(int i = 0; i < player1Units.Count; i++)
+            {
+                thing += " " + player1Units[i].Name;
+            }
+            return thing;
         }
 
 

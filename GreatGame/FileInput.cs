@@ -86,7 +86,7 @@ namespace GreatGame
             String names = "";
             for(int i = 0; i < unitList.Count; i++)
             {
-                names += unitList[i].Name;
+                names += " " + unitList[i].Name;
             }
             return names;
         }
