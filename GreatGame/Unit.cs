@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GreatGame
 {
-    class Unit : ICollidable, IDamageable
+    class Unit : IDamageable
     {
         // Fields
 
@@ -22,6 +22,7 @@ namespace GreatGame
         public Texture2D texture;
         public Vector2 destination;
         public Color color;
+        private BoundingSphere bounds;
         #endregion
 
         // FSM for the alignment of this class
@@ -147,17 +148,22 @@ namespace GreatGame
             set { color = value; }
         }
 
-        public bool IsColliding(Unit u)
+        public BoundingSphere Bounds { get { return bounds; } }
+        #endregion
+        // Methods
+        public Boolean checkCollision(Wall w)
         {
+            if (w.Bounds.Intersects(bounds))
+                return true;
             return false;
         }
 
-        public bool IsColliding(Terrain t)
+        public Boolean checkCollision(Unit u)
         {
+            if (u.Bounds.Intersects(bounds))
+                return true;
             return false;
         }
-        #endregion
-        // Methods
 
         public void TakeDamage(double damage)
         {
