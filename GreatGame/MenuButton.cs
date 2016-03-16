@@ -65,6 +65,14 @@ namespace GreatGame
             return false;
         }
 
+        public virtual void CheckHover(MouseState ms)
+        {
+            if (ms.X >= this.X && ms.Y >= this.Y && ms.X <= this.X + this.Width && ms.Y <= this.Y + this.Height)
+                shade = Color.Cyan;
+            else shade = Color.White;
+
+        }
+
         public virtual void Draw(SpriteBatch sb)
         {
             if (!enabled)
