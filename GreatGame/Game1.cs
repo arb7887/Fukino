@@ -29,6 +29,8 @@ namespace GreatGame
         MouseState currentMouse;
         MouseState previousMouse;
 
+        Map gameMap;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -59,6 +61,8 @@ namespace GreatGame
             // Load in the Units.txt file, this works now
             userSelectedUnits = new List<Unit>();
 
+            gameMap = new Map();
+
             this.IsMouseVisible = true;
             base.Initialize();
         }
@@ -77,7 +81,11 @@ namespace GreatGame
             manager.Menu.LoadContent(buttonTexture, buttonFont, GraphicsDevice);
 
             font = Content.Load<SpriteFont>("Arial14");
-            
+
+            gameMap.WallTexture = Content.Load<Texture2D>("wallTexture.jpg");
+            gameMap.LoadMap("Content/Walls.txt");
+
+
             // Load in the list of units from the files here
             manager.LoadContent();
 
@@ -128,6 +136,8 @@ namespace GreatGame
             GraphicsDevice.Clear(Color.Green);
 
             spriteBatch.Begin();
+
+            gameMap.Draw(spriteBatch);
 
             // Call the managers Draw method
             manager.Draw(spriteBatch, font);
