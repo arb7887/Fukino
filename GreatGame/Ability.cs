@@ -14,7 +14,15 @@ namespace GreatGame
 
         }
 
+        public void StartAbility()
+        {
 
+        }
+
+        public void CheckCollison()
+        {
+
+        }
 
     }
 }
