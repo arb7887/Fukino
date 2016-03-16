@@ -39,9 +39,9 @@ namespace GreatGame
 
         public void initialize()
         {
-            exit = new MenuButton(new Rectangle(10, 10, 100, 50), null, "Exit", Color.White, null);
-            options = new MenuButton(new Rectangle(10, 60, 100, 50), null, "Options", Color.White, null);
-            play = new MenuButton(new Rectangle(10, 110, 100, 50), null, "Play", Color.White, null);
+            play = new MenuButton(new Rectangle(590, 285, 100, 50), null, "Play", Color.White, null);
+            options = new MenuButton(new Rectangle(590, 335, 100, 50), null, "Options", Color.White, null);
+            exit = new MenuButton(new Rectangle(590, 385, 100, 50), null, "Exit", Color.White, null);
             classSelectors = new List<ClassSelectButton>();
             exitGame = false;
             numUnits = 6;
