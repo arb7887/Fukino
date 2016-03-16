@@ -50,7 +50,7 @@ namespace GreatGame
                     // Read in the data
                     string name = input.ReadLine();
                     int health = (int.Parse(input.ReadLine()));
-                    int speed = (int.Parse(input.ReadLine()));
+                    double speed = (double.Parse(input.ReadLine()));
                     int range = (int.Parse(input.ReadLine()));
                     int dps = (int.Parse(input.ReadLine()));
 
@@ -86,7 +86,7 @@ namespace GreatGame
             String names = "";
             for(int i = 0; i < unitList.Count; i++)
             {
-                names += unitList[i].Name;
+                names += " " + unitList[i].Name;
             }
             return names;
         }

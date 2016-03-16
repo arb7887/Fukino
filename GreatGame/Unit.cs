@@ -26,7 +26,7 @@ namespace GreatGame
         #endregion
 
         // FSM for the alignment of this class
-        enum Alignment
+        enum Tag
         {
             Player,
             Enemy,
@@ -55,33 +55,8 @@ namespace GreatGame
         // Properties
         #region Properties
         public String Name { get { return name; } }
-        /*
-        public int X
-        {
-            get
-            {
-                return x;
-            }
-            set
-            {
-                x = value;
-                position = new Vector2(x, y);
-            }
-        }
-
-        public int Y
-        {
-            get
-            {
-                return y;
-            }
-            set
-            {
-                y = value;
-                position = new Vector2(x, y);
-            }
-        }
-        */
+        
+        
         public Boolean IsSelected
         {
             get
@@ -193,9 +168,13 @@ namespace GreatGame
         }
 
 
-        public void Draw(SpriteBatch sb)
+        public void Draw(SpriteBatch sb, SpriteFont font)
         {
             // Basic draw function for the units class
+            sb.DrawString(font, this.name, new Vector2(this.position.X, this.position.Y - 10), Color.Black);
+
+            sb.DrawString(font, "HEALTH: " + this.health, new Vector2(this.position.X, this.position.Y - 20), Color.Black);
+
             sb.Draw(texture, new Rectangle((int)position.X, (int)position.Y, 50, 50), color);
 
         }
@@ -229,6 +208,11 @@ namespace GreatGame
             {
                 ProcessInput(destination);
             }
+        }
+
+        public override string ToString()
+        {
+            return this.name;
         }
     }
 }
