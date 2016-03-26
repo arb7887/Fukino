@@ -13,17 +13,20 @@ namespace GreatGame
         // Fields
 
         #region Fields
-        
-        public String name;
-        public int visionRange, attackRange, attack, defense;
-        public double health, speed;
-        public Boolean isSelected, isMoving;
-        public Vector2 position;
-        public Texture2D texture;
-        public Vector2 destination;
-        public Color color;
+        // Keeping these private is the whole point of object oriented programming
+        private String name;
+        private int visionRange, attackRange, attack, defense;
+        private double health, speed;
+        private Boolean isSelected, isMoving;
+        private Vector2 position;
+        private Texture2D texture;
+        private Vector2 destination;
+        private Color color;
+
         private BoundingSphere bounds;
         private double rateOfFire;
+        private int indexOfMe;
+        private float radius;
         #endregion
 
         // FSM for the alignment of this class
@@ -34,7 +37,7 @@ namespace GreatGame
             Neutral
         }
 
-        public Unit(String name, int health, double speed, int attackRange, int attack, double rateOfFire)
+        public Unit(String name, int health, double speed, int attackRange, int attack, double rateOfFire, int indexOfMe)
         {
             this.name = name;
             this.health = health;
@@ -46,10 +49,14 @@ namespace GreatGame
             isMoving = false;
             position = new Vector2(0, 0);
             color = Color.White;
+
+            this.indexOfMe = indexOfMe;
+            radius = 25;
+            bounds = new BoundingSphere(new Vector3(position, 0), radius);
         }
 
-        public Unit(Unit newUnit)
-            : this(newUnit.name, (int)newUnit.health, newUnit.Speed, newUnit.attackRange, newUnit.attack, newUnit.rateOfFire)
+        public Unit(Unit newUnit, int index)
+            : this(newUnit.name, (int)newUnit.health, newUnit.Speed, newUnit.attackRange, newUnit.attack, newUnit.rateOfFire, index)
         {
 
         }
@@ -127,20 +134,19 @@ namespace GreatGame
             set { color = value; }
         }
 
-        public BoundingSphere Bounds { get { return bounds; } }
+        public BoundingSphere Bounds
+        {
+            get { return bounds; }
+            set { this.bounds = value; }
+        }
         #endregion
         // Methods
-        public Boolean checkCollision()
-        {
-            if (Bounds.Intersects(bounds))
-                return true;
-            return false;
-        }
 
         public Boolean checkCollision(Unit u)
         {
-            if (u.Bounds.Intersects(bounds))
+            if (u.Bounds.Intersects(this.bounds))
                 return true;
+
             return false;
         }
 
@@ -168,6 +174,7 @@ namespace GreatGame
                 distance.Normalize();
                 Vector2 toMove = new Vector2((int)(distance.X * speed), (int)(distance.Y * speed));
                 position += toMove;
+                bounds = new BoundingSphere(new Vector3(position, 0), radius);
             }
         }
 
@@ -179,44 +186,71 @@ namespace GreatGame
 
             sb.DrawString(font, "HEALTH: " + this.health, new Vector2(this.position.X, this.position.Y - 20), Color.Black);
 
-            sb.Draw(texture, new Rectangle((int)position.X, (int)position.Y, 50, 50), color);
+            //sb.Draw(texture, new Rectangle((int)position.X, (int)position.Y, 50, 50), color);
+
+            sb.Draw(texture, new Rectangle((int)bounds.Center.X, (int)bounds.Center.Y,50,50), color);
 
         }
 
-        public void Update(GameTime gt, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits)
+        public void Update(GameTime gt, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits, List<Unit> otherUnits)
         {
+            bool allowedToMove = true;
+            // Check the collisions
+            // Loop through and check the collisons with all of the other units
+            
+            for (int i = 0; i < otherUnits.Count; i++)
+            {
+                if(i != indexOfMe)
+                {
+                    if (checkCollision(otherUnits[i]))
+                    {
+                        // Dont move
+                        allowedToMove = false;
+                    }
+                }
 
-            if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
-            {
-                if ((previousMouse.X >= Position.X) && previousMouse.X <= (Position.X + 50)
-                    && previousMouse.Y >= Position.Y && previousMouse.Y <= (Position.Y + 50))
+            }
+            // Checks the movement
+
+            if (allowedToMove)
+            {            
+                if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
                 {
-                    IsSelected = true;
-                    color = Color.Cyan;
-                    userSelectedUnits.Add(this);
+                    if ((previousMouse.X >= Position.X) && previousMouse.X <= (Position.X + 50)
+                        && previousMouse.Y >= Position.Y && previousMouse.Y <= (Position.Y + 50))
+                    {
+                        IsSelected = true;
+                        color = Color.Cyan;
+                        userSelectedUnits.Add(this);
+                    }
+                    else
+                    {
+                        IsSelected = false;
+                        color = Color.White;
+                        userSelectedUnits.Remove(this);
+                    }
                 }
-                else
+                if (IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
                 {
-                    IsSelected = false;
-                    color = Color.White;
-                    userSelectedUnits.Remove(this);
+                    destination = new Vector2(previousMouse.X, previousMouse.Y);
+                    ProcessInput(destination);
+                    IsMoving = true;
+                }
+                else if (IsMoving)
+                {
+                    ProcessInput(destination);
                 }
             }
-            if (IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
+            else
             {
-                destination = new Vector2(previousMouse.X, previousMouse.Y);
-                ProcessInput(destination);
-                IsMoving = true;
-            }
-            else if (IsMoving)
-            {
-                ProcessInput(destination);
+                // Move the unit away from said object
+                ProcessInput(-destination);
             }
         }
 
         public override string ToString()
         {
-            return this.name;
+            return this.name + this.bounds.ToString();
         }
     }
 }

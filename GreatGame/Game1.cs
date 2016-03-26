@@ -61,7 +61,7 @@ namespace GreatGame
             // Load in the Units.txt file, this works now
             userSelectedUnits = new List<Unit>();
 
-            gameMap = new Map();
+            //gameMap = new Map();
 
             this.IsMouseVisible = true;
             base.Initialize();
@@ -82,8 +82,8 @@ namespace GreatGame
 
             font = Content.Load<SpriteFont>("Arial14");
 
-            gameMap.WallTexture = Content.Load<Texture2D>("wallTexture.jpg");
-            gameMap.LoadMap("Content/Walls.txt");
+            manager.GameMap.WallTexture = Content.Load<Texture2D>("wallTexture.jpg");
+            manager.GameMap.LoadMap("Content/Walls.txt");
 
 
             // Load in the list of units from the files here
@@ -137,7 +137,7 @@ namespace GreatGame
 
             spriteBatch.Begin();
 
-            gameMap.Draw(spriteBatch);
+           // gameMap.Draw(spriteBatch);
 
             // Call the managers Draw method
             manager.Draw(spriteBatch, font);

@@ -30,6 +30,10 @@ namespace GreatGame
         // Mouse stuff
         private MouseState currentMouse;
         private MouseState previousMouse;
+
+        // Map stuff
+        private Map gameMap;
+
         #endregion
 
 
@@ -41,6 +45,7 @@ namespace GreatGame
         public List<Unit> Player2Units { get { return this.player2Units; } }
         public List<Texture2D> UnitTextures { get { return this.unitTextures; } set { this.unitTextures = value; } }
         public MenuHandler Menu { get { return this.menu; } set { this.menu = value; } }
+        public Map GameMap { get { return this.gameMap; } set { this.gameMap = value; } }
 
         #endregion
 
@@ -54,6 +59,7 @@ namespace GreatGame
             unitTextures = new List<Texture2D>();
             curGameState = GameState.Menu;
             menu = new MenuHandler(MenuStates.Main);
+            gameMap = new Map();
 
         }
 
@@ -72,7 +78,8 @@ namespace GreatGame
                     textCount = 0;
                 }
                 player1Units[i].Texture = unitTextures[textCount];
-                player1Units[i].Position = new Vector2(x + 10, 100);
+                player1Units[i].Position = new Vector2(x + 50, 100);
+                player1Units[i].Bounds = new BoundingSphere(new Vector3(player1Units[i].Position, x), 25);
                 textCount++;
                 x += 100;
             }
@@ -119,7 +126,7 @@ namespace GreatGame
                     // Call the updates on all of the units in the players list
                     for(int i = 0; i < player1Units.Count; i++)
                     {
-                        player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits);
+                        player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits, player1Units);
                     }
 
                     // Check for the button push of some key pause the game
@@ -132,6 +139,7 @@ namespace GreatGame
                     {
                         // Whatever unit is selected, call the units ability use method
                     }*/
+                    
                     break;
                 case (GameState.Paused):
                     // Check to see if the paused button is pressed again
@@ -144,6 +152,10 @@ namespace GreatGame
                 case(GameState.GameOver):
                     // Check to see if the user has pushed something to go back to the main menu
                     // Show a button to go back to the menu
+                    if (kbState.IsKeyDown(Keys.Enter))
+                    {
+                        CurGameState = GameState.Menu;
+                    }
                     break;
             }
         }
@@ -159,6 +171,7 @@ namespace GreatGame
                     menu.Draw(sb);
                     break;
                 case (GameState.Game):
+                    gameMap.Draw(sb);
                     // Call the updates on all of the units in the players list
                     for (int i = 0; i < player1Units.Count; i++)
                     {
@@ -189,7 +202,7 @@ namespace GreatGame
                 {
                     if (menu.UserSelectedNames[i] == this.AllUnits.UnitList[j].Name)
                     {
-                        player1Units.Add(new Unit(allUnits.UnitList[j]));
+                        player1Units.Add(new Unit(allUnits.UnitList[j], i));
                     }
                 }
             }
@@ -200,7 +213,7 @@ namespace GreatGame
             string thing = "";
             for(int i = 0; i < player1Units.Count; i++)
             {
-                thing += " " + player1Units[i].Name;
+                thing += " " + player1Units[i].Name + player1Units[i].Bounds.ToString();
             }
             return thing;
         }
