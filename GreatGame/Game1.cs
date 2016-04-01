@@ -30,6 +30,9 @@ namespace GreatGame
         MouseState previousMouse;
 
         Map gameMap;
+        // This is the camera that shall be used for the player
+        private Camera _camera;
+
 
         public Game1()
         {
@@ -39,6 +42,8 @@ namespace GreatGame
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
             // Make full screen when we get to the point of that
+            //graphics.IsFullScreen = true;
+
 
             Content.RootDirectory = "Content";
             
@@ -64,6 +69,8 @@ namespace GreatGame
             //gameMap = new Map();
 
             this.IsMouseVisible = true;
+            _camera = new Camera(GraphicsDevice.Viewport);
+
             base.Initialize();
         }
 
@@ -112,17 +119,33 @@ namespace GreatGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            KeyboardState kbState = Keyboard.GetState();
-            
+
+            var keyboardState = Keyboard.GetState();
+
 
             previousMouse = currentMouse;
             currentMouse = Mouse.GetState();
 
             // Call the managers update method
-            manager.Update(gameTime, previousMouse, currentMouse, userSelectedUnits, GraphicsDevice, kbState);
+            manager.Update(gameTime, previousMouse, currentMouse, userSelectedUnits, GraphicsDevice, keyboardState);
 
             MouseState mouse = Mouse.GetState();
+            #region Camera Stuff
+            var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            // camera movement
+            /* if (keyboardState.IsKeyDown(Keys.W))
+                 _camera.Position -= new Vector2(0, 250) * deltaTime;
 
+             if (keyboardState.IsKeyDown(Keys.S))
+                 _camera.Position += new Vector2(0, 250) * deltaTime;
+
+             if (keyboardState.IsKeyDown(Keys.A))
+                 _camera.Position -= new Vector2(250, 0) * deltaTime;
+
+             if (keyboardState.IsKeyDown(Keys.D))
+                 _camera.Position += new Vector2(250, 0) * deltaTime;
+ */
+            #endregion
             base.Update(gameTime);
         }
 
@@ -134,10 +157,10 @@ namespace GreatGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Green);
+            var viewMatrix = _camera.GetViewMatrix();
+            spriteBatch.Begin(transformMatrix: viewMatrix);
 
-            spriteBatch.Begin();
-
-           // gameMap.Draw(spriteBatch);
+            // gameMap.Draw(spriteBatch);
 
             // Call the managers Draw method
             manager.Draw(spriteBatch, font);

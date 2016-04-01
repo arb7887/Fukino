@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="Ability.cs" />
     <Compile Include="Bullet.cs" />
+    <Compile Include="Camera.cs" />
     <Compile Include="ClassSelectButton.cs" />
     <Compile Include="FileInput.cs" />
     <Compile Include="Game1.cs" />

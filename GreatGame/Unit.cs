@@ -184,6 +184,8 @@ namespace GreatGame
             // Basic draw function for the units class
             sb.DrawString(font, this.name, new Vector2(this.position.X, this.position.Y - 10), Color.Black);
 
+            sb.DrawString(font, "X:" + this.bounds.Center.X.ToString() + "Y:" + this.bounds.Center.Y.ToString(), new Vector2(this.position.X, this.position.Y - 30), Color.Black);
+
             sb.DrawString(font, "HEALTH: " + this.health, new Vector2(this.position.X, this.position.Y - 20), Color.Black);
 
             //sb.Draw(texture, new Rectangle((int)position.X, (int)position.Y, 50, 50), color);
