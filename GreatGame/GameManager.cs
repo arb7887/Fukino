@@ -38,6 +38,7 @@ namespace GreatGame
 
 
         #region Properties
+        
         // Properties
         public GameState CurGameState { get { return this.curGameState; } set { this.curGameState = value; } }
         public FileInput AllUnits { get { return this.allUnits; } }
@@ -124,9 +125,16 @@ namespace GreatGame
                     break;
                 case (GameState.Game):
                     // Call the updates on all of the units in the players list
+                    
                     for(int i = 0; i < player1Units.Count; i++)
                     {
-                        player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits, player1Units);
+                        // Check to see if the mouse is even inside of the window, if not, then don't bother calling the update method
+                        if(previousMouse.X < graphics.Viewport.Width && previousMouse.X > 0 && previousMouse.Y > 0 && previousMouse.Y < graphics.Viewport.Height)
+                        {
+                            player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits, player1Units);
+
+                        }
+                       // player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits, player1Units);
                     }
 
                     // Check for the button push of some key pause the game
@@ -171,7 +179,10 @@ namespace GreatGame
                     menu.Draw(sb);
                     break;
                 case (GameState.Game):
-                    gameMap.Draw(sb);
+                    // Draw the map
+                    //gameMap.Draw(sb);
+
+
                     // Call the updates on all of the units in the players list
                     for (int i = 0; i < player1Units.Count; i++)
                     {
@@ -217,6 +228,13 @@ namespace GreatGame
             }
             return thing;
         }
+
+        public void DrawMap(SpriteBatch sb)
+        {
+            if (curGameState == GameState.Game)
+                gameMap.Draw(sb);
+        }
+
 
 
     }

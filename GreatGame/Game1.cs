@@ -12,6 +12,7 @@ namespace GreatGame
     public class Game1 : Game
     {
         // Fields
+        #region Fields
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
@@ -32,6 +33,8 @@ namespace GreatGame
         Map gameMap;
         // This is the camera that shall be used for the player
         private Camera _camera;
+
+        #endregion
 
 
         public Game1()
@@ -130,21 +133,22 @@ namespace GreatGame
             manager.Update(gameTime, previousMouse, currentMouse, userSelectedUnits, GraphicsDevice, keyboardState);
 
             MouseState mouse = Mouse.GetState();
+
             #region Camera Stuff
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             // camera movement
-            /* if (keyboardState.IsKeyDown(Keys.W))
-                 _camera.Position -= new Vector2(0, 250) * deltaTime;
+             if (keyboardState.IsKeyDown(Keys.W))
+                 _camera.Pos -= new Vector2(0, 250) * deltaTime;
 
              if (keyboardState.IsKeyDown(Keys.S))
-                 _camera.Position += new Vector2(0, 250) * deltaTime;
+                 _camera.Pos += new Vector2(0, 250) * deltaTime;
 
              if (keyboardState.IsKeyDown(Keys.A))
-                 _camera.Position -= new Vector2(250, 0) * deltaTime;
+                 _camera.Pos -= new Vector2(250, 0) * deltaTime;
 
              if (keyboardState.IsKeyDown(Keys.D))
-                 _camera.Position += new Vector2(250, 0) * deltaTime;
- */
+                 _camera.Pos += new Vector2(250, 0) * deltaTime;
+ 
             #endregion
             base.Update(gameTime);
         }
@@ -158,13 +162,26 @@ namespace GreatGame
         {
             GraphicsDevice.Clear(Color.Green);
             var viewMatrix = _camera.GetViewMatrix();
+            // Try it with two different SB's
+            // First
             spriteBatch.Begin(transformMatrix: viewMatrix);
+            // Draw the map in hereeeee
+            manager.DrawMap(spriteBatch);
 
-            // gameMap.Draw(spriteBatch);
+            // Draw bullets in here i think
 
-            // Call the managers Draw method
+            spriteBatch.DrawString(font, "THE CAMERA'S WORLD POS:" + _camera.GetWorldPosition(_camera.Pos).ToString(), new Vector2(0, 480), Color.Blue);
+
+            spriteBatch.DrawString(font, "THE CAMERA'S  POS:" + _camera.Pos.ToString(), new Vector2(0, 500), Color.Blue);
+
+            spriteBatch.DrawString(font, "THE CAMERA'S SCREEN POS:" + _camera.GetScreenPosition(_camera.Pos).ToString(), new Vector2(0, 520), Color.Blue);
+
+            spriteBatch.End();
+
+            // Second
+            spriteBatch.Begin();
             manager.Draw(spriteBatch, font);
-            
+
             spriteBatch.End();
 
             base.Draw(gameTime);
