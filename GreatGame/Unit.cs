@@ -145,7 +145,15 @@ namespace GreatGame
         public Boolean checkCollision(Unit u)
         {
             if (u.Bounds.Intersects(this.bounds))
+            {
+                // Move the object back a little bit in the opposite directoin then it was going
+                // Get the destination of the two things
+                
+                this.destination = new Vector2(u.destination.X - 50, u.destination.Y - 50);
+
+
                 return true;
+            }
 
             return false;
         }
@@ -186,7 +194,9 @@ namespace GreatGame
 
             sb.DrawString(font, "X:" + this.bounds.Center.X.ToString() + "Y:" + this.bounds.Center.Y.ToString(), new Vector2(this.position.X, this.position.Y - 30), Color.Black);
 
-            sb.DrawString(font, "HEALTH: " + this.health, new Vector2(this.position.X, this.position.Y - 20), Color.Black);
+           // sb.DrawString(font, "HEALTH: " + this.health, new Vector2(this.position.X, this.position.Y - 20), Color.Black);
+
+            sb.DrawString(font, "DESTINATION:" + this.destination.ToString(),new Vector2(this.position.X, this.position.Y - 20), Color.Black);
 
             //sb.Draw(texture, new Rectangle((int)position.X, (int)position.Y, 50, 50), color);
 
@@ -208,6 +218,7 @@ namespace GreatGame
                     {
                         // Dont move
                         allowedToMove = false;
+                        
                     }
                 }
 
@@ -243,16 +254,19 @@ namespace GreatGame
                     ProcessInput(destination);
                 }
             }
+            // if there is a collision between units
             else
             {
-                // Move the unit away from said object
-                ProcessInput(-destination);
+                // Move the unit away from said unit
+
+                ProcessInput(destination);
+                //ProcessInput(new Vector2(destination.X, destination.Y - 50));
             }
         }
 
         public override string ToString()
         {
-            return this.name + this.bounds.ToString();
+            return this.name + this.destination.ToString() + this.bounds.ToString();
         }
     }
 }
