@@ -132,9 +132,8 @@ namespace GreatGame
                     }
                     break;
                 case (GameState.Game):
-                    // Call the updates on all of the units in the players list
-                    
-                    for(int i = 0; i < player1Units.Count; i++)
+                    // Call the updates on all of the units in the players list                    
+                    for (int i = 0; i < player1Units.Count; i++)
                     {
                         // Check to see if the mouse is even inside of the window, if not, then don't bother calling the update method
                         if(previousMouse.X < graphics.Viewport.Width && previousMouse.X > 0 && previousMouse.Y > 0 && previousMouse.Y < graphics.Viewport.Height)
@@ -142,19 +141,7 @@ namespace GreatGame
                             player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits, player1Units, cam);
 
                         }
-                       // player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits, player1Units);
                     }
-
-                    // Check for the button push of some key pause the game
-                   /* if (kbState.IsKeyDown(Keys.P))
-                    {
-                        curGameState = GameState.Paused;
-                    }
-                    // Check to see if they pushed a button to use a special ability
-                    if (kbState.IsKeyDown(Keys.Q))
-                    {
-                        // Whatever unit is selected, call the units ability use method
-                    }*/
                     
                     break;
                 case (GameState.Paused):
@@ -177,7 +164,7 @@ namespace GreatGame
         }
 
         // Call the unit's draw methods and the maps draw method
-        public void Draw(SpriteBatch sb, SpriteFont font)
+        public void Draw(SpriteBatch sb, SpriteFont font, Camera cam)
         {
             // Loop through both of the arrays of units and call the Unit's update function
             switch (curGameState)
@@ -191,7 +178,12 @@ namespace GreatGame
                     DrawMap(sb);
 
                     // Draw the units
-                    DrawPlayers(sb, font);
+                    // Call the updates on all of the units in the players list
+                    for (int i = 0; i < player1Units.Count; i++)
+                    {
+                        player1Units[i].Draw(sb, font, cam);
+                    }
+                   // DrawPlayers(sb, font, cam);
 
                     sb.DrawString(font, Player1String(), Vector2.Zero, Color.Black);
                     break;
@@ -233,14 +225,6 @@ namespace GreatGame
             return thing;
         }
 
-        public void DrawPlayers(SpriteBatch sb, SpriteFont font)
-        {
-            // Call the updates on all of the units in the players list
-            for (int i = 0; i < player1Units.Count; i++)
-            {
-                player1Units[i].Draw(sb, font);
-            }
-        }
 
         public void DrawMap(SpriteBatch sb)
         {

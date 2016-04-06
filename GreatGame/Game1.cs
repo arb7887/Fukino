@@ -169,7 +169,7 @@ namespace GreatGame
             // Second
             spriteBatch.Begin(transformMatrix: viewMatrix);
             // Draw the map in here
-            manager.Draw(spriteBatch, font);
+            manager.Draw(spriteBatch, font, _camera);
             // Draw bullets in here i think
             spriteBatch.DrawString(font, "THE CAMERA'S  POS:" + _camera.Pos.ToString(), new Vector2(0, 0), Color.Blue);
             spriteBatch.DrawString(font, "THE CAMERA'S WORLD POS:" + _camera.GetWorldPosition(_camera.Pos).ToString(), new Vector2(0, 20), Color.Blue);

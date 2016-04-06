@@ -201,7 +201,8 @@ namespace GreatGame
             // SO, I have to take this mouse location, which is the location on the screen
             // And convert it to a "world" coordinate
 
-            Vector2 distance = new Vector2(mouseLoc.X - position.X + prevCamPos.X, mouseLoc.Y - position.Y + prevCamPos.Y);
+            Vector2 distance = new Vector2(mouseLoc.X - position.X , mouseLoc.Y - position.Y );
+
             if (distance.Length() < speed)
             {
                 position = mouseLoc;
@@ -217,20 +218,19 @@ namespace GreatGame
         }
 
 #endregion
-        public void Draw(SpriteBatch sb, SpriteFont font)
+        public void Draw(SpriteBatch sb, SpriteFont font, Camera cam)
         {
             // Basic draw function for the units class
-            sb.DrawString(font, this.name, new Vector2(this.position.X, this.position.Y - 10), Color.Black);
+            //b.DrawString(font, this.name, new Vector2(this.position.X, this.position.Y - 10), Color.Black);
 
-            sb.DrawString(font, "X:" + this.bounds.Center.X.ToString() + "Y:" + this.bounds.Center.Y.ToString(), new Vector2(this.position.X, this.position.Y - 30), Color.Black);
+            //b.DrawString(font, "X:" + this.bounds.Center.X.ToString() + "Y:" + this.bounds.Center.Y.ToString(), new Vector2(this.position.X, this.position.Y - 30), Color.Black);
 
-           // sb.DrawString(font, "HEALTH: " + this.health, new Vector2(this.position.X, this.position.Y - 20), Color.Black);
+             sb.DrawString(font, "HEALTH: " + this.health, new Vector2(this.position.X, this.position.Y - 20), Color.Black);
 
-            sb.DrawString(font, "DESTINATION:" + this.destination.ToString(),new Vector2(this.position.X, this.position.Y - 20), Color.Black);
+            //.DrawString(font, "DESTINATION:" + this.destination.ToString(),new Vector2(this.position.X, this.position.Y - 20), Color.Black);
+            //Console.WriteLine("CAM.POS: X = " + cam.Pos.X + " Y= " + cam.Pos.Y);
 
-            //sb.Draw(texture, new Rectangle((int)position.X, (int)position.Y, 50, 50), color);
-
-            sb.Draw(texture, new Rectangle((int)bounds.Center.X, (int)bounds.Center.Y,50,50), color);
+            sb.Draw(texture, new Rectangle((int)bounds.Center.X, (int)bounds.Center.Y , 50,50), color);
 
         }
 
@@ -249,20 +249,21 @@ namespace GreatGame
                     if (checkCollision(otherUnits[i]))
                     {
                         // Dont move
-                        allowedToMove = false;
-                        
+                        allowedToMove = false;                      
                     }
                 }
             }
-
             // Checks the movement
 
             if (allowedToMove)
             {            
                 if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
                 {
-                    if ((previousMouse.X >= Position.X) && previousMouse.X  <= (Position.X + (radius * 2))
-                        && previousMouse.Y >= Position.Y  && previousMouse.Y <= (Position.Y  + radius * 2))
+                    Vector2 prevMouseVector = new Vector2(previousMouse.X, previousMouse.Y);
+
+                    // I need to account for the camera location in here
+                    if (((GetMouseWorldPos(prevMouseVector, cam.Pos).X ) >= Position.X ) && (GetMouseWorldPos(prevMouseVector, cam.Pos).X) <= (Position.X + (radius * 2))
+                        && (GetMouseWorldPos(prevMouseVector, cam.Pos).Y) >= Position.Y && (GetMouseWorldPos(prevMouseVector, cam.Pos).Y) <= (Position.Y  + (radius * 2)))
                     {
                         prevCamPos = cam.Pos;
                         IsSelected = true;
@@ -279,6 +280,7 @@ namespace GreatGame
                 if (IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
                 {
                     destination = new Vector2(previousMouse.X + cam.Pos.X, previousMouse.Y + cam.Pos.Y);
+
                     ProcessInput(destination, cam);
                     IsMoving = true;
                 }
@@ -304,6 +306,11 @@ namespace GreatGame
         public override string ToString()
         {
             return this.name + this.destination.ToString() + this.bounds.ToString();
+        }
+
+        public Vector2 GetMouseWorldPos(Vector2 screenPos, Vector2 camPos)
+        {
+            return screenPos + camPos;
         }
     }
 }
