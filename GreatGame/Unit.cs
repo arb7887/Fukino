@@ -11,7 +11,6 @@ namespace GreatGame
     class Unit
     {
         // Fields
-
         #region Fields
         // Keeping these private is the whole point of object oriented programming
         private String name;
@@ -27,16 +26,22 @@ namespace GreatGame
         private double rateOfFire;
         private int indexOfMe;
         private float radius;
+
+        private Tag myTag;
+        private Vector2 prevCamPos;
+
+
         #endregion
 
         // FSM for the alignment of this class
-        enum Tag
+        public enum Tag
         {
             Player,
             Enemy,
             Neutral
         }
 
+        #region Constructors
         public Unit(String name, int health, double speed, int attackRange, int attack, double rateOfFire, int indexOfMe)
         {
             this.name = name;
@@ -53,6 +58,8 @@ namespace GreatGame
             this.indexOfMe = indexOfMe;
             radius = 25;
             bounds = new BoundingSphere(new Vector3(position, 0), radius);
+            prevCamPos = new Vector2(0,0);
+
         }
 
         public Unit(Unit newUnit, int index)
@@ -60,12 +67,13 @@ namespace GreatGame
         {
 
         }
+        #endregion
 
         // Properties
         #region Properties
         public String Name { get { return name; } }
-        
-        
+
+        public Tag MyTag { get { return this.myTag; } set { myTag = value; } }
         public Boolean IsSelected
         {
             get
@@ -141,7 +149,7 @@ namespace GreatGame
         }
         #endregion
         // Methods
-
+        #region methods
         public Boolean checkCollision(Unit u)
         {
             if (u.Bounds.Intersects(this.bounds))
@@ -150,20 +158,42 @@ namespace GreatGame
             return false;
         }
 
+        public Boolean checkCollision(Wall wall)
+        {
+            if (wall.Bounds.Intersects(this.bounds))
+                return true;
+
+            return false;
+        }
+
+
+        /// <summary>
+        /// All this does it take in a number of how much damage that 
+        /// this unit will take
+        /// </summary>
+        /// <param name="damage">Amount of damage taken</param>
         public void TakeDamage(double damage)
         {
             health -= damage;
         }
 
+        /// <summary>
+        /// This is the method that will be called for this unit to attack, 
+        /// which will try to attack another unit
+        /// </summary>
+        /// <param name="u">Other unit to attack</param>
         public void Attack(Unit u)
         {
-
+            // Spawn a bullet in the directoin that the unit is facing
         }
 
 
-        public void ProcessInput(Vector2 mouseLoc)
+        public void ProcessInput(Vector2 mouseLoc, Camera cam)
         {
-            Vector2 distance = new Vector2(mouseLoc.X - position.X, mouseLoc.Y - position.Y);
+            // SO, I have to take this mouse location, which is the location on the screen
+            // And convert it to a "world" coordinate
+
+            Vector2 distance = new Vector2(mouseLoc.X - position.X + prevCamPos.X, mouseLoc.Y - position.Y + prevCamPos.Y);
             if (distance.Length() < speed)
             {
                 position = mouseLoc;
@@ -178,7 +208,7 @@ namespace GreatGame
             }
         }
 
-
+#endregion
         public void Draw(SpriteBatch sb, SpriteFont font)
         {
             // Basic draw function for the units class
@@ -194,7 +224,7 @@ namespace GreatGame
 
         }
 
-        public void Update(GameTime gt, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits, List<Unit> otherUnits)
+        public void Update(GameTime gt, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits, List<Unit> otherUnits, Camera cam)
         {
             bool allowedToMove = true;
             // Check the collisions
@@ -204,23 +234,21 @@ namespace GreatGame
             {
                 if(i != indexOfMe)
                 {
-                    if (checkCollision(otherUnits[i]))
-                    {
-                        // Dont move
-                        allowedToMove = false;
-                    }
+                    if (checkCollision(otherUnits[i]))                                        
+                        allowedToMove = false;  // Don't move                   
                 }
-
             }
+
             // Checks the movement
 
             if (allowedToMove)
             {            
                 if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
                 {
-                    if ((previousMouse.X >= Position.X) && previousMouse.X <= (Position.X + 50)
-                        && previousMouse.Y >= Position.Y && previousMouse.Y <= (Position.Y + 50))
+                    if ((previousMouse.X >= Position.X) && previousMouse.X  <= (Position.X + (radius * 2))
+                        && previousMouse.Y >= Position.Y  && previousMouse.Y <= (Position.Y  + radius * 2))
                     {
+                        prevCamPos = cam.Pos;
                         IsSelected = true;
                         color = Color.Cyan;
                         userSelectedUnits.Add(this);
@@ -234,21 +262,23 @@ namespace GreatGame
                 }
                 if (IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
                 {
-                    destination = new Vector2(previousMouse.X, previousMouse.Y);
-                    ProcessInput(destination);
+                    destination = new Vector2(previousMouse.X + cam.Pos.X, previousMouse.Y + cam.Pos.Y);
+                    ProcessInput(destination, cam);
                     IsMoving = true;
                 }
                 else if (IsMoving)
                 {
-                    ProcessInput(destination);
+                    ProcessInput(destination, cam);
                 }
             }
             else
             {
                 // Move the unit away from said object
-                ProcessInput(-destination);
+                ProcessInput(-destination, cam);
             }
         }
+
+
 
         public override string ToString()
         {

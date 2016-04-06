@@ -42,16 +42,12 @@ namespace GreatGame
 
         public Matrix GetViewMatrix()
         {
-            return/*
-                Matrix.CreateTranslation(new Vector3(-Position, 0.0f)) *
-                Matrix.CreateTranslation(new Vector3(-Origin, 0.0f)) *
-                Matrix.CreateRotationZ(Rotation) *
-                Matrix.CreateScale(Zoom, Zoom, 1) *
-                Matrix.CreateTranslation(new Vector3(Origin, 0.0f));*/
+            return
             _transform =       // Thanks to o KB o for this solution
               Matrix.CreateTranslation(new Vector3(-_pos.X, -_pos.Y, 0)) *
               Matrix.CreateRotationZ(Rotation) *
               Matrix.CreateScale(new Vector3(Zoom, Zoom, 0));
+            
         }
 
         public Vector2 GetScreenPosition(Vector2 worldPosition)
@@ -62,7 +58,6 @@ namespace GreatGame
         public Vector2 GetWorldPosition(Vector2 screenPosition)
         {
             return screenPosition + this.Pos;
-
         }
 
     }

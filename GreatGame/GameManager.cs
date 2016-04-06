@@ -31,6 +31,7 @@ namespace GreatGame
         private MouseState currentMouse;
         private MouseState previousMouse;
 
+
         // Map stuff
         private Map gameMap;
 
@@ -83,6 +84,7 @@ namespace GreatGame
                 player1Units[i].Bounds = new BoundingSphere(new Vector3(player1Units[i].Position, x), 25);
                 textCount++;
                 x += 100;
+                player1Units[i].MyTag = Unit.Tag.Player;
             }
             
         }
@@ -105,7 +107,7 @@ namespace GreatGame
         /// <param name="currentMouse"></param>
         /// <param name="userSelectedUnits"></param>
         /// <param name="graphics"></param>
-        public void Update(GameTime gameTime, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits, GraphicsDevice graphics, KeyboardState kbState)
+        public void Update(GameTime gameTime, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits, GraphicsDevice graphics, KeyboardState kbState, Game1 game, Camera cam)
         {
             // Loop through both of the arrays of units and call the Unit's update function
             switch (curGameState)
@@ -122,6 +124,12 @@ namespace GreatGame
                         SetUnitsFromButtons();
                         Initialize();
                     }
+                    else if (menu.ExitGame)
+                    {
+                        // Quit the game
+                        
+                        game.Quit();
+                    }
                     break;
                 case (GameState.Game):
                     // Call the updates on all of the units in the players list
@@ -131,7 +139,7 @@ namespace GreatGame
                         // Check to see if the mouse is even inside of the window, if not, then don't bother calling the update method
                         if(previousMouse.X < graphics.Viewport.Width && previousMouse.X > 0 && previousMouse.Y > 0 && previousMouse.Y < graphics.Viewport.Height)
                         {
-                            player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits, player1Units);
+                            player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits, player1Units, cam);
 
                         }
                        // player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits, player1Units);
@@ -180,14 +188,10 @@ namespace GreatGame
                     break;
                 case (GameState.Game):
                     // Draw the map
-                    //gameMap.Draw(sb);
+                    DrawMap(sb);
 
-
-                    // Call the updates on all of the units in the players list
-                    for (int i = 0; i < player1Units.Count; i++)
-                    {
-                        player1Units[i].Draw(sb, font);
-                    }
+                    // Draw the units
+                    DrawPlayers(sb, font);
 
                     sb.DrawString(font, Player1String(), Vector2.Zero, Color.Black);
                     break;
@@ -227,6 +231,15 @@ namespace GreatGame
                 thing += " " + player1Units[i].Name + player1Units[i].Bounds.ToString();
             }
             return thing;
+        }
+
+        public void DrawPlayers(SpriteBatch sb, SpriteFont font)
+        {
+            // Call the updates on all of the units in the players list
+            for (int i = 0; i < player1Units.Count; i++)
+            {
+                player1Units[i].Draw(sb, font);
+            }
         }
 
         public void DrawMap(SpriteBatch sb)
