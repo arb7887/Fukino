@@ -23,6 +23,7 @@ namespace GreatGame
         private List<Unit> userSelectedUnits;   // The list of units that the user has selected
 
         Texture2D buttonTexture;
+        Texture2D bulletTexture;
         SpriteFont buttonFont;
 
         // Mouse stuff
@@ -86,6 +87,8 @@ namespace GreatGame
                 Texture2D newTexture = Content.Load<Texture2D>(manager.AllUnits.TextureList[i]);
                 manager.UnitTextures.Add(newTexture);
             }
+            bulletTexture = Content.Load<Texture2D>("Bullet");
+            manager.BulletTexture = bulletTexture;
         }
 
         /// <summary>

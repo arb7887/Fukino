@@ -11,7 +11,6 @@ namespace GreatGame
     class Unit
     {
         // Fields
-<<<<<<< HEAD
         private String name;
         private int visionRange, attackRange, attack, defense, size;
         private double health, speed, rateOfFire, remainingDelay;
@@ -19,24 +18,11 @@ namespace GreatGame
         private Vector2 position;
         private Vector2 center;
         private Vector2 destination;
-        private Texture2D texture;
+        private Texture2D texture, bulletTexture;
         private Color color;
-=======
-
-        #region Fields
-        
-        public String name;
-        public int visionRange, attackRange, attack, defense;
-        public double health, speed;
-        public Boolean isSelected, isMoving;
-        public Vector2 position;
-        public Texture2D texture;
-        public Vector2 destination;
-        public Color color;
+        private Bullet bullet;
+        private List<Bullet> activeBullets;
         private BoundingSphere bounds;
-        private double rateOfFire;
-        #endregion
->>>>>>> origin/master
 
         // FSM for the alignment of this class
         enum Tag
@@ -56,9 +42,10 @@ namespace GreatGame
             this.rateOfFire = rateOfFire;
             isSelected = false;
             isMoving = false;
-            position = new Vector2(0, 0);
             center = new Vector2(position.X + size/ 2, position.Y + size / 2);
             color = Color.White;
+            this.activeBullets = new List<Bullet>();
+            bounds = new BoundingSphere(new Vector3(center.X, center.Y, 0), size/2);
         }
 
         public Unit(Unit newUnit)
@@ -68,9 +55,21 @@ namespace GreatGame
         }
 
         // Properties
-        #region Properties
         public String Name { get { return name; } }
-        
+
+        public int Attack { get { return attack;  } set { attack = value; } }
+
+        public Double Health
+        {
+            get
+            {
+                return health;
+            }
+            set
+            {
+                health = value;
+            }
+        }
         
         public Boolean IsSelected
         {
@@ -134,40 +133,40 @@ namespace GreatGame
             }
         }
 
+        public Vector2 Center { get { return center; } set { center = value; } }
+
+        public int Size { get { return size; } set { size = value; } }
+
         public Color UnitColor
         {
             get { return color; }
             set { color = value; }
         }
 
-        public BoundingSphere Bounds { get { return bounds; } }
-        #endregion
-        // Methods
-        public Boolean checkCollision()
-        {
-            if (Bounds.Intersects(bounds))
-                return true;
-            return false;
-        }
+        public BoundingSphere Bounds { get { return bounds; } set { bounds = value; } }
 
-<<<<<<< HEAD
-        public double RateOfFire
+        public Texture2D BulletTexture
         {
             get
             {
-                return rateOfFire;
+                return bulletTexture;
             }
             set
             {
-                rateOfFire = value;
-            } 
-=======
+                bulletTexture = value;
+            }
+        }
+
+        public Bullet Bullet { get { return bullet; } set { bullet = value; } }
+
+        public List<Bullet> ActiveBullets { get { return activeBullets; } }
+        // Methods
+
         public Boolean checkCollision(Unit u)
         {
             if (u.Bounds.Intersects(bounds))
                 return true;
             return false;
->>>>>>> origin/master
         }
 
         public void TakeDamage(double damage)
@@ -184,14 +183,31 @@ namespace GreatGame
             {
                 if (distance.Length() <= attackRange)
                 {
-                    u.health -= attack;
-                    Console.WriteLine(name + " has attacked " + u.name + " for " + attack + " damage!");
+                    Bullet newBullet = new Bullet(5, attack, attackRange, 5, bulletTexture);
+                    newBullet.Position = center;
+                    newBullet.StartingLocation = center;
+                    newBullet.Bounds = new BoundingSphere(new Vector3(newBullet.Position.X, newBullet.Position.Y, 0), (float) newBullet.Size/2);
+                    newBullet.Destination = u.Center;
+                    activeBullets.Add(newBullet);
+                    newBullet = null;
                 }
                 remainingDelay = rateOfFire;
             }
             if (u.health <= 0)
             {
                 Console.WriteLine(u.name + " has died");
+            }
+            for (int i = 0; i < activeBullets.Count; i++)
+            {
+                if (activeBullets[i].ToDelete)
+                {
+                    activeBullets.RemoveAt(i);
+                }
+                else
+                {
+                    activeBullets[i].Move();
+                    activeBullets[i].DamageCheck(u);
+                }
             }
         }
 
@@ -208,6 +224,8 @@ namespace GreatGame
                 distance.Normalize();
                 Vector2 toMove = new Vector2((int)(distance.X * speed), (int)(distance.Y * speed));
                 position += toMove;
+                center += toMove;
+                bounds = new BoundingSphere(new Vector3(toMove.X, toMove.Y, 0), size);
             }
         }
 
@@ -220,12 +238,10 @@ namespace GreatGame
             sb.DrawString(font, "HEALTH: " + this.health, new Vector2(this.position.X, this.position.Y - 20), Color.Black);
 
             sb.Draw(texture, new Rectangle((int)position.X, (int)position.Y, 50, 50), color);
-
         }
 
         public void Update(GameTime gt, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits, List<Unit> enemyUnits)
         {
-
             if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
             {
                 if ((previousMouse.X >= Position.X) && previousMouse.X <= (Position.X + 50)
