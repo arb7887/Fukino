@@ -93,9 +93,15 @@ namespace GreatGame
                     return false;
                 }
             }
-            
         }
 
+        public void CheckEnabled(MouseState ms)
+        {
+            for (int j = 0; j < classOptions.Count; j++)
+            {
+                classOptions[j].CheckHover(ms);
+            }
+        }
         public void CheckClassClicked(MouseState ms)
         {
             for(int i = 0; i < classOptions.Count; i++)

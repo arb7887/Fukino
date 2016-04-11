@@ -23,16 +23,22 @@ namespace GreatGame
         private Bullet bullet;
         private List<Bullet> activeBullets;
         private BoundingSphere bounds;
+        private int indexOfMe;
+        private float radius;
+
+        private Tag myTag;
+        private Vector2 prevCamPos;
+
 
         // FSM for the alignment of this class
-        enum Tag
+        public enum Tag
         {
             Player,
             Enemy,
             Neutral
         }
 
-        public Unit(String name, int health, double speed, int attackRange, int attack, double rateOfFire)
+        public Unit(String name, int health, double speed, int attackRange, int attack, double rateOfFire, int indexOfMe)
         {
             this.name = name;
             this.health = health;
@@ -46,10 +52,15 @@ namespace GreatGame
             color = Color.White;
             this.activeBullets = new List<Bullet>();
             bounds = new BoundingSphere(new Vector3(center.X, center.Y, 0), size/2);
+
+            this.indexOfMe = indexOfMe;
+            radius = 25;
+            prevCamPos = new Vector2(0,0);
+
         }
 
-        public Unit(Unit newUnit)
-            : this(newUnit.name, (int)newUnit.health, newUnit.Speed, newUnit.attackRange, newUnit.attack, newUnit.rateOfFire)
+        public Unit(Unit newUnit, int index)
+            : this(newUnit.name, (int)newUnit.health, newUnit.Speed, newUnit.attackRange, newUnit.attack, newUnit.rateOfFire, index)
         {
 
         }
@@ -71,6 +82,8 @@ namespace GreatGame
             }
         }
         
+        public Tag MyTag { get { return this.myTag; } set { myTag = value; } }
+
         public Boolean IsSelected
         {
             get
@@ -160,19 +173,42 @@ namespace GreatGame
         public Bullet Bullet { get { return bullet; } set { bullet = value; } }
 
         public List<Bullet> ActiveBullets { get { return activeBullets; } }
-        // Methods
 
+        // Methods
         public Boolean checkCollision(Unit u)
         {
-            if (u.Bounds.Intersects(bounds))
+            if (u.Bounds.Intersects(this.bounds))
+            {
+                // Move the object back a little bit in the opposite directoin then it was going
+                // Get the destination of the two things
+                
+                this.destination = new Vector2(u.destination.X - 50, u.destination.Y - 50);
+
+
                 return true;
+            }
+
             return false;
         }
 
-        public void TakeDamage(double damage)
+        public Boolean checkCollision(Wall wall)
+        {
+            if (wall.Bounds.Intersects(this.bounds))
+                return true;
+
+            return false;
+        }
+
+
+        /// <summary>
+        /// All this does it take in a number of how much damage that 
+        /// this unit will take
+        /// </summary>
+        /// <param name="damage">Amount of damage taken</param>
+        /*public void TakeDamage(double damage)
         {
             health -= damage;
-        }
+        }*/
 
         public void AttackUnit(Unit u, GameTime gt)
         {
@@ -211,9 +247,13 @@ namespace GreatGame
             }
         }
 
-        public void ProcessInput(Vector2 mouseLoc)
+        public void ProcessInput(Vector2 mouseLoc, Camera cam)
         {
-            Vector2 distance = new Vector2(mouseLoc.X - position.X - size/2, mouseLoc.Y - position.Y - size/2);
+            // SO, I have to take this mouse location, which is the location on the screen
+            // And convert it to a "world" coordinate
+
+            Vector2 distance = new Vector2(mouseLoc.X - position.X , mouseLoc.Y - position.Y );
+
             if (distance.Length() < speed)
             {
                 position = new Vector2(mouseLoc.X - (size/2), mouseLoc.Y - (size/2));
@@ -229,54 +269,108 @@ namespace GreatGame
             }
         }
 
-
-        public void Draw(SpriteBatch sb, SpriteFont font)
+        public void Draw(SpriteBatch sb, SpriteFont font, Camera cam)
         {
             // Basic draw function for the units class
-            sb.DrawString(font, this.name, new Vector2(this.position.X, this.position.Y - 10), Color.Black);
+            //b.DrawString(font, this.name, new Vector2(this.position.X, this.position.Y - 10), Color.Black);
 
-            sb.DrawString(font, "HEALTH: " + this.health, new Vector2(this.position.X, this.position.Y - 20), Color.Black);
+            //b.DrawString(font, "X:" + this.bounds.Center.X.ToString() + "Y:" + this.bounds.Center.Y.ToString(), new Vector2(this.position.X, this.position.Y - 30), Color.Black);
 
-            sb.Draw(texture, new Rectangle((int)position.X, (int)position.Y, 50, 50), color);
+             sb.DrawString(font, "HEALTH: " + this.health, new Vector2(this.position.X, this.position.Y - 20), Color.Black);
+             sb.Draw(texture, new Rectangle((int)position.X, (int)position.Y, 50, 50), color);
         }
 
         public void Update(GameTime gt, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits, List<Unit> enemyUnits)
         {
-            if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
+            //if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
+            //.DrawString(font, "DESTINATION:" + this.destination.ToString(),new Vector2(this.position.X, this.position.Y - 20), Color.Black);
+            //Console.WriteLine("CAM.POS: X = " + cam.Pos.X + " Y= " + cam.Pos.Y);
+
+           // sb.Draw(texture, new Rectangle((int)bounds.Center.X, (int)bounds.Center.Y , 50,50), color);
+
+        }
+
+        public void Update(GameTime gt, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits, List<Unit> otherUnits, Camera cam)
+        {
+            bool allowedToMove = true;
+            // Check the collisions
+            // Loop through and check the collisons with all of the other units
+            
+            for (int i = 0; i < otherUnits.Count; i++)
             {
-                if ((previousMouse.X >= Position.X) && previousMouse.X <= (Position.X + 50)
-                    && previousMouse.Y >= Position.Y && previousMouse.Y <= (Position.Y + 50))
+                if(i != indexOfMe)
                 {
-                    IsSelected = true;
-                    color = Color.Cyan;
-                    userSelectedUnits.Add(this);
+                    if (checkCollision(otherUnits[i]))                                        
+                        allowedToMove = false;  // Don't move                   
+                    if (checkCollision(otherUnits[i]))
+                    {
+                        // Dont move
+                        allowedToMove = false;                      
+                    }
                 }
-                else
+            }
+            // Checks the movement
+
+            if (allowedToMove)
+            {            
+                if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
                 {
-                    IsSelected = false;
-                    color = Color.White;
-                    userSelectedUnits.Remove(this);
+                    Vector2 prevMouseVector = new Vector2(previousMouse.X, previousMouse.Y);
+
+                    // I need to account for the camera location in here
+                    if (((GetMouseWorldPos(prevMouseVector, cam.Pos).X ) >= Position.X ) && (GetMouseWorldPos(prevMouseVector, cam.Pos).X) <= (Position.X + (radius * 2))
+                        && (GetMouseWorldPos(prevMouseVector, cam.Pos).Y) >= Position.Y && (GetMouseWorldPos(prevMouseVector, cam.Pos).Y) <= (Position.Y  + (radius * 2)))
+                    {
+                        prevCamPos = cam.Pos;
+                        IsSelected = true;
+                        color = Color.Cyan;
+                        userSelectedUnits.Add(this);
+                    }
+                    else
+                    {
+                        IsSelected = false;
+                        color = Color.White;
+                        userSelectedUnits.Remove(this);
+                    }
+                }
+                if (IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
+                {
+                    destination = new Vector2(previousMouse.X + cam.Pos.X, previousMouse.Y + cam.Pos.Y);
+
+                    ProcessInput(destination, cam);
+                    IsMoving = true;
+                }
+                else if (IsMoving)
+                {
+                    ProcessInput(destination, cam);
                 }
             }
-            if (IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
+            // if there is a collision between units
+            else
             {
-                destination = new Vector2(previousMouse.X, previousMouse.Y);
-                ProcessInput(destination);
-                IsMoving = true;
+                // Move the unit away from said object
+                ProcessInput(-destination, cam);
+                // Move the unit away from said unit
+
+                ProcessInput(destination, cam);
+                //ProcessInput(new Vector2(destination.X, destination.Y - 50));
             }
-            else if (IsMoving)
-            {
-                ProcessInput(destination);
-            }
-            foreach (Unit u in enemyUnits)
+            foreach (Unit u in otherUnits)
             {
                 AttackUnit(u, gt);
             }
         }
 
+
+
         public override string ToString()
         {
-            return this.name;
+            return this.name + this.destination.ToString() + this.bounds.ToString();
+        }
+
+        public Vector2 GetMouseWorldPos(Vector2 screenPos, Vector2 camPos)
+        {
+            return screenPos + camPos;
         }
     }
 }

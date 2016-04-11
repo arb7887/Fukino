@@ -31,10 +31,16 @@ namespace GreatGame
         // Mouse stuff
         private MouseState currentMouse;
         private MouseState previousMouse;
+
+
+        // Map stuff
+        private Map gameMap;
+
         #endregion
 
 
         #region Properties
+        
         // Properties
         public GameState CurGameState { get { return this.curGameState; } set { this.curGameState = value; } }
         public FileInput AllUnits { get { return this.allUnits; } }
@@ -43,6 +49,7 @@ namespace GreatGame
         public List<Texture2D> UnitTextures { get { return this.unitTextures; } set { this.unitTextures = value; } }
         public Texture2D BulletTexture { get { return this.bulletTexture; } set { this.bulletTexture = value;} }
         public MenuHandler Menu { get { return this.menu; } set { this.menu = value; } }
+        public Map GameMap { get { return this.gameMap; } set { this.gameMap = value; } }
 
         #endregion
 
@@ -56,6 +63,7 @@ namespace GreatGame
             unitTextures = new List<Texture2D>();
             curGameState = GameState.Menu;
             menu = new MenuHandler(MenuStates.Main);
+            gameMap = new Map();
 
         }
 
@@ -78,10 +86,13 @@ namespace GreatGame
                 player1Units[i].Size = 50;
                 player1Units[i].Center = new Vector2(player1Units[i].Position.X + player1Units[i].Size / 2, player1Units[i].Position.Y + player1Units[i].Size / 2);
                 player1Units[i].BulletTexture = bulletTexture;
+                player1Units[i].Position = new Vector2(x + 50, 100);
+                player1Units[i].Bounds = new BoundingSphere(new Vector3(player1Units[i].Position, x), 25);
                 textCount++;
                 x += 100;
+                player1Units[i].MyTag = Unit.Tag.Player;
             }
-            player2Units.Add(new Unit("Bob", 100, 3, 5, 5, 2));
+            player2Units.Add(new Unit("Bob", 100, 3, 5, 5, 2, 0));
             player2Units[0].Position = new Vector2(500, 500);
             player2Units[0].Size = 50;
             player2Units[0].Center = new Vector2(player2Units[0].Position.X + player2Units[0].Size / 2, player2Units[0].Position.Y + player2Units[0].Size / 2);
@@ -106,7 +117,7 @@ namespace GreatGame
         /// <param name="currentMouse"></param>
         /// <param name="userSelectedUnits"></param>
         /// <param name="graphics"></param>
-        public void Update(GameTime gameTime, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits, GraphicsDevice graphics, KeyboardState kbState)
+        public void Update(GameTime gameTime, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits, GraphicsDevice graphics, KeyboardState kbState, Game1 game, Camera cam)
         {
             // Loop through both of the arrays of units and call the Unit's update function
             switch (curGameState)
@@ -120,18 +131,28 @@ namespace GreatGame
                         curGameState = GameState.Game;
                         // Load in the list of class selected units and add them to the list of units in 
                         // This game one class's list called 'userSelectedUnits'
-                        SetUnitsFromButtons();
+                        //SetUnitsFromButtons();
                         Initialize();
+                    }
+                    else if (menu.ExitGame)
+                    {
+                        // Quit the game
+                        
+                        game.Quit();
                     }
                     break;
                 case (GameState.Game):
-                    // Call the updates on all of the units in the players list
-                    for(int i = 0; i < player1Units.Count; i++)
+                    // Call the updates on all of the units in the players list                    
+                    for (int i = 0; i < player1Units.Count; i++)
                     {
                         player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits, player2Units);
                         if (player1Units[i].Health < 0)
                         {
                             player1Units.Remove(player1Units[i]);
+                        }
+                        if (previousMouse.X < graphics.Viewport.Width && previousMouse.X > 0 && previousMouse.Y > 0 && previousMouse.Y < graphics.Viewport.Height)
+                        {
+                            player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits, player1Units, cam);
                         }
                     }
                     for (int i = 0; i < player2Units.Count; i++)
@@ -141,11 +162,13 @@ namespace GreatGame
                             player2Units.Remove(player2Units[i]);
                         }
                     }
-                    // Check for the button push of some key pause the game
-
-                    // Check to see if they pushed a button to use a special ability
-
                     break;
+                // Check for the button push of some key pause the game
+
+                // Check to see if they pushed a button to use a special ability
+
+                // Check to see if the mouse is even inside of the window, if not, then don't bother calling the update method
+
                 case (GameState.Paused):
                     // Check to see if the paused button is pressed again
                     // A button to give up, which will set you to game over
@@ -153,12 +176,16 @@ namespace GreatGame
                 case(GameState.GameOver):
                     // Check to see if the user has pushed something to go back to the main menu
                     // Show a button to go back to the menu
+                    if (kbState.IsKeyDown(Keys.Enter))
+                    {
+                        CurGameState = GameState.Menu;
+                    }
                     break;
             }
         }
 
         // Call the unit's draw methods and the maps draw method
-        public void Draw(SpriteBatch sb, SpriteFont font)
+        public void Draw(SpriteBatch sb, SpriteFont font, Camera cam)
         {
             // Loop through both of the arrays of units and call the Unit's update function
             switch (curGameState)
@@ -168,19 +195,24 @@ namespace GreatGame
                     menu.Draw(sb);
                     break;
                 case (GameState.Game):
+                    // Draw the map
+                    DrawMap(sb);
+
+                    // Draw the units
                     // Call the updates on all of the units in the players list
                     for (int i = 0; i < player1Units.Count; i++)
                     {
-                        player1Units[i].Draw(sb, font);
+                        player1Units[i].Draw(sb, font, cam);
                         for (int j = 0; j < player1Units[i].ActiveBullets.Count; j++)
                         {
                             player1Units[i].ActiveBullets[j].Draw(sb);
                         }
                     }
+                   // DrawPlayers(sb, font, cam);
                     sb.DrawString(font, Player1String(), Vector2.Zero, Color.Black);
                     if (player2Units.Count > 0)
                     {
-                        player2Units[0].Draw(sb, font);
+                        player2Units[0].Draw(sb, font, cam);
                     }
                     break;
                 case (GameState.Paused):
@@ -203,7 +235,7 @@ namespace GreatGame
                 {
                     if (menu.UserSelectedNames[i] == this.AllUnits.UnitList[j].Name)
                     {
-                        player1Units.Add(new Unit(allUnits.UnitList[j]));
+                        player1Units.Add(new Unit(allUnits.UnitList[j], i));
                     }
                 }
             }
@@ -214,11 +246,16 @@ namespace GreatGame
             string thing = "";
             for(int i = 0; i < player1Units.Count; i++)
             {
-                thing += " " + player1Units[i].Name;
+                thing += " " + player1Units[i].Name + player1Units[i].Bounds.ToString();
             }
             return thing;
         }
 
 
+        public void DrawMap(SpriteBatch sb)
+        {
+            if (curGameState == GameState.Game)
+                gameMap.Draw(sb);
+        }
     }
 }

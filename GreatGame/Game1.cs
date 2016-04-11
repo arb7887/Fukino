@@ -12,6 +12,7 @@ namespace GreatGame
     public class Game1 : Game
     {
         // Fields
+        #region Fields
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
@@ -30,6 +31,12 @@ namespace GreatGame
         MouseState currentMouse;
         MouseState previousMouse;
 
+        // This is the camera that shall be used for the player
+        private Camera _camera;
+
+        #endregion
+
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -38,6 +45,8 @@ namespace GreatGame
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
             // Make full screen when we get to the point of that
+            //graphics.IsFullScreen = true;
+
 
             Content.RootDirectory = "Content";
 
@@ -60,7 +69,10 @@ namespace GreatGame
             // Load in the Units.txt file, this works now
             userSelectedUnits = new List<Unit>();
 
+            //gameMap = new Map();
+
             this.IsMouseVisible = true;
+            _camera = new Camera(GraphicsDevice.Viewport);
             base.Initialize();
         }
 
@@ -78,6 +90,9 @@ namespace GreatGame
             manager.Menu.LoadContent(buttonTexture, buttonFont, GraphicsDevice);
 
             font = Content.Load<SpriteFont>("Arial14");
+
+            manager.GameMap.WallTexture = Content.Load<Texture2D>("wallTexture.jpg");
+            manager.GameMap.LoadMap("Content/Walls.txt");
 
             // Load in the list of units from the files here
             manager.LoadContent();
@@ -107,16 +122,37 @@ namespace GreatGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            KeyboardState kbState = Keyboard.GetState();
-            
+            var keyboardState = Keyboard.GetState();
+
+            #region Camera Stuff
+            if (manager.CurGameState == GameManager.GameState.Game)
+            {           
+                var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+                // camera movement
+                if (keyboardState.IsKeyDown(Keys.W))
+                    _camera.Pos -= new Vector2(0, 250) * deltaTime;
+
+                if (keyboardState.IsKeyDown(Keys.S))
+                    _camera.Pos += new Vector2(0, 250) * deltaTime;
+
+                if (keyboardState.IsKeyDown(Keys.A))
+                    _camera.Pos -= new Vector2(250, 0) * deltaTime;
+
+                if (keyboardState.IsKeyDown(Keys.D))
+                    _camera.Pos += new Vector2(250, 0) * deltaTime;
+        }
+            #endregion
+
 
             previousMouse = currentMouse;
             currentMouse = Mouse.GetState();
 
             // Call the managers update method
-            manager.Update(gameTime, previousMouse, currentMouse, userSelectedUnits, GraphicsDevice, kbState);
+
 
             MouseState mouse = Mouse.GetState();
+            manager.Update(gameTime, previousMouse, currentMouse, userSelectedUnits, GraphicsDevice, keyboardState, this, _camera);
+
 
             base.Update(gameTime);
         }
@@ -129,15 +165,34 @@ namespace GreatGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Green);
+            var viewMatrix = _camera.GetViewMatrix();
 
-            spriteBatch.Begin();
+         
+            // Second
+            spriteBatch.Begin(transformMatrix: viewMatrix);
+            // Draw the map in here
+            manager.Draw(spriteBatch, font, _camera);
+            // Draw bullets in here i think
+            spriteBatch.DrawString(font, "THE CAMERA'S  POS:" + _camera.Pos.ToString(), new Vector2(0, 0), Color.Blue);
+            spriteBatch.DrawString(font, "THE CAMERA'S WORLD POS:" + _camera.GetWorldPosition(_camera.Pos).ToString(), new Vector2(0, 20), Color.Blue);
 
             // Call the managers Draw method
-            manager.Draw(spriteBatch, font);
+            manager.Draw(spriteBatch, font, _camera);
 
+            //spriteBatch.DrawString(font, "THE CAMERA'S  POS:" + _camera.Pos.ToString(), new Vector2(0, 20), Color.Blue);
+
+            spriteBatch.DrawString(font, "THE CAMERA'S SCREEN POS:" + _camera.GetScreenPosition(_camera.Pos).ToString(), new Vector2(0, 40), Color.Blue);
             spriteBatch.End();
+            // WRONG!!!!!!!!!! 
+
 
             base.Draw(gameTime);
+        }
+
+
+        public void Quit()
+        {
+            this.Exit();
         }
     }
 }

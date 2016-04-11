@@ -70,6 +70,9 @@ namespace GreatGame
             switch (currentState)
             {
                 case MenuStates.Main:
+                    exit.CheckHover(ms);
+                    options.CheckHover(ms);
+                    play.CheckHover(ms);
                     if (exit.CheckClicked(ms))
                         exitGame = true;
                     if (options.CheckClicked(ms))
@@ -88,16 +91,26 @@ namespace GreatGame
                     break;
                 case MenuStates.Select:
                     for (int i = 0; i < classSelectors.Count; i++)
+                    {
                         classSelectors[i].CheckClicked(ms);
+                        classSelectors[i].CheckHover(ms);
+                    }
+                        
 
                     bool selected = true;
 
                     for (int i = 0; i < classSelectors.Count; i++)
+                    {
                         if (classSelectors[i].Name == "Select")
                             selected = false;
+                        classSelectors[i].CheckEnabled(ms);
+                    }
 
                     if (selected)
+                    {
                         play.Enabled = true;
+                        play.CheckHover(ms);
+                    }
                     else
                         play.Enabled = false;
                     if (play.CheckClicked(ms))
