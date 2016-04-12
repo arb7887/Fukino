@@ -19,7 +19,6 @@ namespace GreatGame
         private List<Unit> player2Units;
         // This is a list of textures that has been loaded in
         private List<Texture2D> unitTextures;
-        private Texture2D bulletTexture;
 
         // This is the menu handler for the main menu
         private MenuHandler menu;
@@ -47,7 +46,6 @@ namespace GreatGame
         public List<Unit> Player1Units {get { return this.player1Units; } set { this.player1Units = value; } }
         public List<Unit> Player2Units { get { return this.player2Units; } }
         public List<Texture2D> UnitTextures { get { return this.unitTextures; } set { this.unitTextures = value; } }
-        public Texture2D BulletTexture { get { return this.bulletTexture; } set { this.bulletTexture = value;} }
         public MenuHandler Menu { get { return this.menu; } set { this.menu = value; } }
         public Map GameMap { get { return this.gameMap; } set { this.gameMap = value; } }
 
@@ -55,7 +53,7 @@ namespace GreatGame
 
 
         // Take in a string with a file name, and move all the file input to here
-        public GameManager(String fileName, String texturesFileName, MouseState curMouse, MouseState prevMouse)
+        public GameManager(String fileName, String texturesFileName, MouseState curMouse, MouseState prevMosue)
         {
             allUnits = new FileInput(fileName, texturesFileName);
             player1Units = new List<Unit>();
@@ -82,21 +80,13 @@ namespace GreatGame
                     textCount = 0;
                 }
                 player1Units[i].Texture = unitTextures[textCount];
-                player1Units[i].Position = new Vector2(x + 10, 100);
-                player1Units[i].Size = 50;
-                player1Units[i].Center = new Vector2(player1Units[i].Position.X + player1Units[i].Size / 2, player1Units[i].Position.Y + player1Units[i].Size / 2);
-                player1Units[i].BulletTexture = bulletTexture;
                 player1Units[i].Position = new Vector2(x + 50, 100);
                 player1Units[i].Bounds = new BoundingSphere(new Vector3(player1Units[i].Position, x), 25);
                 textCount++;
                 x += 100;
                 player1Units[i].MyTag = Unit.Tag.Player;
             }
-            player2Units.Add(new Unit("Bob", 100, 3, 5, 5, 2, 0));
-            player2Units[0].Position = new Vector2(500, 500);
-            player2Units[0].Size = 50;
-            player2Units[0].Center = new Vector2(player2Units[0].Position.X + player2Units[0].Size / 2, player2Units[0].Position.Y + player2Units[0].Size / 2);
-            player2Units[0].Texture = UnitTextures[0];
+            
         }
         
         /// <summary>
@@ -131,7 +121,7 @@ namespace GreatGame
                         curGameState = GameState.Game;
                         // Load in the list of class selected units and add them to the list of units in 
                         // This game one class's list called 'userSelectedUnits'
-                        //SetUnitsFromButtons();
+                        SetUnitsFromButtons();
                         Initialize();
                     }
                     else if (menu.ExitGame)
@@ -145,32 +135,21 @@ namespace GreatGame
                     // Call the updates on all of the units in the players list                    
                     for (int i = 0; i < player1Units.Count; i++)
                     {
-                        player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits, player2Units);
-                        if (player1Units[i].Health < 0)
-                        {
-                            player1Units.Remove(player1Units[i]);
-                        }
-                        if (previousMouse.X < graphics.Viewport.Width && previousMouse.X > 0 && previousMouse.Y > 0 && previousMouse.Y < graphics.Viewport.Height)
+                        // Check to see if the mouse is even inside of the window, if not, then don't bother calling the update method
+                        if(previousMouse.X < graphics.Viewport.Width && previousMouse.X > 0 && previousMouse.Y > 0 && previousMouse.Y < graphics.Viewport.Height)
                         {
                             player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits, player1Units, cam);
+
                         }
                     }
-                    for (int i = 0; i < player2Units.Count; i++)
-                    {
-                        if (player2Units[i].Health <= 0)
-                        {
-                            player2Units.Remove(player2Units[i]);
-                        }
-                    }
+                    
                     break;
-                // Check for the button push of some key pause the game
-
-                // Check to see if they pushed a button to use a special ability
-
-                // Check to see if the mouse is even inside of the window, if not, then don't bother calling the update method
-
                 case (GameState.Paused):
                     // Check to see if the paused button is pressed again
+                    if (kbState.IsKeyDown(Keys.P))
+                    {
+                        curGameState = GameState.Game;
+                    }
                     // A button to give up, which will set you to game over
                     break;
                 case(GameState.GameOver):
@@ -203,20 +182,15 @@ namespace GreatGame
                     for (int i = 0; i < player1Units.Count; i++)
                     {
                         player1Units[i].Draw(sb, font, cam);
-                        for (int j = 0; j < player1Units[i].ActiveBullets.Count; j++)
-                        {
-                            player1Units[i].ActiveBullets[j].Draw(sb);
-                        }
                     }
                    // DrawPlayers(sb, font, cam);
+
                     sb.DrawString(font, Player1String(), Vector2.Zero, Color.Black);
-                    if (player2Units.Count > 0)
-                    {
-                        player2Units[0].Draw(sb, font, cam);
-                    }
                     break;
                 case (GameState.Paused):
                     // Show some text about the current score, and the current untis health and what not
+                    sb.DrawString(font, "Paused! Press P to Continue", new Vector2(500, 500), Color.Black);
+                    
                     break;
                 case (GameState.GameOver):
                     // Show the teams score and the points and stuff
@@ -257,5 +231,8 @@ namespace GreatGame
             if (curGameState == GameState.Game)
                 gameMap.Draw(sb);
         }
+
+
+
     }
 }

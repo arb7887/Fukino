@@ -11,24 +11,27 @@ namespace GreatGame
     class Unit
     {
         // Fields
+        #region Fields
+        // Keeping these private is the whole point of object oriented programming
         private String name;
-        private int visionRange, attackRange, attack, defense, size;
-        private double health, speed, rateOfFire, remainingDelay;
+        private int visionRange, attackRange, attack, defense;
+        private double health, speed;
         private Boolean isSelected, isMoving;
         private Vector2 position;
-        private Vector2 center;
+        private Texture2D texture;
         private Vector2 destination;
-        private Texture2D texture, bulletTexture;
         private Color color;
-        private Bullet bullet;
-        private List<Bullet> activeBullets;
+
         private BoundingSphere bounds;
+        private double rateOfFire;
         private int indexOfMe;
         private float radius;
 
         private Tag myTag;
         private Vector2 prevCamPos;
 
+
+        #endregion
 
         // FSM for the alignment of this class
         public enum Tag
@@ -38,6 +41,7 @@ namespace GreatGame
             Neutral
         }
 
+        #region Constructors
         public Unit(String name, int health, double speed, int attackRange, int attack, double rateOfFire, int indexOfMe)
         {
             this.name = name;
@@ -48,13 +52,12 @@ namespace GreatGame
             this.rateOfFire = rateOfFire;
             isSelected = false;
             isMoving = false;
-            center = new Vector2(position.X + size/ 2, position.Y + size / 2);
+            position = new Vector2(0, 0);
             color = Color.White;
-            this.activeBullets = new List<Bullet>();
-            bounds = new BoundingSphere(new Vector3(center.X, center.Y, 0), size/2);
 
             this.indexOfMe = indexOfMe;
             radius = 25;
+            bounds = new BoundingSphere(new Vector3(position, 0), radius);
             prevCamPos = new Vector2(0,0);
 
         }
@@ -64,26 +67,13 @@ namespace GreatGame
         {
 
         }
+        #endregion
 
         // Properties
+        #region Properties
         public String Name { get { return name; } }
 
-        public int Attack { get { return attack;  } set { attack = value; } }
-
-        public Double Health
-        {
-            get
-            {
-                return health;
-            }
-            set
-            {
-                health = value;
-            }
-        }
-        
         public Tag MyTag { get { return this.myTag; } set { myTag = value; } }
-
         public Boolean IsSelected
         {
             get
@@ -146,35 +136,20 @@ namespace GreatGame
             }
         }
 
-        public Vector2 Center { get { return center; } set { center = value; } }
-
-        public int Size { get { return size; } set { size = value; } }
-
         public Color UnitColor
         {
             get { return color; }
             set { color = value; }
         }
 
-        public BoundingSphere Bounds { get { return bounds; } set { bounds = value; } }
-
-        public Texture2D BulletTexture
+        public BoundingSphere Bounds
         {
-            get
-            {
-                return bulletTexture;
-            }
-            set
-            {
-                bulletTexture = value;
-            }
+            get { return bounds; }
+            set { this.bounds = value; }
         }
-
-        public Bullet Bullet { get { return bullet; } set { bullet = value; } }
-
-        public List<Bullet> ActiveBullets { get { return activeBullets; } }
-
+        #endregion
         // Methods
+        #region methods
         public Boolean checkCollision(Unit u)
         {
             if (u.Bounds.Intersects(this.bounds))
@@ -205,47 +180,21 @@ namespace GreatGame
         /// this unit will take
         /// </summary>
         /// <param name="damage">Amount of damage taken</param>
-        /*public void TakeDamage(double damage)
+        public void TakeDamage(double damage)
         {
             health -= damage;
-        }*/
-
-        public void AttackUnit(Unit u, GameTime gt)
-        {
-            Vector2 distance = new Vector2(position.X - u.Position.X, position.Y - u.position.Y);
-            double timer = gt.ElapsedGameTime.TotalSeconds;
-            remainingDelay -= timer;
-            if (remainingDelay <= 0)
-            {
-                if (distance.Length() <= attackRange)
-                {
-                    Bullet newBullet = new Bullet(5, attack, attackRange, 5, bulletTexture);
-                    newBullet.Position = center;
-                    newBullet.StartingLocation = center;
-                    newBullet.Bounds = new BoundingSphere(new Vector3(newBullet.Position.X, newBullet.Position.Y, 0), (float) newBullet.Size/2);
-                    newBullet.Destination = u.Center;
-                    activeBullets.Add(newBullet);
-                    newBullet = null;
-                }
-                remainingDelay = rateOfFire;
-            }
-            if (u.health <= 0)
-            {
-                Console.WriteLine(u.name + " has died");
-            }
-            for (int i = 0; i < activeBullets.Count; i++)
-            {
-                if (activeBullets[i].ToDelete)
-                {
-                    activeBullets.RemoveAt(i);
-                }
-                else
-                {
-                    activeBullets[i].Move();
-                    activeBullets[i].DamageCheck(u);
-                }
-            }
         }
+
+        /// <summary>
+        /// This is the method that will be called for this unit to attack, 
+        /// which will try to attack another unit
+        /// </summary>
+        /// <param name="u">Other unit to attack</param>
+        public void Attack(Unit u)
+        {
+            // Spawn a bullet in the directoin that the unit is facing
+        }
+
 
         public void ProcessInput(Vector2 mouseLoc, Camera cam)
         {
@@ -256,7 +205,7 @@ namespace GreatGame
 
             if (distance.Length() < speed)
             {
-                position = new Vector2(mouseLoc.X - (size/2), mouseLoc.Y - (size/2));
+                position = mouseLoc;
                 isMoving = false;
             }
             else
@@ -264,11 +213,11 @@ namespace GreatGame
                 distance.Normalize();
                 Vector2 toMove = new Vector2((int)(distance.X * speed), (int)(distance.Y * speed));
                 position += toMove;
-                center += toMove;
-                bounds = new BoundingSphere(new Vector3(toMove.X, toMove.Y, 0), size);
+                bounds = new BoundingSphere(new Vector3(position, 0), radius);
             }
         }
 
+#endregion
         public void Draw(SpriteBatch sb, SpriteFont font, Camera cam)
         {
             // Basic draw function for the units class
@@ -277,16 +226,11 @@ namespace GreatGame
             //b.DrawString(font, "X:" + this.bounds.Center.X.ToString() + "Y:" + this.bounds.Center.Y.ToString(), new Vector2(this.position.X, this.position.Y - 30), Color.Black);
 
              sb.DrawString(font, "HEALTH: " + this.health, new Vector2(this.position.X, this.position.Y - 20), Color.Black);
-             sb.Draw(texture, new Rectangle((int)position.X, (int)position.Y, 50, 50), color);
-        }
 
-        public void Update(GameTime gt, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits, List<Unit> enemyUnits)
-        {
-            //if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
             //.DrawString(font, "DESTINATION:" + this.destination.ToString(),new Vector2(this.position.X, this.position.Y - 20), Color.Black);
             //Console.WriteLine("CAM.POS: X = " + cam.Pos.X + " Y= " + cam.Pos.Y);
 
-           // sb.Draw(texture, new Rectangle((int)bounds.Center.X, (int)bounds.Center.Y , 50,50), color);
+            sb.Draw(texture, new Rectangle((int)bounds.Center.X, (int)bounds.Center.Y , 50,50), color);
 
         }
 
@@ -354,10 +298,6 @@ namespace GreatGame
 
                 ProcessInput(destination, cam);
                 //ProcessInput(new Vector2(destination.X, destination.Y - 50));
-            }
-            foreach (Unit u in otherUnits)
-            {
-                AttackUnit(u, gt);
             }
         }
 

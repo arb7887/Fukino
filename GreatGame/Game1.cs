@@ -24,7 +24,6 @@ namespace GreatGame
         private List<Unit> userSelectedUnits;   // The list of units that the user has selected
 
         Texture2D buttonTexture;
-        Texture2D bulletTexture;
         SpriteFont buttonFont;
 
         // Mouse stuff
@@ -49,7 +48,7 @@ namespace GreatGame
 
 
             Content.RootDirectory = "Content";
-
+            
         }
 
         /// <summary>
@@ -84,7 +83,7 @@ namespace GreatGame
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
+             
             buttonTexture = Content.Load<Texture2D>("ExampleButtonA.png");
             buttonFont = Content.Load<SpriteFont>("buttonFont");
             manager.Menu.LoadContent(buttonTexture, buttonFont, GraphicsDevice);
@@ -94,6 +93,7 @@ namespace GreatGame
             manager.GameMap.WallTexture = Content.Load<Texture2D>("wallTexture.jpg");
             manager.GameMap.LoadMap("Content/Walls.txt");
 
+
             // Load in the list of units from the files here
             manager.LoadContent();
 
@@ -102,8 +102,6 @@ namespace GreatGame
                 Texture2D newTexture = Content.Load<Texture2D>(manager.AllUnits.TextureList[i]);
                 manager.UnitTextures.Add(newTexture);
             }
-            bulletTexture = Content.Load<Texture2D>("Bullet");
-            manager.BulletTexture = bulletTexture;
         }
 
         /// <summary>
@@ -176,12 +174,10 @@ namespace GreatGame
             spriteBatch.DrawString(font, "THE CAMERA'S  POS:" + _camera.Pos.ToString(), new Vector2(0, 0), Color.Blue);
             spriteBatch.DrawString(font, "THE CAMERA'S WORLD POS:" + _camera.GetWorldPosition(_camera.Pos).ToString(), new Vector2(0, 20), Color.Blue);
 
-            // Call the managers Draw method
-            manager.Draw(spriteBatch, font, _camera);
-
             //spriteBatch.DrawString(font, "THE CAMERA'S  POS:" + _camera.Pos.ToString(), new Vector2(0, 20), Color.Blue);
 
             spriteBatch.DrawString(font, "THE CAMERA'S SCREEN POS:" + _camera.GetScreenPosition(_camera.Pos).ToString(), new Vector2(0, 40), Color.Blue);
+            
             spriteBatch.End();
             // WRONG!!!!!!!!!! 
 
