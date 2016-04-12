@@ -13,22 +13,25 @@ namespace GreatGame
         // Fields
         #region Fields
         // Keeping these private is the whole point of object oriented programming
+        // Fields
         private String name;
-        private int visionRange, attackRange, attack, defense;
-        private double health, speed;
+        private int visionRange, attackRange, attack, defense, size;
+        private double health, speed, rateOfFire, remainingDelay;
         private Boolean isSelected, isMoving;
         private Vector2 position;
-        private Texture2D texture;
+        private Vector2 center;
         private Vector2 destination;
+        private Texture2D texture, bulletTexture;
         private Color color;
-
+        private Bullet bullet;
+        private List<Bullet> activeBullets;
         private BoundingSphere bounds;
-        private double rateOfFire;
         private int indexOfMe;
         private float radius;
 
         private Tag myTag;
         private Vector2 prevCamPos;
+
 
 
         #endregion
@@ -71,6 +74,19 @@ namespace GreatGame
 
         // Properties
         #region Properties
+        public int Attack { get { return attack; } set { attack = value; } }
+
+        public Double Health
+        {
+            get
+            {
+                return health;
+            }
+            set
+            {
+                health = value;
+            }
+        }
         public String Name { get { return name; } }
 
         public Tag MyTag { get { return this.myTag; } set { myTag = value; } }
@@ -147,7 +163,32 @@ namespace GreatGame
             get { return bounds; }
             set { this.bounds = value; }
         }
+
+        // Bullet properties=======================
+        public Vector2 Center { get { return center; } set { center = value; } }
+
+        public int Size { get { return size; } set { size = value; } }
+
+        public Texture2D BulletTexture
+        {
+            get
+            {
+                return bulletTexture;
+            }
+            set
+            {
+                bulletTexture = value;
+            }
+        }
+  
+
+        public Bullet Bullet { get { return bullet; } set { bullet = value; } }
+
+        public List<Bullet> ActiveBullets { get { return activeBullets; } }
+        //===========================================
         #endregion
+
+
         // Methods
         #region methods
         public Boolean checkCollision(Unit u)
@@ -185,14 +226,41 @@ namespace GreatGame
             health -= damage;
         }
 
-        /// <summary>
-        /// This is the method that will be called for this unit to attack, 
-        /// which will try to attack another unit
-        /// </summary>
-        /// <param name="u">Other unit to attack</param>
-        public void Attack(Unit u)
+        public void AttackUnit(Unit u, GameTime gt)
         {
-            // Spawn a bullet in the directoin that the unit is facing
+            Vector2 distance = new Vector2(position.X - u.Position.X, position.Y - u.position.Y);
+            double timer = gt.ElapsedGameTime.TotalSeconds;
+            remainingDelay -= timer;
+            if (remainingDelay <= 0)
+            {
+                if (distance.Length() <= attackRange)
+                {
+                    Bullet newBullet = new Bullet(5, attack, attackRange, 5, bulletTexture);
+                    newBullet.Position = center;
+                    newBullet.StartingLocation = center;
+                    newBullet.Bounds = new BoundingSphere(new Vector3(newBullet.Position.X, newBullet.Position.Y, 0), (float)newBullet.Size / 2);
+                    newBullet.Destination = u.Center;
+                    activeBullets.Add(newBullet);
+                    newBullet = null;
+                }
+                remainingDelay = rateOfFire;
+            }
+            if (u.health <= 0)
+            {
+                Console.WriteLine(u.name + " has died");
+            }
+            for (int i = 0; i < activeBullets.Count; i++)
+            {
+                if (activeBullets[i].ToDelete)
+                {
+                    activeBullets.RemoveAt(i);
+                }
+                else
+                {
+                    activeBullets[i].Move();
+                    activeBullets[i].DamageCheck(u);
+                }
+            }
         }
 
 
