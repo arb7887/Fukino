@@ -107,7 +107,8 @@ namespace GreatGame
         /// <param name="currentMouse"></param>
         /// <param name="userSelectedUnits"></param>
         /// <param name="graphics"></param>
-        public void Update(GameTime gameTime, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits, GraphicsDevice graphics, KeyboardState kbState, Game1 game, Camera cam)
+        public void Update(GameTime gameTime, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits, 
+            GraphicsDevice graphics, KeyboardState kbState, KeyboardState kbPState, Game1 game, Camera cam)
         {
             // Loop through both of the arrays of units and call the Unit's update function
             switch (curGameState)
@@ -139,14 +140,13 @@ namespace GreatGame
                         if(previousMouse.X < graphics.Viewport.Width && previousMouse.X > 0 && previousMouse.Y > 0 && previousMouse.Y < graphics.Viewport.Height)
                         {
                             player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits, player1Units, cam);
-
                         }
                     }
-                    
+                    if (kbState.IsKeyDown(Keys.Escape) && kbPState.IsKeyUp(Keys.Escape)) curGameState = GameState.Paused;
                     break;
                 case (GameState.Paused):
                     // Check to see if the paused button is pressed again
-                    if (kbState.IsKeyDown(Keys.P))
+                    if (kbState.IsKeyDown(Keys.Escape) && kbPState.IsKeyUp(Keys.Escape))
                     {
                         curGameState = GameState.Game;
                     }
@@ -189,7 +189,7 @@ namespace GreatGame
                     break;
                 case (GameState.Paused):
                     // Show some text about the current score, and the current untis health and what not
-                    sb.DrawString(font, "Paused! Press P to Continue", new Vector2(500, 500), Color.Black);
+                    sb.DrawString(font, "Paused! Press Escape to Continue", new Vector2(500, 500), Color.Black);
                     
                     break;
                 case (GameState.GameOver):
