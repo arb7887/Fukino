@@ -322,6 +322,17 @@ namespace GreatGame
                         }
                     }
                 }
+                for (int i = 0; i < userSelectedUnits.Count; i++)
+                {
+                    if (i != indexOfMe)
+                    {
+                        if (checkCollision(userSelectedUnits[i]))
+                        {
+                            // Dont move
+                            allowedToMove = false;
+                        }
+                    }
+                }
                 // Checks the movement
 
                 if (allowedToMove)
