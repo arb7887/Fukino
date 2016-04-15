@@ -38,18 +38,18 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Ability.cs" />
-    <Compile Include="Bullet.cs" />
-    <Compile Include="Camera.cs" />
-    <Compile Include="ClassSelectButton.cs" />
+    <Compile Include="Unit\Ability.cs" />
+    <Compile Include="Unit\Bullet.cs" />
+    <Compile Include="UI\Camera.cs" />
+    <Compile Include="UI\ClassSelectButton.cs" />
     <Compile Include="FileInput.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameManager.cs" />
-    <Compile Include="MenuButton.cs" />
-    <Compile Include="MenuHandler.cs" />
+    <Compile Include="UI\MenuButton.cs" />
+    <Compile Include="UI\MenuHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Unit.cs" />
+    <Compile Include="Unit\Unit.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Wall.cs" />
   </ItemGroup>
