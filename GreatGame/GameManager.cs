@@ -19,7 +19,7 @@ namespace GreatGame
         private List<Unit> player2Units;
         // This is a list of textures that has been loaded in
         private List<Texture2D> unitTextures;
-
+        private Texture2D bulletTexture;
         // This is the menu handler for the main menu
         private MenuHandler menu;
 
@@ -46,6 +46,7 @@ namespace GreatGame
         public List<Unit> Player1Units {get { return this.player1Units; } set { this.player1Units = value; } }
         public List<Unit> Player2Units { get { return this.player2Units; } }
         public List<Texture2D> UnitTextures { get { return this.unitTextures; } set { this.unitTextures = value; } }
+        public Texture2D BulletTexture { get { return this.bulletTexture; } set { this.bulletTexture = value; } }
         public MenuHandler Menu { get { return this.menu; } set { this.menu = value; } }
         public Map GameMap { get { return this.gameMap; } set { this.gameMap = value; } }
 
@@ -62,7 +63,6 @@ namespace GreatGame
             curGameState = GameState.Menu;
             menu = new MenuHandler(MenuStates.Main);
             gameMap = new Map();
-
         }
 
         /// <summary>
@@ -81,12 +81,21 @@ namespace GreatGame
                 }
                 player1Units[i].Texture = unitTextures[textCount];
                 player1Units[i].Position = new Vector2(x + 50, 100);
-                player1Units[i].Bounds = new BoundingSphere(new Vector3(player1Units[i].Position, x), 25);
+                player1Units[i].Size = 50;
+                player1Units[i].Center = new Vector2(player1Units[i].Position.X + (player1Units[i].Size / 2), player1Units[i].Position.Y + (player1Units[i].Size / 2));
+                player1Units[i].Bounds = new BoundingSphere(new Vector3(player1Units[i].Position, 0), 25);
                 textCount++;
                 x += 100;
                 player1Units[i].MyTag = Unit.Tag.Player;
+                player1Units[i].BulletTexture = bulletTexture;
             }
-            
+            player2Units.Add(new Unit("Bob", 100, 3, 150, 5, 1, 1));
+            player2Units[0].Position = new Vector2(500, 500);
+            player2Units[0].Size = 50;
+            player2Units[0].Center = new Vector2(player2Units[0].Position.X + player2Units[0].Size / 2, player2Units[0].Position.Y + player2Units[0].Size / 2);
+            player2Units[0].Bounds = new BoundingSphere(new Vector3(player2Units[0].Position, 0), 25);
+            player2Units[0].Texture = UnitTextures[0];
+            player2Units[0].BulletTexture = bulletTexture;
         }
         
         /// <summary>
@@ -139,7 +148,19 @@ namespace GreatGame
                         // Check to see if the mouse is even inside of the window, if not, then don't bother calling the update method
                         if(previousMouse.X < graphics.Viewport.Width && previousMouse.X > 0 && previousMouse.Y > 0 && previousMouse.Y < graphics.Viewport.Height)
                         {
-                            player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits, player1Units, cam);
+                            player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits, player2Units, cam);
+                        }
+                        /*if (player1Units[i].)
+                        {
+                            player1Units.Remove(player1Units[i]);
+                        }*/
+                    }
+                    for (int i = 0; i < player2Units.Count; i++)
+                    {
+                        player2Units[i].UpdateEnemy(gameTime, player1Units);
+                        if (player2Units[i].Health <= 0)
+                        {
+                            player2Units.Remove(player2Units[i]);
                         }
                     }
                     if (kbState.IsKeyDown(Keys.Escape) && kbPState.IsKeyUp(Keys.Escape)) curGameState = GameState.Paused;
@@ -181,10 +202,33 @@ namespace GreatGame
                     // Call the updates on all of the units in the players list
                     for (int i = 0; i < player1Units.Count; i++)
                     {
-                        player1Units[i].Draw(sb, font, cam);
+                        if (player1Units[i].IsAlive)
+                        {
+                            player1Units[i].Draw(sb, font, cam);
+                            for (int j = 0; j < player1Units[i].ActiveBullets.Count; j++)
+                            {
+                                if (!player1Units[i].ActiveBullets[j].ToDelete)
+                                {
+                                    player1Units[i].ActiveBullets[j].Draw(sb);
+                                }
+                            }
+                        }
                     }
                    // DrawPlayers(sb, font, cam);
-
+                    for (int k = 0; k < player2Units.Count; k++)
+                    {
+                        if (player2Units[k].IsAlive)
+                        {
+                            player2Units[k].Draw(sb, font, cam);
+                            for (int l = 0; l < player2Units[k].ActiveBullets.Count; l++)
+                            {
+                                if (!player2Units[k].ActiveBullets[l].ToDelete)
+                                {
+                                    player2Units[k].ActiveBullets[l].Draw(sb);
+                                }
+                            }
+                        }
+                    }
                     sb.DrawString(font, Player1String(), Vector2.Zero, Color.Black);
                     break;
                 case (GameState.Paused):
@@ -231,8 +275,5 @@ namespace GreatGame
             if (curGameState == GameState.Game)
                 gameMap.Draw(sb);
         }
-
-
-
     }
 }

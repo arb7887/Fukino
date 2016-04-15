@@ -24,13 +24,15 @@ namespace GreatGame
         private Texture2D texture;
         private bool toDelete;
 
-        public Bullet(double speed, double damage, double range, int size, Texture2D texture)
+        public Bullet(double speed, double damage, double range, int size, Vector2 startingLocation, Texture2D texture)
         {
             this.speed = speed;
             this.damage = damage;
             this.range = range;
             this.size = size;
             this.texture = texture;
+            this.position = startingLocation;
+            this.startingLocation = startingLocation;
             this.bounds = new BoundingSphere(new Vector3(position.X, position.Y, 0), (float)size);
             this.center = new Vector2(position.X + size / 2, position.Y + size / 2);
         }
@@ -126,7 +128,7 @@ namespace GreatGame
         public void DistanceCheck()
         {
             Vector2 distance = new Vector2(startingLocation.X - position.X - (int)size / 2, startingLocation.Y - position.Y - (int)size / 2);
-            if (distance.Length() > range)
+            if (distance.Length() >= range)
             {
                 toDelete = true;
             }
@@ -134,8 +136,7 @@ namespace GreatGame
 
         public void DamageCheck(Unit u)
         {
-            Vector2 distance = new Vector2(position.X - u.Position.X - u.Size / 2, position.Y - u.Position.Y - u.Size / 2);
-            if (distance.Length() < size)
+            if (bounds.Intersects(u.Bounds))
             {
                 u.Health -= damage;
                 toDelete = true;
