@@ -52,6 +52,7 @@ namespace GreatGame
             {
                 w.Draw(sb);
             }
+            cp.Draw(sb);
         }
 
         public void checkCapturing(Unit u)

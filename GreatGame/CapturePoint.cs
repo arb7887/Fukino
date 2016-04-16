@@ -21,6 +21,7 @@ namespace GreatGame
         private bool contested;
         private Teams winner;
         private Teams contester;
+        private Texture2D pointTexture;
 
         public bool Contested { get { return contested; } set { contested = value; } }
         public Teams Contester { get { return contester; } set { contester = value; } }
@@ -31,7 +32,7 @@ namespace GreatGame
         public int EnemyTimer { get { return enemyTimer; } }
         public int CaptureTime { get { return captureTime; } }
 
-        public CapturePoint(int x, int y, int width, int height)
+        public CapturePoint(int x, int y, int width, int height, Texture2D pt)
         {
             playerTimer = 180;
             enemyTimer = 180;
@@ -41,6 +42,7 @@ namespace GreatGame
             bounds = new BoundingBox(new Vector3(x,y,0), new Vector3(x+width,y+height,0));
             contested = false;
             contester = Teams.Neutral;
+            pointTexture = pt;
         }
 
         public void Count()
@@ -95,6 +97,11 @@ namespace GreatGame
                 return true;
             }
             return false;
+        }
+
+        public void Draw(SpriteBatch sb)
+        {
+            sb.Draw(pointTexture, new Rectangle((int)(bounds.Min.X), (int)(bounds.Min.Y), (int)(bounds.Max.X - bounds.Min.X), (int)(bounds.Max.Y - bounds.Min.Y)), Color.White);
         }
     }
 }
