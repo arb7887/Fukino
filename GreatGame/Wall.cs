@@ -25,5 +25,10 @@ namespace GreatGame
             sb.Draw(texture, new Rectangle((int)bounds.Min.X, (int)bounds.Min.Y,
                 (int)(bounds.Max.X - bounds.Min.X), (int)(bounds.Max.Y - bounds.Min.Y)), Color.White);
         }
+
+        public bool Colliding(Unit u)
+        {
+            return u.Bounds.Intersects(bounds);
+        }
     }
 }

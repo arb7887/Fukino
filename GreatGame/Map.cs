@@ -13,8 +13,10 @@ namespace GreatGame
     {
         private List<Wall> walls;
         private Texture2D wallTexture;
-        public Texture2D WallTexture { set { wallTexture = value; } }
+        private CapturePoint cp;
 
+        public CapturePoint CP { get { return cp; } set { cp = value; } }
+        public Texture2D WallTexture { set { wallTexture = value; } }
         public List<Wall> Walls { get { return walls; } }
 
         public Map()
@@ -50,6 +52,11 @@ namespace GreatGame
             {
                 w.Draw(sb);
             }
+        }
+
+        public void checkCapturing(Unit u)
+        {
+            cp.checkContest(u);
         }
     }
 }

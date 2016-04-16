@@ -29,7 +29,7 @@ namespace GreatGame
         private int indexOfMe;
         private float radius;
 
-        private Tag myTag;
+        private Teams myTag;
         private Vector2 prevCamPos;
 
 
@@ -37,12 +37,7 @@ namespace GreatGame
         #endregion
 
         // FSM for the alignment of this class
-        public enum Tag
-        {
-            Player,
-            Enemy,
-            Neutral
-        }
+        //public enum Tag { Player, Enemy, Neutral }
 
         #region Constructors
         public Unit(String name, int health, double speed, int attackRange, int attack, double rateOfFire, int indexOfMe)
@@ -91,7 +86,8 @@ namespace GreatGame
         }
         public String Name { get { return name; } }
 
-        public Tag MyTag { get { return this.myTag; } set { myTag = value; } }
+        public Teams Team { get { return this.myTag; } set { myTag = value; } }
+
         public Boolean IsSelected
         {
             get
@@ -303,7 +299,8 @@ namespace GreatGame
 
         }
 
-        public void Update(GameTime gt, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits, List<Unit> otherUnits, Camera cam)
+        public void Update(GameTime gt, MouseState previousMouse, MouseState currentMouse, 
+            List<Unit> userSelectedUnits, List<Unit> otherUnits, Camera cam, Map map)
         {
            if (isAlive)
             {
@@ -333,6 +330,14 @@ namespace GreatGame
                         }
                     }
                 }
+
+                foreach(Wall w in map.Walls)
+                {
+                    if (checkCollision(w))
+                        allowedToMove = false;
+                }
+                map.checkCapturing(this);
+
                 // Checks the movement
 
                 if (allowedToMove)

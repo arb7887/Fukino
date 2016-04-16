@@ -96,6 +96,7 @@ namespace GreatGame
 
             manager.GameMap.WallTexture = Content.Load<Texture2D>("wallTexture.jpg");
             manager.GameMap.LoadMap("Content/Walls.txt");
+            manager.GameMap.CP = new CapturePoint(50, 50, 50, 50);
             bulletTexture = Content.Load<Texture2D>("Bullet.png");
             manager.BulletTexture = bulletTexture;
             // Load in the list of units from the files here

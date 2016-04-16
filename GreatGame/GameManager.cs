@@ -86,7 +86,7 @@ namespace GreatGame
                 player1Units[i].Bounds = new BoundingSphere(new Vector3(player1Units[i].Position, 0), 25);
                 textCount++;
                 x += 100;
-                player1Units[i].MyTag = Unit.Tag.Player;
+                player1Units[i].Team = Teams.Player;
                 player1Units[i].BulletTexture = bulletTexture;
             }
             player2Units.Add(new Unit("Bob", 100, 3, 150, 5, 1, 1));
@@ -146,10 +146,9 @@ namespace GreatGame
                     for (int i = 0; i < player1Units.Count; i++)
                     {
                         // Check to see if the mouse is even inside of the window, if not, then don't bother calling the update method
-                        if(previousMouse.X < graphics.Viewport.Width && previousMouse.X > 0 && previousMouse.Y > 0 && previousMouse.Y < graphics.Viewport.Height)
-                        {
-                            player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits, player2Units, cam);
-                        }
+                        // THE GAME SHOULD PLAY IN THE BACKGROUND
+                        player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits, player2Units, cam, gameMap);
+                        
                         /*if (player1Units[i].)
                         {
                             player1Units.Remove(player1Units[i]);
@@ -164,6 +163,9 @@ namespace GreatGame
                         }
                     }
                     if (kbState.IsKeyDown(Keys.Escape) && kbPState.IsKeyUp(Keys.Escape)) curGameState = GameState.Paused;
+
+
+
                     break;
                 case (GameState.Paused):
                     // Check to see if the paused button is pressed again
