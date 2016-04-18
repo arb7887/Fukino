@@ -50,6 +50,7 @@ namespace GreatGame
             // Make full screen when we get to the point of that
             //graphics.IsFullScreen = true;
 
+
             Content.RootDirectory = "Content";
             
         }
@@ -149,8 +150,10 @@ namespace GreatGame
             previousMouse = currentMouse;
             currentMouse = Mouse.GetState();
 
-            MouseState mouse = Mouse.GetState();
             // Call the managers update method
+
+
+            MouseState mouse = Mouse.GetState();
             manager.Update(gameTime, previousMouse, currentMouse, userSelectedUnits, GraphicsDevice, keyboardState, previousKeyboard, this, _camera);
 
 
@@ -165,13 +168,28 @@ namespace GreatGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Green);
-            var viewMatrix = _camera.GetViewMatrix();       
+            var viewMatrix = _camera.GetViewMatrix();
+
          
+            // Second
             spriteBatch.Begin(transformMatrix: viewMatrix);
             // Draw the map in here
             manager.Draw(spriteBatch, font, _camera);
-                   
+            // Draw bullets in here i think
+            if(manager.CurGameState == GameManager.GameState.Game)
+            {
+                spriteBatch.DrawString(font, "THE CAMERA'S  POS:" + _camera.Pos.ToString(), new Vector2(0, 0), Color.Blue);
+                spriteBatch.DrawString(font, "THE CAMERA'S WORLD POS:" + _camera.GetWorldPosition(_camera.Pos).ToString(), new Vector2(0, 20), Color.Blue);
+
+                //spriteBatch.DrawString(font, "THE CAMERA'S  POS:" + _camera.Pos.ToString(), new Vector2(0, 20), Color.Blue);
+
+                spriteBatch.DrawString(font, "THE CAMERA'S SCREEN POS:" + _camera.GetScreenPosition(_camera.Pos).ToString(), new Vector2(0, 40), Color.Blue);
+            }
+            
+            
             spriteBatch.End();
+            // WRONG!!!!!!!!!! 
+
 
             base.Draw(gameTime);
         }
