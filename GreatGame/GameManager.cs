@@ -86,6 +86,8 @@ namespace GreatGame
                 x += 100;
                 player1Units[i].MyTag = Unit.Tag.Player;
             }
+
+            // Now load in the enemy units from the same list, but generate each one randomly
             
         }
         
@@ -114,8 +116,6 @@ namespace GreatGame
             switch (curGameState)
             {
                 case (GameState.Menu):
-                    // if (Menu.ExitGame)
-                    //    Exit();
                     menu.Update(currentMouse, graphics);
                     if (menu.StartGame)
                     {

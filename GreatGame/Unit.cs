@@ -288,15 +288,7 @@ namespace GreatGame
 #endregion
         public void Draw(SpriteBatch sb, SpriteFont font, Camera cam)
         {
-            // Basic draw function for the units class
-            //b.DrawString(font, this.name, new Vector2(this.position.X, this.position.Y - 10), Color.Black);
-
-            //b.DrawString(font, "X:" + this.bounds.Center.X.ToString() + "Y:" + this.bounds.Center.Y.ToString(), new Vector2(this.position.X, this.position.Y - 30), Color.Black);
-
              sb.DrawString(font, "HEALTH: " + this.health, new Vector2(this.position.X, this.position.Y - 20), Color.Black);
-
-            //.DrawString(font, "DESTINATION:" + this.destination.ToString(),new Vector2(this.position.X, this.position.Y - 20), Color.Black);
-            //Console.WriteLine("CAM.POS: X = " + cam.Pos.X + " Y= " + cam.Pos.Y);
 
             sb.Draw(texture, new Rectangle((int)bounds.Center.X, (int)bounds.Center.Y , 50,50), color);
 
