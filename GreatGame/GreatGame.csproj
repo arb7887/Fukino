@@ -39,8 +39,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CapturePoint.cs" />
+    <Compile Include="Enemy.cs" />
     <Compile Include="UI\PauseMenu.cs" />
-    <Compile Include="Unit\Ability.cs" />
     <Compile Include="Unit\Bullet.cs" />
     <Compile Include="UI\Camera.cs" />
     <Compile Include="UI\ClassSelectButton.cs" />

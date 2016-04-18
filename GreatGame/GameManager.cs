@@ -80,7 +80,7 @@ namespace GreatGame
                     textCount = 0;
                 }
                 player1Units[i].Texture = unitTextures[textCount];
-                player1Units[i].Position = new Vector2(x + 50, 100);
+                player1Units[i].Position = new Vector2(x + 50, 200);
                 player1Units[i].Size = 50;
                 player1Units[i].Center = new Vector2(player1Units[i].Position.X + (player1Units[i].Size / 2), player1Units[i].Position.Y + (player1Units[i].Size / 2));
                 player1Units[i].Bounds = new BoundingSphere(new Vector3(player1Units[i].Position, 0), 25);
@@ -89,6 +89,7 @@ namespace GreatGame
                 player1Units[i].Team = Teams.Player;
                 player1Units[i].BulletTexture = bulletTexture;
             }
+
             player2Units.Add(new Unit("Bob", 100, 3, 150, 5, 1, 1));
             player2Units[0].Position = new Vector2(500, 500);
             player2Units[0].Size = 50;
@@ -136,8 +137,7 @@ namespace GreatGame
                     }
                     else if (menu.ExitGame)
                     {
-                        // Quit the game
-                        
+                        // Quit the game                  
                         game.Quit();
                     }
                     break;
@@ -149,10 +149,7 @@ namespace GreatGame
                         // THE GAME SHOULD PLAY IN THE BACKGROUND
                         player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits, player2Units, cam, gameMap);
                         
-                        /*if (player1Units[i].)
-                        {
-                            player1Units.Remove(player1Units[i]);
-                        }*/
+
                     }
                     for (int i = 0; i < player2Units.Count; i++)
                     {

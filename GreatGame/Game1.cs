@@ -175,27 +175,17 @@ namespace GreatGame
             // Second
             spriteBatch.Begin(transformMatrix: viewMatrix);
             // Draw the map in here
-            manager.Draw(spriteBatch, font, _camera);
-            // Draw bullets in here i think
-            if(manager.CurGameState == GameManager.GameState.Game)
-            {
-                spriteBatch.DrawString(font, "THE CAMERA'S  POS:" + _camera.Pos.ToString(), new Vector2(0, 0), Color.Blue);
-                spriteBatch.DrawString(font, "THE CAMERA'S WORLD POS:" + _camera.GetWorldPosition(_camera.Pos).ToString(), new Vector2(0, 20), Color.Blue);
-
-                //spriteBatch.DrawString(font, "THE CAMERA'S  POS:" + _camera.Pos.ToString(), new Vector2(0, 20), Color.Blue);
-
-                spriteBatch.DrawString(font, "THE CAMERA'S SCREEN POS:" + _camera.GetScreenPosition(_camera.Pos).ToString(), new Vector2(0, 40), Color.Blue);
-            }
-            
+            manager.Draw(spriteBatch, font, _camera);            
             
             spriteBatch.End();
-            // WRONG!!!!!!!!!! 
 
 
             base.Draw(gameTime);
         }
 
-
+        /// <summary>
+        /// This is a method that allows us to quit the game from outside of the Game1 class
+        /// </summary>
         public void Quit()
         {
             this.Exit();
