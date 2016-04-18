@@ -122,8 +122,8 @@ namespace GreatGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            //   Exit();
+             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+               Exit();
             previousKeyboard = keyboardState;
             keyboardState = Keyboard.GetState();
 
@@ -169,14 +169,22 @@ namespace GreatGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Green);
-            var viewMatrix = _camera.GetViewMatrix();
 
-         
+            var viewMatrix = _camera.GetViewMatrix();
             // Second
             spriteBatch.Begin(transformMatrix: viewMatrix);
+
             // Draw the map in here
             manager.Draw(spriteBatch, font, _camera);            
             
+            spriteBatch.End();
+
+            //============================= USER INTERFACE ==================================
+            spriteBatch.Begin();
+            // DRAW THE USER INTERFACE STUFF HERE
+            // This will make it so that they never move with the camera, and always stay in teh same position.
+            spriteBatch.DrawString(font, "HELLOOO", Vector2.Zero, Color.Red);
+
             spriteBatch.End();
 
 

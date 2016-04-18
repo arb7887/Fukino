@@ -221,7 +221,7 @@ namespace GreatGame
             }
             return false;
         }
-
+        
         public void AttackUnit(Unit u, GameTime gt)
         {
             Vector2 distance = new Vector2(position.X - u.Position.X, position.Y - u.position.Y);
@@ -260,12 +260,14 @@ namespace GreatGame
         }
 
 
+
+
         public void ProcessInput(Vector2 mouseLoc, Camera cam)
         {
             // SO, I have to take this mouse location, which is the location on the screen
             // And convert it to a "world" coordinate
 
-            Vector2 distance = new Vector2(mouseLoc.X - position.X , mouseLoc.Y - position.Y );
+            Vector2 distance = new Vector2(mouseLoc.X - position.X, mouseLoc.Y - position.Y);
 
             if (distance.Length() < speed)
             {
@@ -277,12 +279,11 @@ namespace GreatGame
                 distance.Normalize();
                 Vector2 toMove = new Vector2((int)(distance.X * speed), (int)(distance.Y * speed));
                 position += toMove;
-                center += toMove;
-                bounds = new BoundingSphere(new Vector3(toMove.X, toMove.Y, 0), size);
+                bounds = new BoundingSphere(new Vector3(position, 0), radius);
             }
         }
 
-#endregion
+        #endregion
         public void Draw(SpriteBatch sb, SpriteFont font, Camera cam)
         {
             // Basic draw function for the units class
@@ -302,7 +303,7 @@ namespace GreatGame
                 // Check the collisions
                 // Loop through and check the collisons with all of the other units
 
-                for (int i = 0; i < otherUnits.Count; i++)
+               /* for (int i = 0; i < otherUnits.Count; i++)
                 {
                     if (i != indexOfMe)
                     {
@@ -323,7 +324,7 @@ namespace GreatGame
                             allowedToMove = false;
                         }
                     }
-                }
+                }*/
 
                 foreach(Wall w in map.Walls)
                 {
@@ -378,6 +379,8 @@ namespace GreatGame
                     ProcessInput(destination, cam);
                     //ProcessInput(new Vector2(destination.X, destination.Y - 50));
                 }
+
+
                 foreach (Unit u in otherUnits)
                 {
                     if (u.isAlive)
@@ -409,7 +412,7 @@ namespace GreatGame
                 {
                     if (u.isAlive)
                     {
-                        AttackUnit(u, gt);
+                       // AttackUnit(u, gt);
                     }
                 }
             }

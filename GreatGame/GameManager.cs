@@ -89,14 +89,14 @@ namespace GreatGame
                 player1Units[i].Team = Teams.Player;
                 player1Units[i].BulletTexture = bulletTexture;
             }
-
+            /*
             player2Units.Add(new Unit("Bob", 100, 3, 150, 5, 1, 1));
             player2Units[0].Position = new Vector2(500, 500);
             player2Units[0].Size = 50;
             player2Units[0].Center = new Vector2(player2Units[0].Position.X + player2Units[0].Size / 2, player2Units[0].Position.Y + player2Units[0].Size / 2);
             player2Units[0].Bounds = new BoundingSphere(new Vector3(player2Units[0].Position, 0), 25);
             player2Units[0].Texture = UnitTextures[0];
-            player2Units[0].BulletTexture = bulletTexture;
+            player2Units[0].BulletTexture = bulletTexture;*/
         }
         
         /// <summary>
@@ -159,14 +159,15 @@ namespace GreatGame
                             player2Units.Remove(player2Units[i]);
                         }
                     }
-                    if (kbState.IsKeyDown(Keys.Escape) && kbPState.IsKeyUp(Keys.Escape)) curGameState = GameState.Paused;
+
+                    if (kbState.IsKeyDown(Keys.P) && kbPState.IsKeyUp(Keys.P)) curGameState = GameState.Paused;
 
 
 
                     break;
                 case (GameState.Paused):
                     // Check to see if the paused button is pressed again
-                    if (kbState.IsKeyDown(Keys.Escape) && kbPState.IsKeyUp(Keys.Escape))
+                    if (kbState.IsKeyDown(Keys.P) && kbPState.IsKeyUp(Keys.P))
                     {
                         curGameState = GameState.Game;
                     }
@@ -196,7 +197,6 @@ namespace GreatGame
                 case (GameState.Game):
                     // Draw the map
                     DrawMap(sb);
-
                     // Draw the units
                     // Call the updates on all of the units in the players list
                     for (int i = 0; i < player1Units.Count; i++)
@@ -213,7 +213,8 @@ namespace GreatGame
                             }
                         }
                     }
-                   // DrawPlayers(sb, font, cam);
+
+
                     for (int k = 0; k < player2Units.Count; k++)
                     {
                         if (player2Units[k].IsAlive)

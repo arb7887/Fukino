@@ -27,7 +27,7 @@ namespace GreatGame
             _viewport = viewport;
 
             _rotation = 0;
-            _zoom = 1;
+            _zoom = 1f;
             //Origin = new Vector2(viewport.Width / 2f, viewport.Height / 2f);
            // Position = Vector2.Zero;
             _pos = Vector2.Zero;
