@@ -46,7 +46,7 @@ Sniper
 125
 10
 200
-100
+50
 1
 TestAddOn
 10

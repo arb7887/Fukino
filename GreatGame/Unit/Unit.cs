@@ -16,8 +16,8 @@ namespace GreatGame
         // Fields
         private String name;
         private int visionRange, attackRange, attack, defense, size;
-        private double health, speed, rateOfFire, remainingDelay;
-        private Boolean isSelected, isMoving;
+        private double health, speed, rateOfFire, remainingDelay, deathTimer;
+        private Boolean isSelected, isMoving, isAlive;
         private Vector2 position;
         private Vector2 center;
         private Vector2 destination;
@@ -29,7 +29,7 @@ namespace GreatGame
         private int indexOfMe;
         private float radius;
 
-        private Tag myTag;
+        private Teams myTag;
         private Vector2 prevCamPos;
 
 
@@ -37,12 +37,7 @@ namespace GreatGame
         #endregion
 
         // FSM for the alignment of this class
-        public enum Tag
-        {
-            Player,
-            Enemy,
-            Neutral
-        }
+        //public enum Tag { Player, Enemy, Neutral }
 
         #region Constructors
         public Unit(String name, int health, double speed, int attackRange, int attack, double rateOfFire, int indexOfMe)
@@ -56,13 +51,15 @@ namespace GreatGame
             isSelected = false;
             isMoving = false;
             position = new Vector2(0, 0);
+            center = new Vector2(position.X + size / 2, position.Y + size / 2);
             color = Color.White;
-
+            this.activeBullets = new List<Bullet>();
             this.indexOfMe = indexOfMe;
             radius = 25;
             bounds = new BoundingSphere(new Vector3(position, 0), radius);
             prevCamPos = new Vector2(0,0);
-
+            deathTimer = 5;
+            isAlive = true;
         }
 
         public Unit(Unit newUnit, int index)
@@ -89,7 +86,8 @@ namespace GreatGame
         }
         public String Name { get { return name; } }
 
-        public Tag MyTag { get { return this.myTag; } set { myTag = value; } }
+        public Teams Team { get { return this.myTag; } set { myTag = value; } }
+
         public Boolean IsSelected
         {
             get
@@ -103,6 +101,8 @@ namespace GreatGame
         }
 
         public Double RateOfFire { get { return this.rateOfFire; } set { this.rateOfFire = value; } }
+
+        public bool IsAlive { get { return this.isAlive; } set { isAlive = value; } }
 
         public Texture2D Texture
         {
@@ -164,6 +164,7 @@ namespace GreatGame
             set { this.bounds = value; }
         }
 
+
         // Bullet properties=======================
         public Vector2 Center { get { return center; } set { center = value; } }
 
@@ -188,7 +189,6 @@ namespace GreatGame
         //===========================================
         #endregion
 
-
         // Methods
         #region methods
         public Boolean checkCollision(Unit u)
@@ -197,33 +197,29 @@ namespace GreatGame
             {
                 // Move the object back a little bit in the opposite directoin then it was going
                 // Get the destination of the two things
-                
-                this.destination = new Vector2(u.destination.X - 50, u.destination.Y - 50);
-
-
+                if (this.IsMoving)
+                {
+                    Vector2 direction = new Vector2((position.X - destination.X) * -1, (position.Y - destination.Y) * -1);
+                    direction.Normalize();
+                    position += direction * 5;
+                    destination = position;
+                }
                 return true;
             }
-
             return false;
         }
 
         public Boolean checkCollision(Wall wall)
         {
             if (wall.Bounds.Intersects(this.bounds))
+            {
+                Vector2 direction = new Vector2((position.X - destination.X) * -1, (position.Y - destination.Y) * -1);
+                direction.Normalize();
+                position += direction * 5;
+                destination = position;
                 return true;
-
+            }
             return false;
-        }
-
-
-        /// <summary>
-        /// All this does it take in a number of how much damage that 
-        /// this unit will take
-        /// </summary>
-        /// <param name="damage">Amount of damage taken</param>
-        public void TakeDamage(double damage)
-        {
-            health -= damage;
         }
 
         public void AttackUnit(Unit u, GameTime gt)
@@ -235,9 +231,7 @@ namespace GreatGame
             {
                 if (distance.Length() <= attackRange)
                 {
-                    Bullet newBullet = new Bullet(5, attack, attackRange, 5, bulletTexture);
-                    newBullet.Position = center;
-                    newBullet.StartingLocation = center;
+                    Bullet newBullet = new Bullet(5, attack, attackRange, 5, center, bulletTexture);
                     newBullet.Bounds = new BoundingSphere(new Vector3(newBullet.Position.X, newBullet.Position.Y, 0), (float)newBullet.Size / 2);
                     newBullet.Destination = u.Center;
                     activeBullets.Add(newBullet);
@@ -247,6 +241,7 @@ namespace GreatGame
             }
             if (u.health <= 0)
             {
+                u.IsAlive = false;
                 Console.WriteLine(u.name + " has died");
             }
             for (int i = 0; i < activeBullets.Count; i++)
@@ -259,6 +254,7 @@ namespace GreatGame
                 {
                     activeBullets[i].Move();
                     activeBullets[i].DamageCheck(u);
+                    activeBullets[i].DistanceCheck();
                 }
             }
         }
@@ -281,7 +277,8 @@ namespace GreatGame
                 distance.Normalize();
                 Vector2 toMove = new Vector2((int)(distance.X * speed), (int)(distance.Y * speed));
                 position += toMove;
-                bounds = new BoundingSphere(new Vector3(position, 0), radius);
+                center += toMove;
+                bounds = new BoundingSphere(new Vector3(toMove.X, toMove.Y, 0), size);
             }
         }
 
@@ -298,77 +295,144 @@ namespace GreatGame
             //.DrawString(font, "DESTINATION:" + this.destination.ToString(),new Vector2(this.position.X, this.position.Y - 20), Color.Black);
             //Console.WriteLine("CAM.POS: X = " + cam.Pos.X + " Y= " + cam.Pos.Y);
 
-            sb.Draw(texture, new Rectangle((int)bounds.Center.X, (int)bounds.Center.Y , 50,50), color);
+            sb.Draw(texture, new Rectangle((int)position.X, (int)position.Y , 50,50), color);
 
         }
 
-        public void Update(GameTime gt, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits, List<Unit> otherUnits, Camera cam)
+        public void Update(GameTime gt, MouseState previousMouse, MouseState currentMouse, 
+            List<Unit> userSelectedUnits, List<Unit> otherUnits, Camera cam, Map map)
         {
-            bool allowedToMove = true;
-            // Check the collisions
-            // Loop through and check the collisons with all of the other units
-            
-            for (int i = 0; i < otherUnits.Count; i++)
+           if (isAlive)
             {
-                if(i != indexOfMe)
+                bool allowedToMove = true;
+                // Check the collisions
+                // Loop through and check the collisons with all of the other units
+
+                for (int i = 0; i < otherUnits.Count; i++)
                 {
-                    if (checkCollision(otherUnits[i]))                                        
-                        allowedToMove = false;  // Don't move                   
-                    if (checkCollision(otherUnits[i]))
+                    if (i != indexOfMe)
                     {
-                        // Dont move
-                        allowedToMove = false;                      
+                        if (checkCollision(otherUnits[i]))
+                        {
+                            // Dont move
+                            allowedToMove = false;
+                        }
+                    }
+                }
+                for (int i = 0; i < userSelectedUnits.Count; i++)
+                {
+                    if (i != indexOfMe)
+                    {
+                        if (checkCollision(userSelectedUnits[i]))
+                        {
+                            // Dont move
+                            allowedToMove = false;
+                        }
+                    }
+                }
+
+                foreach(Wall w in map.Walls)
+                {
+                    if (checkCollision(w))
+                        allowedToMove = false;
+                }
+                map.checkCapturing(this);
+
+                // Checks the movement
+
+                if (allowedToMove)
+                {
+                    if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
+                    {
+                        Vector2 prevMouseVector = new Vector2(previousMouse.X, previousMouse.Y);
+
+                        // I need to account for the camera location in here
+                        if (((GetMouseWorldPos(prevMouseVector, cam.Pos).X) >= Position.X) && (GetMouseWorldPos(prevMouseVector, cam.Pos).X) <= (Position.X + (radius * 2))
+                            && (GetMouseWorldPos(prevMouseVector, cam.Pos).Y) >= Position.Y && (GetMouseWorldPos(prevMouseVector, cam.Pos).Y) <= (Position.Y + (radius * 2)))
+                        {
+                            prevCamPos = cam.Pos;
+                            IsSelected = true;
+                            color = Color.Cyan;
+                            userSelectedUnits.Add(this);
+                        }
+                        else
+                        {
+                            IsSelected = false;
+                            color = Color.White;
+                            userSelectedUnits.Remove(this);
+                        }
+                    }
+                    if (IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
+                    {
+                        destination = new Vector2(previousMouse.X + cam.Pos.X, previousMouse.Y + cam.Pos.Y);
+
+                        ProcessInput(destination, cam);
+                        IsMoving = true;
+                    }
+                    else if (IsMoving)
+                    {
+                        ProcessInput(destination, cam);
+                    }
+                }
+                // if there is a collision between units
+                else
+                {
+                    // Move the unit away from said object
+                    ProcessInput(-destination, cam);
+                    // Move the unit away from said unit
+
+                    ProcessInput(destination, cam);
+                    //ProcessInput(new Vector2(destination.X, destination.Y - 50));
+                }
+                foreach (Unit u in otherUnits)
+                {
+                    if (u.isAlive)
+                    {
+                        AttackUnit(u, gt);
                     }
                 }
             }
-            // Checks the movement
-
-            if (allowedToMove)
-            {            
-                if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
+           else
+            {
+                if (deathTimer < 0)
                 {
-                    Vector2 prevMouseVector = new Vector2(previousMouse.X, previousMouse.Y);
-
-                    // I need to account for the camera location in here
-                    if (((GetMouseWorldPos(prevMouseVector, cam.Pos).X ) >= Position.X ) && (GetMouseWorldPos(prevMouseVector, cam.Pos).X) <= (Position.X + (radius * 2))
-                        && (GetMouseWorldPos(prevMouseVector, cam.Pos).Y) >= Position.Y && (GetMouseWorldPos(prevMouseVector, cam.Pos).Y) <= (Position.Y  + (radius * 2)))
-                    {
-                        prevCamPos = cam.Pos;
-                        IsSelected = true;
-                        color = Color.Cyan;
-                        userSelectedUnits.Add(this);
-                    }
-                    else
-                    {
-                        IsSelected = false;
-                        color = Color.White;
-                        userSelectedUnits.Remove(this);
-                    }
+                    deathTimer = 5;
+                    isAlive = true;
+                    health = 100;
                 }
-                if (IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
+                else
                 {
-                    destination = new Vector2(previousMouse.X + cam.Pos.X, previousMouse.Y + cam.Pos.Y);
-
-                    ProcessInput(destination, cam);
-                    IsMoving = true;
-                }
-                else if (IsMoving)
-                {
-                    ProcessInput(destination, cam);
+                    deathTimer -= gt.ElapsedGameTime.TotalSeconds;
                 }
             }
-            // if there is a collision between units
+        }
+
+        public void UpdateEnemy(GameTime gt, List<Unit> playerUnits)
+        {
+            if (isAlive)
+            {
+                foreach (Unit u in playerUnits)
+                {
+                    if (u.isAlive)
+                    {
+                        AttackUnit(u, gt);
+                    }
+                }
+            }
             else
             {
-                // Move the unit away from said object
-                ProcessInput(-destination, cam);
-                // Move the unit away from said unit
-
-                ProcessInput(destination, cam);
-                //ProcessInput(new Vector2(destination.X, destination.Y - 50));
+                if (deathTimer < 0)
+                {
+                    deathTimer = 5;
+                    isAlive = true;
+                    health = 100;
+                }
+                else
+                {
+                    deathTimer -= gt.ElapsedGameTime.TotalSeconds;
+                }
             }
         }
-
 
 
         public override string ToString()

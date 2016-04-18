@@ -23,7 +23,7 @@ namespace GreatGame
 
         private List<Unit> userSelectedUnits;   // The list of units that the user has selected
 
-        Texture2D buttonTexture;
+        Texture2D buttonTexture, bulletTexture;
         SpriteFont buttonFont;
 
         // Mouse stuff
@@ -96,8 +96,9 @@ namespace GreatGame
 
             manager.GameMap.WallTexture = Content.Load<Texture2D>("wallTexture.jpg");
             manager.GameMap.LoadMap("Content/Walls.txt");
-
-
+            manager.GameMap.CP = new CapturePoint(2400, 1400, 600, 600, Content.Load<Texture2D>("pointTexture"));
+            bulletTexture = Content.Load<Texture2D>("Bullet.png");
+            manager.BulletTexture = bulletTexture;
             // Load in the list of units from the files here
             manager.LoadContent();
 
