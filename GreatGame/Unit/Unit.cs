@@ -249,7 +249,7 @@ namespace GreatGame
 
 
 
-        public void ProcessInput(Vector2 mouseLoc)
+        public void ProcessInput(Vector2 mouseLoc, Map m)
         {
             // SO, I have to take this mouse location, which is the location on the screen
             // And convert it to a "world" coordinate
@@ -258,6 +258,14 @@ namespace GreatGame
 
             if (distance.Length() < speed)
             {
+                BoundingSphere check = new BoundingSphere(new Vector3(mouseLoc, 0), radius);
+                foreach(Wall w in m.Walls)
+                {
+                    if (w.Bounds.Intersects(check))
+                    {
+                        return;
+                    }
+                }
                 position = mouseLoc;
                 isMoving = false;
             }
@@ -265,6 +273,15 @@ namespace GreatGame
             {
                 distance.Normalize();
                 Vector2 toMove = new Vector2((int)(distance.X * speed), (int)(distance.Y * speed));
+
+                BoundingSphere check = new BoundingSphere(new Vector3(position+toMove, 0), radius);
+                foreach (Wall w in m.Walls)
+                {
+                    if (w.Bounds.Intersects(check))
+                    {
+                        return;
+                    }
+                }
                 position += toMove;
                 bounds = new BoundingSphere(new Vector3(position, 0), radius);
             }
@@ -317,7 +334,7 @@ namespace GreatGame
 
                 foreach (Wall w in map.Walls)
                 {
-                    if (checkCollision(w))
+                    if (w.Colliding(this))
                         allowedToMove = false;
                 }
 
@@ -354,12 +371,12 @@ namespace GreatGame
                     {
                         destination = new Vector2(previousMouse.X + cam.Pos.X * cam.CamSpeed, previousMouse.Y + cam.Pos.Y * cam.CamSpeed);
 
-                        ProcessInput(destination);
+                        ProcessInput(destination, map);
                         IsMoving = true;
                     }
                     else if (IsMoving)
                     {
-                        ProcessInput(destination);
+                        ProcessInput(destination, map);
                     }
                 }
                 // if there is a collision between units
