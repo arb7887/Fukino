@@ -15,7 +15,7 @@ namespace GreatGame
         // Keeping these private is the whole point of object oriented programming
         // Fields
         private String name;
-        private int visionRange, attackRange, attack, defense, size;
+        private int visionRange, attackRange, _ATTACK_STRENGTH, defense, size;
         private double health, speed, rateOfFire, remainingDelay, deathTimer;
         private Boolean isSelected, isMoving, isAlive;
         private Vector2 position;
@@ -46,7 +46,7 @@ namespace GreatGame
             this.health = health;
             this.speed = speed;
             this.attackRange = attackRange;
-            this.attack = attack;
+            this._ATTACK_STRENGTH = attack;
             this.rateOfFire = rateOfFire;
             isSelected = false;
             isMoving = false;
@@ -63,7 +63,7 @@ namespace GreatGame
         }
 
         public Unit(Unit newUnit, int index)
-            : this(newUnit.name, (int)newUnit.health, newUnit.Speed, newUnit.attackRange, newUnit.attack, newUnit.rateOfFire, index)
+            : this(newUnit.name, (int)newUnit.health, newUnit.Speed, newUnit.attackRange, newUnit.ATTACK_STRENGTH, newUnit.rateOfFire, index)
         {
 
         }
@@ -71,34 +71,14 @@ namespace GreatGame
 
         // Properties
         #region Properties
-        public int Attack { get { return attack; } set { attack = value; } }
+        public int ATTACK_STRENGTH { get { return _ATTACK_STRENGTH; } set { _ATTACK_STRENGTH = value; } }
 
-        public Double Health
-        {
-            get
-            {
-                return health;
-            }
-            set
-            {
-                health = value;
-            }
-        }
+        public Double Health { get { return health; } set { health = value; } }
         public String Name { get { return name; } }
 
         public Teams Team { get { return this.myTag; } set { myTag = value; } }
 
-        public Boolean IsSelected
-        {
-            get
-            {
-                return isSelected;
-            }
-            set
-            {
-                isSelected = value;
-            }
-        }
+        public Boolean IsSelected { get { return isSelected; } set { isSelected = value; } }
 
         public Double RateOfFire { get { return this.rateOfFire; } set { this.rateOfFire = value; } }
 
@@ -138,6 +118,11 @@ namespace GreatGame
             {
                 speed = value;
             }
+        }
+        public int AttackRange
+        {
+            get { return this.attackRange; }
+            set { this.attackRange = value; }
         }
 
         public bool IsMoving
@@ -184,8 +169,10 @@ namespace GreatGame
   
 
         public Bullet Bullet { get { return bullet; } set { bullet = value; } }
+        
 
-        public List<Bullet> ActiveBullets { get { return activeBullets; } }
+        public List<Bullet> ActiveBullets { get { return activeBullets; }
+            set { activeBullets = value; } }
         //===========================================
         #endregion
 
@@ -213,7 +200,7 @@ namespace GreatGame
         {
             if (wall.Bounds.Intersects(this.bounds))
             {
-                Vector2 direction = new Vector2((position.X - destination.X) * -1, (position.Y - destination.Y) * -1);
+                Vector2 direction = new Vector2((position.X - destination.X) * -1, (position.Y - destination.Y) * -1);  
                 direction.Normalize();
                 position += direction * 5;
                 destination = position;
@@ -231,7 +218,7 @@ namespace GreatGame
             {
                 if (distance.Length() <= attackRange)
                 {
-                    Bullet newBullet = new Bullet(5, attack, attackRange, 5, center, bulletTexture);
+                    Bullet newBullet = new Bullet(5, ATTACK_STRENGTH, attackRange, 5, center, bulletTexture);
                     newBullet.Bounds = new BoundingSphere(new Vector3(newBullet.Position.X, newBullet.Position.Y, 0), (float)newBullet.Size / 2);
                     newBullet.Destination = u.Center;
                     activeBullets.Add(newBullet);
@@ -239,11 +226,11 @@ namespace GreatGame
                 }
                 remainingDelay = rateOfFire;
             }
-            if (u.health <= 0)
+         /*   if (u.health <= 0)
             {
                 u.IsAlive = false;
                 Console.WriteLine(u.name + " has died");
-            }
+            }*/
             for (int i = 0; i < activeBullets.Count; i++)
             {
                 if (activeBullets[i].ToDelete)
@@ -262,7 +249,7 @@ namespace GreatGame
 
 
 
-        public void ProcessInput(Vector2 mouseLoc, Camera cam)
+        public void ProcessInput(Vector2 mouseLoc)
         {
             // SO, I have to take this mouse location, which is the location on the screen
             // And convert it to a "world" coordinate
@@ -295,42 +282,45 @@ namespace GreatGame
         }
 
         public void Update(GameTime gt, MouseState previousMouse, MouseState currentMouse, 
-            List<Unit> userSelectedUnits, List<Unit> otherUnits, Camera cam, Map map)
+            List<Unit> userSelectedUnits, List<Enemy> otherUnits, Camera cam, Map map)
         {
-           if (isAlive)
-            {
+           //if (isAlive)
+          //  {
                 bool allowedToMove = true;
                 // Check the collisions
+                #region broken shit
                 // Loop through and check the collisons with all of the other units
 
-               /* for (int i = 0; i < otherUnits.Count; i++)
-                {
-                    if (i != indexOfMe)
-                    {
-                        if (checkCollision(otherUnits[i]))
-                        {
-                            // Dont move
-                            allowedToMove = false;
-                        }
-                    }
-                }
-                for (int i = 0; i < userSelectedUnits.Count; i++)
-                {
-                    if (i != indexOfMe)
-                    {
-                        if (checkCollision(userSelectedUnits[i]))
-                        {
-                            // Dont move
-                            allowedToMove = false;
-                        }
-                    }
-                }*/
+                /* for (int i = 0; i < otherUnits.Count; i++)
+                 {
+                     if (i != indexOfMe)
+                     {
+                         if (checkCollision(otherUnits[i]))
+                         {
+                             // Dont move
+                             allowedToMove = false;
+                         }
+                     }
+                 }
+                 for (int i = 0; i < userSelectedUnits.Count; i++)
+                 {
+                     if (i != indexOfMe)
+                     {
+                         if (checkCollision(userSelectedUnits[i]))
+                         {
+                             // Dont move
+                             allowedToMove = false;
+                         }
+                     }
+                 }*/
+                #endregion
 
-                foreach(Wall w in map.Walls)
+                foreach (Wall w in map.Walls)
                 {
                     if (checkCollision(w))
                         allowedToMove = false;
                 }
+
                 map.checkCapturing(this);
 
                 // Checks the movement
@@ -339,11 +329,14 @@ namespace GreatGame
                 {
                     if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
                     {
+                        // The previsous mouse vector
                         Vector2 prevMouseVector = new Vector2(previousMouse.X, previousMouse.Y);
+                        // Get the mouse's world position
+                        Vector2 mouseWorldPos = GetMouseWorldPos(prevMouseVector, cam.Pos * cam.CamSpeed);
 
                         // I need to account for the camera location in here
-                        if (((GetMouseWorldPos(prevMouseVector, cam.Pos).X) >= Position.X) && (GetMouseWorldPos(prevMouseVector, cam.Pos).X) <= (Position.X + (radius * 2))
-                            && (GetMouseWorldPos(prevMouseVector, cam.Pos).Y) >= Position.Y && (GetMouseWorldPos(prevMouseVector, cam.Pos).Y) <= (Position.Y + (radius * 2)))
+                        if ((mouseWorldPos.X >= Position.X) && (mouseWorldPos.X) <= Position.X + (radius * 2)
+                            && (mouseWorldPos.Y) >= Position.Y && (mouseWorldPos.Y) <= Position.Y + (radius * 2))
                         {
                             prevCamPos = cam.Pos;
                             IsSelected = true;
@@ -359,14 +352,14 @@ namespace GreatGame
                     }
                     if (IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
                     {
-                        destination = new Vector2(previousMouse.X + cam.Pos.X, previousMouse.Y + cam.Pos.Y);
+                        destination = new Vector2(previousMouse.X + cam.Pos.X * cam.CamSpeed, previousMouse.Y + cam.Pos.Y * cam.CamSpeed);
 
-                        ProcessInput(destination, cam);
+                        ProcessInput(destination);
                         IsMoving = true;
                     }
                     else if (IsMoving)
                     {
-                        ProcessInput(destination, cam);
+                        ProcessInput(destination);
                     }
                 }
                 // if there is a collision between units
@@ -377,59 +370,9 @@ namespace GreatGame
                     // Move the unit away from said unit
 
                     //ProcessInput(destination, cam);
-                    //ProcessInput(new Vector2(destination.X, destination.Y - 50));
                 }
-
-
-                foreach (Unit u in otherUnits)
-                {
-                    if (u.isAlive)
-                    {
-                        AttackUnit(u, gt);
-                    }
-                }
-            }
-           else
-            {
-                if (deathTimer < 0)
-                {
-                    deathTimer = 5;
-                    isAlive = true;
-                    health = 100;
-                }
-                else
-                {
-                    deathTimer -= gt.ElapsedGameTime.TotalSeconds;
-                }
-            }
         }
 
-        public void UpdateEnemy(GameTime gt, List<Unit> playerUnits)
-        {
-            if (isAlive)
-            {
-                foreach (Unit u in playerUnits)
-                {
-                    if (u.isAlive)
-                    {
-                       // AttackUnit(u, gt);
-                    }
-                }
-            }
-            else
-            {
-                if (deathTimer < 0)
-                {
-                    deathTimer = 5;
-                    isAlive = true;
-                    health = 100;
-                }
-                else
-                {
-                    deathTimer -= gt.ElapsedGameTime.TotalSeconds;
-                }
-            }
-        }
 
 
         public override string ToString()

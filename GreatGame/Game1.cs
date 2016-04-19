@@ -183,10 +183,10 @@ namespace GreatGame
             spriteBatch.Begin();
             // DRAW THE USER INTERFACE STUFF HERE
             // This will make it so that they never move with the camera, and always stay in teh same position.
-            spriteBatch.DrawString(font, "HELLOOO", Vector2.Zero, Color.Red);
-
+            spriteBatch.DrawString(font, "HELLOOO UI", Vector2.Zero, Color.Red);
+            //spriteBatch.DrawString(font, "Time: " + gameTime.TotalGameTime, new Vector2(1000, 100), Color.Red);
             spriteBatch.End();
-
+            
 
             base.Draw(gameTime);
         }

@@ -21,6 +21,7 @@ namespace GreatGame
         public Matrix _transform; // Matrix Transform
         public Vector2 _pos; // Camera Position
         protected float _rotation; // Camera Rotation
+        private float _camSpeed;
 
         public Camera(Viewport viewport)
         {
@@ -31,12 +32,14 @@ namespace GreatGame
             //Origin = new Vector2(viewport.Width / 2f, viewport.Height / 2f);
            // Position = Vector2.Zero;
             _pos = Vector2.Zero;
+            _camSpeed = 5;
         }
         
         // Properties
         public Vector2 Pos { get { return _pos; } set { _pos = value; } }
         public float Zoom { get { return _zoom; } set { _zoom = value; } }
         public float Rotation { get { return _rotation; } set { _rotation = value; } }
+        public float CamSpeed { get { return _camSpeed; } set { _camSpeed = value; } }
 
 
 
@@ -44,7 +47,7 @@ namespace GreatGame
         {
             return
             _transform =       // Thanks to o KB o for this solution
-              Matrix.CreateTranslation(new Vector3(-_pos.X, -_pos.Y, 0)) *
+              Matrix.CreateTranslation(new Vector3(-_pos.X * _camSpeed , -_pos.Y * _camSpeed, 0)) *
               Matrix.CreateRotationZ(Rotation) *
               Matrix.CreateScale(new Vector3(Zoom, Zoom, 0));
             
