@@ -277,7 +277,7 @@ namespace GreatGame
 
             sb.DrawString(font, "HEALTH: " + this.health, new Vector2(this.position.X, this.position.Y - 20), Color.Black);
 
-            sb.Draw(texture, new Rectangle((int)position.X, (int)position.Y, 50, 50), color);
+            sb.Draw(texture, new Rectangle((int)(position.X-radius), (int)(position.Y-radius), 50, 50), color);
 
         }
 
@@ -335,8 +335,8 @@ namespace GreatGame
                         Vector2 mouseWorldPos = GetMouseWorldPos(prevMouseVector, cam.Pos * cam.CamSpeed);
 
                         // I need to account for the camera location in here
-                        if ((mouseWorldPos.X >= Position.X) && (mouseWorldPos.X) <= Position.X + (radius * 2)
-                            && (mouseWorldPos.Y) >= Position.Y && (mouseWorldPos.Y) <= Position.Y + (radius * 2))
+                        if ((mouseWorldPos.X >= Position.X - radius) && (mouseWorldPos.X) <= Position.X + radius
+                            && (mouseWorldPos.Y) >= Position.Y - radius && (mouseWorldPos.Y) <= Position.Y + radius)
                         {
                             prevCamPos = cam.Pos;
                             IsSelected = true;

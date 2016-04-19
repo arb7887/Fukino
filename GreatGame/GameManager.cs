@@ -160,6 +160,7 @@ namespace GreatGame
                     }
                     break;
                 case (GameState.Game):
+                    gameMap.CP.Contested = false;
                     // Call the updates on all of the units in the players list   
                     for (int i = 0; i < player1Units.Count; i++)
                     {
@@ -183,7 +184,10 @@ namespace GreatGame
                         gameMap.CP.Count();
                         timer -= 1;
                     }
-
+                    if(gameMap.CP.Winner != Teams.Neutral)
+                    {
+                        curGameState = GameState.GameOver;
+                    }
 
                     break;
                 case (GameState.Paused):
