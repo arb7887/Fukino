@@ -373,10 +373,10 @@ namespace GreatGame
                 else
                 {
                     // Move the unit away from said object
-                    ProcessInput(-destination, cam);
+                    //ProcessInput(-destination, cam);
                     // Move the unit away from said unit
 
-                    ProcessInput(destination, cam);
+                    //ProcessInput(destination, cam);
                     //ProcessInput(new Vector2(destination.X, destination.Y - 50));
                 }
 

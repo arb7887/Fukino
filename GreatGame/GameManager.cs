@@ -35,11 +35,13 @@ namespace GreatGame
         // Map stuff
         private Map gameMap;
 
+        //For control point logic
+        private float timer;
         #endregion
 
 
         #region Properties
-        
+
         // Properties
         public GameState CurGameState { get { return this.curGameState; } set { this.curGameState = value; } }
         public FileInput AllUnits { get { return this.allUnits; } }
@@ -63,6 +65,7 @@ namespace GreatGame
             curGameState = GameState.Menu;
             menu = new MenuHandler(MenuStates.Main);
             gameMap = new Map();
+            timer = 0;
         }
 
         /// <summary>
@@ -80,12 +83,12 @@ namespace GreatGame
                     textCount = 0;
                 }
                 player1Units[i].Texture = unitTextures[textCount];
-                player1Units[i].Position = new Vector2(x + 50, 200);
+                player1Units[i].Position = new Vector2(x + 150, 200);
                 player1Units[i].Size = 50;
                 player1Units[i].Center = new Vector2(player1Units[i].Position.X + (player1Units[i].Size / 2), player1Units[i].Position.Y + (player1Units[i].Size / 2));
-                player1Units[i].Bounds = new BoundingSphere(new Vector3(player1Units[i].Position, 0), 25);
+                player1Units[i].Bounds = new BoundingSphere(new Vector3(player1Units[i].Position.X, player1Units[i].Position.Y, 0), 25);
                 textCount++;
-                x += 100;
+                x += 75;
                 player1Units[i].Team = Teams.Player;
                 player1Units[i].BulletTexture = bulletTexture;
             }
@@ -162,6 +165,15 @@ namespace GreatGame
 
                     if (kbState.IsKeyDown(Keys.P) && kbPState.IsKeyUp(Keys.P)) curGameState = GameState.Paused;
 
+
+
+                    var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    timer += delta;
+                    if (timer >= 1)
+                    {
+                        gameMap.CP.Count();
+                        timer -= 1;
+                    }
 
 
                     break;

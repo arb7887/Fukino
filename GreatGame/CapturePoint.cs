@@ -22,6 +22,7 @@ namespace GreatGame
         private Teams winner;
         private Teams contester;
         private Texture2D pointTexture;
+        private Color tint;
 
         public bool Contested { get { return contested; } set { contested = value; } }
         public Teams Contester { get { return contester; } set { contester = value; } }
@@ -39,21 +40,25 @@ namespace GreatGame
             captureTime = 5;
             controller = Teams.Neutral;
             winner = Teams.Neutral;
-            bounds = new BoundingBox(new Vector3(x,y,0), new Vector3(x+width,y+height,0));
+            bounds = new BoundingBox(new Vector3(x,y,0), new Vector3(x+width,y+height,1));
             contested = false;
             contester = Teams.Neutral;
             pointTexture = pt;
+            tint = Color.White;
         }
 
         public void Count()
         {
-            if (controller == Teams.Neutral)
-                return;
-
             if (controller == Teams.Player)
+            {
                 playerTimer -= 1;
+                tint = Color.Green;
+            }
             else if (controller == Teams.Enemy)
+            {
                 enemyTimer -= 1;
+                tint = Color.Red;
+            }
 
             if (contested)
                 captureTime -= 1;
@@ -84,12 +89,12 @@ namespace GreatGame
         {
             if (u.Bounds.Intersects(bounds))
             {
-                if (u.Team == Teams.Enemy && controller == Teams.Player)
+                if (u.Team == Teams.Enemy && controller != Teams.Enemy)
                 {
                     contested = true;
                     contester = Teams.Enemy;
                 }
-                if (u.Team == Teams.Player && controller == Teams.Enemy)
+                if (u.Team == Teams.Player && controller != Teams.Player)
                 {
                     contested = true;
                     contester = Teams.Player;
@@ -101,7 +106,7 @@ namespace GreatGame
 
         public void Draw(SpriteBatch sb)
         {
-            sb.Draw(pointTexture, new Rectangle((int)(bounds.Min.X), (int)(bounds.Min.Y), (int)(bounds.Max.X - bounds.Min.X), (int)(bounds.Max.Y - bounds.Min.Y)), Color.White);
+            sb.Draw(pointTexture, new Rectangle((int)(bounds.Min.X), (int)(bounds.Min.Y), (int)(bounds.Max.X - bounds.Min.X), (int)(bounds.Max.Y - bounds.Min.Y)), tint);
         }
     }
 }
