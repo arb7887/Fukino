@@ -36,6 +36,7 @@ namespace GreatGame
 
         // This is the camera that shall be used for the player
         private Camera _camera;
+        UserInterface UI;
 
         #endregion
 
@@ -71,6 +72,7 @@ namespace GreatGame
 
             // Load in the Units.txt file, this works now
             userSelectedUnits = new List<Unit>();
+            UI = new UserInterface();
 
             //gameMap = new Map();
 
@@ -183,7 +185,10 @@ namespace GreatGame
             spriteBatch.Begin();
             // DRAW THE USER INTERFACE STUFF HERE
             // This will make it so that they never move with the camera, and always stay in teh same position.
-            spriteBatch.DrawString(font, "HELLOOO UI", Vector2.Zero, Color.Red);
+            if(manager.CurGameState == GameManager.GameState.Game)
+            {
+                UI.Draw(spriteBatch, font);
+            }
             //spriteBatch.DrawString(font, "Time: " + gameTime.TotalGameTime, new Vector2(1000, 100), Color.Red);
             spriteBatch.End();
             
