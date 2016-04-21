@@ -69,7 +69,6 @@ namespace GreatGame
 
             // Instantiates the list of units
             manager.Menu.initialize();
-            manager.PMenu.Initialize();
 
             // Load in the Units.txt file, this works now
             userSelectedUnits = new List<Unit>();
@@ -94,7 +93,6 @@ namespace GreatGame
             buttonTexture = Content.Load<Texture2D>("ExampleButtonA.png");
             buttonFont = Content.Load<SpriteFont>("buttonFont");
             manager.Menu.LoadContent(buttonTexture, buttonFont, GraphicsDevice);
-            manager.PMenu.LoadContent(buttonTexture, buttonFont);
 
             font = Content.Load<SpriteFont>("Arial14");
 
@@ -130,6 +128,8 @@ namespace GreatGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+               Exit();
             previousKeyboard = keyboardState;
             keyboardState = Keyboard.GetState();
 
@@ -158,7 +158,6 @@ namespace GreatGame
             currentMouse = Mouse.GetState();
 
             // Call the managers update method
-
 
 
             MouseState mouse = Mouse.GetState();
@@ -193,10 +192,6 @@ namespace GreatGame
             if(manager.CurGameState == GameManager.GameState.Game)
             {
                 UI.Draw(spriteBatch, font);
-            }
-            if(manager.CurGameState == GameManager.GameState.Paused)
-            {
-                manager.PMenu.Draw(spriteBatch);
             }
             //spriteBatch.DrawString(font, "Time: " + gameTime.TotalGameTime, new Vector2(1000, 100), Color.Red);
             spriteBatch.End();
