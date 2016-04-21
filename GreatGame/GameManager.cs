@@ -22,7 +22,7 @@ namespace GreatGame
         private Texture2D bulletTexture;
         // This is the menu handler for the main menu
         private MenuHandler menu;
-
+        private PauseMenu pausemenu;
         // FSM for the current game state
         public enum GameState { Menu, Game, Paused, GameOver }
         private GameState curGameState;
@@ -52,6 +52,7 @@ namespace GreatGame
         public List<Texture2D> UnitTextures { get { return this.unitTextures; } set { this.unitTextures = value; } }
         public Texture2D BulletTexture { get { return this.bulletTexture; } set { this.bulletTexture = value; } }
         public MenuHandler Menu { get { return this.menu; } set { this.menu = value; } }
+        public PauseMenu PMenu { get { return pausemenu; } set { pausemenu = value; } }
         public Map GameMap { get { return this.gameMap; } set { this.gameMap = value; } }
 
         #endregion
@@ -69,6 +70,7 @@ namespace GreatGame
             gameMap = new Map();
             timer = 0;
             timeRemaining = 10000;
+            pausemenu = new PauseMenu();
         }
 
         /// <summary>
@@ -124,7 +126,7 @@ namespace GreatGame
         {
             // Load in from the notepad document of units
             allUnits.LoadUnit();
-            allUnits.LoadTextures();            
+            allUnits.LoadTextures();           
         }
 
         /// <summary>
@@ -173,7 +175,7 @@ namespace GreatGame
                         enemy_Units[i].Update(gameTime, player1Units);
                     }
 
-                    if (kbState.IsKeyDown(Keys.P) && kbPState.IsKeyUp(Keys.P)) curGameState = GameState.Paused;
+                    if (kbState.IsKeyDown(Keys.Escape) && kbPState.IsKeyUp(Keys.Escape)) curGameState = GameState.Paused;
 
 
 
@@ -192,9 +194,18 @@ namespace GreatGame
                     break;
                 case (GameState.Paused):
                     // Check to see if the paused button is pressed again
-                    if (kbState.IsKeyDown(Keys.P) && kbPState.IsKeyUp(Keys.P))
+                    pausemenu.Update(currentMouse);
+                    if (kbState.IsKeyDown(Keys.Escape) && kbPState.IsKeyUp(Keys.Escape))
                     {
                         curGameState = GameState.Game;
+                    }
+                    if (pausemenu.Resume.CheckClicked(currentMouse))
+                    {
+                        curGameState = GameState.Game;
+                    }
+                    if(pausemenu.MainMenu.CheckClicked(currentMouse))
+                    {
+                        game.Exit();
                     }
                     // A button to give up, which will set you to game over
                     break;
@@ -257,7 +268,6 @@ namespace GreatGame
                     break;
                 case (GameState.Paused):
                     // Show some text about the current score, and the current untis health and what not
-                    sb.DrawString(font, "Paused! Press Escape to Continue", new Vector2(500, 500), Color.Black);
                     
                     break;
                 case (GameState.GameOver):
