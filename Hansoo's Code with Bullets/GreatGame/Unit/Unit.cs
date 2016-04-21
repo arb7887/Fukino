@@ -347,32 +347,7 @@ namespace GreatGame
            if (isAlive)
             {
                 bool allowedToMove = true;
-                // Check the collisions
-                // Loop through and check the collisons with all of the other units
 
-               /* for (int i = 0; i < otherUnits.Count; i++)
-                {
-                    if (i != indexOfMe)
-                    {
-                        if (checkCollision(otherUnits[i]))
-                        {
-                            // Dont move
-                            allowedToMove = false;
-                        }
-                    }
-                }
-                for (int i = 0; i < userSelectedUnits.Count; i++)
-                {
-                    if (i != indexOfMe)
-                    {
-                        if (checkCollision(userSelectedUnits[i]))
-                        {
-                            // Dont move
-                            allowedToMove = false;
-                        }
-                    }
-                }
-                */
                 foreach(Wall w in map.Walls)
                 {
                     if (checkCollision(w))
@@ -421,53 +396,7 @@ namespace GreatGame
                         AttackPosition(new Vector2(currentMouse.X + cam.Pos.X * cam.CamSpeed, currentMouse.Y + cam.Pos.Y* cam.CamSpeed), gt);
                     }
                 }
-                /*if (allowedToMove)
-                {
-                    if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
-                    {
-                        // The previsous mouse vector
-                        Vector2 prevMouseVector = new Vector2(previousMouse.X, previousMouse.Y);
-                        // Get the mouse's world position
-                        Vector2 mouseWorldPos = GetMouseWorldPos(prevMouseVector, cam.Pos * cam.CamSpeed);
 
-                        // I need to account for the camera location in here
-                        if ((mouseWorldPos.X >= Position.X - radius) && (mouseWorldPos.X) <= Position.X + radius
-                            && (mouseWorldPos.Y) >= Position.Y - radius && (mouseWorldPos.Y) <= Position.Y + radius)
-                        {
-                            prevCamPos = cam.Pos;
-                            IsSelected = true;
-                            color = Color.Cyan;
-                            userSelectedUnits.Add(this);
-                        }
-                        else
-                        {
-                            IsSelected = false;
-                            color = Color.White;
-                            userSelectedUnits.Remove(this);
-                        }
-                    }
-                    if (IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
-                    {
-                        destination = new Vector2(previousMouse.X + cam.Pos.X * cam.CamSpeed, previousMouse.Y + cam.Pos.Y * cam.CamSpeed);
-
-                        ProcessInput(destination, map);
-                        IsMoving = true;
-                    }
-                    else if (IsMoving)
-                    {
-                        ProcessInput(destination, map);
-                    }
-                }
-                // if there is a collision between units
-                else
-                {
-                    // Move the unit away from said object
-                    ProcessInput(-destination, cam);
-                    // Move the unit away from said unit
-
-                    ProcessInput(destination, cam);
-                    //ProcessInput(new Vector2(destination.X, destination.Y - 50));
-                }*/
                 BulletCheck();
                 Unit closestEnemy = null;
                 double minDistance = Double.MaxValue;

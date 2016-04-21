@@ -36,3 +36,41 @@ C:\Users\HanSoo\Desktop\great-game\GreatGame\bin\Windows\Debug\Content\Walls.txt
 C:\Users\HanSoo\Desktop\great-game\GreatGame\bin\Windows\Debug\Content\wallTexture.jpg
 C:\Users\HanSoo\Desktop\great-game\GreatGame\bin\Windows\Debug\Content\Bullet.png
 C:\Users\HanSoo\Desktop\great-game\GreatGame\bin\Windows\Debug\Content\pointTexture.jpg
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\obj\x86\Debug\GreatGame.exe
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\obj\x86\Debug\GreatGame.pdb
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\Content\ExampleButtonA.png
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\Content\Mouse_pointer_small.png
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\Content\Kamui.png
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\Content\pointTexture.jpg
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\Content\Walls.txt
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\Content\wallTexture.jpg
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\Content\Arial14.xnb
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\Content\ButtonFont.xnb
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\Content\sniper.xnb
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\Content\troop.xnb
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\Content\Bullet.png
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\Content\Textures.txt
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\Content\Units.txt
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\GreatGame.exe
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\GreatGame.pdb
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\MonoGame.Framework.dll
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\SharpDX.MediaFoundation.dll
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\SharpDX.dll
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\SharpDX.XAudio2.dll
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\SharpDX.Direct3D11.dll
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\SharpDX.DXGI.dll
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\SharpDX.Direct2D1.dll
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\SharpDX.XInput.dll
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\SharpDX.RawInput.dll
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\SharpDX.Direct3D9.dll
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\MonoGame.Framework.xml
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\SharpDX.MediaFoundation.xml
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\SharpDX.xml
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\SharpDX.XAudio2.xml
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\SharpDX.Direct3D11.xml
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\SharpDX.DXGI.xml
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\SharpDX.Direct2D1.xml
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\SharpDX.XInput.xml
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\SharpDX.RawInput.xml
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\bin\Windows\Debug\SharpDX.Direct3D9.xml
+D:\GitHub\great-game\Hansoo's Code with Bullets\GreatGame\obj\x86\Debug\GreatGame.csprojResolveAssemblyReference.cache

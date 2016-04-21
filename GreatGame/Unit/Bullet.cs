@@ -118,11 +118,20 @@ namespace GreatGame
         public void Move()
         {
             Vector2 distance = new Vector2(destination.X - position.X - (int)size / 2, destination.Y - position.Y - (int)size / 2);
-            distance.Normalize();
-            Vector2 toMove = new Vector2((int)(distance.X * speed), (int)(distance.Y * speed));
-            position += toMove;
-            bounds.Center += new Vector3(toMove.X, toMove.Y, 0);
-            DistanceCheck();
+            if (distance.Length() < speed)
+            {
+                position = destination;
+                bounds.Center = new Vector3(destination.X + size / 2, destination.Y + size / 2, 0);
+                toDelete = true;
+            }
+            else
+            {
+                distance.Normalize();
+                Vector2 toMove = new Vector2((int)(distance.X * speed), (int)(distance.Y * speed));
+                position += toMove;
+                bounds.Center += new Vector3(toMove.X, toMove.Y, 0);
+                DistanceCheck();
+            }
         }
 
         public void DistanceCheck()
@@ -139,6 +148,14 @@ namespace GreatGame
             if (bounds.Intersects(u.Bounds))
             {
                 u.Health -= damage;
+                toDelete = true;
+            }
+        }
+
+        public void WallCheck(Wall w)
+        {
+            if (bounds.Intersects(w.Bounds))
+            {
                 toDelete = true;
             }
         }

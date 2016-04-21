@@ -166,7 +166,7 @@ namespace GreatGame
                     // Call the updates on all of the units in the players list   
                     for (int i = 0; i < player1Units.Count; i++)
                     {
-                        player1Units[i].Update(gameTime, previousMouse, currentMouse, userSelectedUnits, enemy_Units, cam, gameMap);
+                        player1Units[i].Update(gameTime, previousMouse, currentMouse, kbPState, kbState, userSelectedUnits, enemy_Units, cam, gameMap);
                     }
                     
                     // Update the enemy AI Units
@@ -249,7 +249,7 @@ namespace GreatGame
                         }
                     }
 
-                    
+
                     for (int k = 0; k < enemy_Units.Count; k++)
                     {
                         if (enemy_Units[k].IsAlive)

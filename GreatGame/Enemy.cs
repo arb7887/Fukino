@@ -94,7 +94,6 @@ namespace GreatGame
             if (_DELAY_BETWEEN_SHOOTS <= 0)
             {
                 if (distance.Length() <= this.AttackRange)
-
                 {
                     Bullet newBullet = new Bullet(5, this.ATTACK_STRENGTH, FIRE_RADIUS.Radius, 5, Center, this.BulletTexture);
                     newBullet.Bounds = new BoundingSphere(new Vector3(newBullet.Position.X, newBullet.Position.Y, 0), (float)newBullet.Size / 2);
@@ -103,21 +102,6 @@ namespace GreatGame
                     newBullet = null;
                 }
                 _DELAY_BETWEEN_SHOOTS = this.RateOfFire;
-            }
-
-            for (int i = 0; i < ActiveBullets.Count; i++)
-            {
-                if (ActiveBullets[i].ToDelete)
-                {
-                    ActiveBullets.RemoveAt(i);
-                }
-                else
-                {
-                    ActiveBullets[i].Move();
-                    ActiveBullets[i].DamageCheck(u);
-                    ActiveBullets[i].DistanceCheck();
-                }
-
             }
         }
 
