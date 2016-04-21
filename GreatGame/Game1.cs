@@ -36,7 +36,7 @@ namespace GreatGame
 
         // This is the camera that shall be used for the player
         private Camera _camera;
-        UserInterface UI;
+        private UserInterface UI;
 
         #endregion
 
@@ -72,7 +72,7 @@ namespace GreatGame
 
             // Load in the Units.txt file, this works now
             userSelectedUnits = new List<Unit>();
-            UI = new UserInterface();
+            UI = new UserInterface(GraphicsDevice);
 
             //gameMap = new Map();
 
@@ -101,6 +101,10 @@ namespace GreatGame
             manager.GameMap.CP = new CapturePoint(2400, 1400, 600, 600, Content.Load<Texture2D>("pointTexture"));
             bulletTexture = Content.Load<Texture2D>("Bullet.png");
             manager.BulletTexture = bulletTexture;
+            //UI Textures:
+            UI.BottomLeft = Content.Load<Texture2D>("BottomLeftUI.png");
+            UI.BottomRight = Content.Load<Texture2D>("BottomRightUI.png");
+
             // Load in the list of units from the files here
             manager.LoadContent();
 
