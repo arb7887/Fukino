@@ -49,8 +49,8 @@ namespace GreatGame
                 sb.DrawString(font,
                     selected[0].Name + 
                     ": \nHealth: " + selected[0].Health + 
-                    "\nSpeed: " + selected[0].Speed + 
-                    "\nRange: " + selected[0].AttackRange + 
+                    "\nSpeed: " + selected[0].Speed + "0%" +
+                    "\nRange: " + selected[0].AttackRange + "%" +
                     "\nDamage: " + selected[0].ATTACK_STRENGTH, 
                     textpos,
                     Color.White);
