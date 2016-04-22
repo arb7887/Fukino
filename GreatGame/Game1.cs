@@ -73,7 +73,7 @@ namespace GreatGame
 
             // Load in the Units.txt file, this works now
             userSelectedUnits = new List<Unit>();
-            UI = new UserInterface(GraphicsDevice);
+            UI = new UserInterface(GraphicsDevice, userSelectedUnits);
 
             //gameMap = new Map();
 
@@ -114,6 +114,10 @@ namespace GreatGame
             {
                 Texture2D newTexture = Content.Load<Texture2D>(manager.AllUnits.TextureList[i]);
                 manager.UnitTextures.Add(newTexture);
+            }
+            for(int i = 0; i < manager.Player1Units.Count; i++)
+            {
+                manager.Player1Units[i].Icon = Content.Load<Texture2D>("SniperIcon.png");
             }
         }
 

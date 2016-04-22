@@ -19,6 +19,7 @@ namespace GreatGame
         private List<Enemy> enemy_Units;
         // This is a list of textures that has been loaded in
         private List<Texture2D> unitTextures;
+        private List<Texture2D> unitIcons;
         private Texture2D bulletTexture;
         // This is the menu handler for the main menu
         private MenuHandler menu;
@@ -51,6 +52,7 @@ namespace GreatGame
         public List<Unit> Player1Units {get { return this.player1Units; } set { this.player1Units = value; } }
         public List<Enemy> Enemy_Units { get { return this.enemy_Units; } }
         public List<Texture2D> UnitTextures { get { return this.unitTextures; } set { this.unitTextures = value; } }
+        public List<Texture2D> UnitIcons { get { return this.unitIcons; } set { this.unitIcons = value; } }
         public Texture2D BulletTexture { get { return this.bulletTexture; } set { this.bulletTexture = value; } }
         public MenuHandler Menu { get { return this.menu; } set { this.menu = value; } }
         public PauseMenu PMenu { get { return pausemenu; } set { pausemenu = value; } }
@@ -66,6 +68,7 @@ namespace GreatGame
             player1Units = new List<Unit>();
             enemy_Units = new List<Enemy>();
             unitTextures = new List<Texture2D>();
+            unitIcons = new List<Texture2D>();
             curGameState = GameState.Menu;
             menu = new MenuHandler(MenuStates.Main);
             gameMap = new Map();

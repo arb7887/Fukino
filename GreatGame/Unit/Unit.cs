@@ -21,7 +21,7 @@ namespace GreatGame
         private Vector2 position;
         private Vector2 center;
         private Vector2 destination;
-        private Texture2D texture, bulletTexture;
+        private Texture2D texture, bulletTexture, icon;
         private Color color;
         private Bullet bullet;
         private List<Bullet> activeBullets;
@@ -96,6 +96,18 @@ namespace GreatGame
             }
         }
 
+        public Texture2D Icon
+        {
+            get
+            {
+                return icon;
+            }
+            set
+            {
+                icon = value;
+            }
+        }
+
         public Vector2 Position
         {
             get
@@ -148,7 +160,7 @@ namespace GreatGame
             get { return bounds; }
             set { this.bounds = value; }
         }
-
+        
 
         // Bullet properties=======================
         public Vector2 Center { get { return center; } set { center = value; } }
