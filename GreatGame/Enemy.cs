@@ -12,9 +12,11 @@ namespace GreatGame
     {
         private BoundingSphere _FIRE_RADIUS;   // This is the radius that this enemy will use to see if it is colliding with any other units
         private double _DELAY_BETWEEN_SHOOTS;
-
+        private Vector2 _SPAWN_POINT;
 
         public BoundingSphere FIRE_RADIUS { get { return this._FIRE_RADIUS; } set { _FIRE_RADIUS = value; } }
+        public Double DELAY_BETWEEN_SHOOTS { get { return this._DELAY_BETWEEN_SHOOTS; } set { _DELAY_BETWEEN_SHOOTS = value; } }
+        public Vector2 SPAWN_POINT { get { return this._SPAWN_POINT;  } set { this._SPAWN_POINT = value; } }
 
         /// <summary>
         /// This is the constructor that we will use for the "AI" in the game. 
@@ -36,7 +38,7 @@ namespace GreatGame
         /// </summary>
         public void ShortestPath()
         {
-
+            // Call the graph class, and get the next position for this unit to move.
         }
         
         /// <summary>
@@ -55,6 +57,7 @@ namespace GreatGame
                     if (CheckRange(u))
                     {
                         Shoot(u, gt);
+                        // Move away from that unit a little bit
                     }
                 }
             }
@@ -114,30 +117,3 @@ namespace GreatGame
     }
 }
 
-/*
-public void UpdateEnemy(GameTime gt, List<Unit> playerUnits)
-{
-if (isAlive)
-{
-    foreach (Unit u in playerUnits)
-    {
-        if (u.isAlive)
-        {
-            AttackUnit(u, gt);
-        }
-    }
-}
-else
-{
-    if (deathTimer < 0)
-    {
-        deathTimer = 5;
-        isAlive = true;
-        health = 100;
-    }
-    else
-    {
-        deathTimer -= gt.ElapsedGameTime.TotalSeconds;
-    }
-}
-}*/

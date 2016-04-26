@@ -190,24 +190,6 @@ namespace GreatGame
 
         // Methods
         #region methods
-        public Boolean checkCollision(Unit u)
-        {
-            if (u.Bounds.Intersects(this.bounds))
-            {
-                // Move the object back a little bit in the opposite directoin then it was going
-                // Get the destination of the two things
-                if (this.IsMoving)
-                {
-                    Vector2 direction = new Vector2((position.X - destination.X) * -1, (position.Y - destination.Y) * -1);
-                    direction.Normalize();
-                    position += direction * 5;
-                    destination = position;
-                }
-                return true;
-            }
-            return false;
-        }
-
 
         public void AttackUnit(Unit u, GameTime gt)
         {
@@ -240,6 +222,7 @@ namespace GreatGame
             activeBullets.Add(newBullet);
             newBullet = null;
         }
+
         public void BulletCheck()
         {
             for (int i = 0; i < activeBullets.Count; i++)

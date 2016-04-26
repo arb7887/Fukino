@@ -105,13 +105,13 @@ namespace GreatGame
 
             Random r = new Random();
             // Generate 6 random enemy units
-            x = 800;
+            x = 4800;
             for(int i = 0; i < player1Units.Count; i++)
             {
                 Unit unitToAdd = new Unit(allUnits.UnitList[r.Next(0, allUnits.UnitList.Count)], i);
                 enemy_Units.Add(new Enemy(unitToAdd, i, unitToAdd.AttackRange));
                 enemy_Units[i].Texture = UnitTextures[0];
-                enemy_Units[i].Position = new Vector2(x + 50, 1700);
+                enemy_Units[i].Position = new Vector2(x + 50, 250);
                 enemy_Units[i].Size = 50;
                 enemy_Units[i].Bounds = new BoundingSphere(new Vector3(enemy_Units[i].Position, 0), radius);
                 enemy_Units[i].Center = new Vector2(enemy_Units[i].Position.X + radius, enemy_Units[i].Position.Y + radius);
@@ -120,6 +120,9 @@ namespace GreatGame
 
                 x += 100;
             }
+            // ================Set only one of the units closer so we can test bullets and stuff easier
+            enemy_Units[0].Position = new Vector2(1000, 1700);
+            enemy_Units[0].Bounds = new BoundingSphere(new Vector3(enemy_Units[0].Position, 0), radius);
 
         }
 
@@ -268,7 +271,6 @@ namespace GreatGame
                             }
                         }
                     }
-                    sb.DrawString(font, Player1String(), Vector2.Zero, Color.Black);
                     break;
                 case (GameState.Paused):
                     // Show some text about the current score, and the current untis health and what not
