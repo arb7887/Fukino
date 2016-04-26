@@ -15,6 +15,16 @@ namespace GreatGame
         private int blockWidth, blockHeight;    // This is how big each one of the rectangles will be inside of the graph
         private List<Rectangle> graph;
 
+        /// <summary>
+        /// This class will be used to do some A* pathfinding.
+        /// Hopefully this will work, and I will make it based on the 
+        /// A* homework.
+        /// </summary>
+        /// <param name="m"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="blockWidth"></param>
+        /// <param name="blockHeight"></param>
         public Graph(Map m, int width, int height, int blockWidth, int blockHeight)
         {
             map = m;
