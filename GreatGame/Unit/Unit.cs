@@ -290,6 +290,17 @@ namespace GreatGame
 
         }
 
+        /// <summary>
+        /// This is a method to be called whenever the unit dies.
+        /// This will stop us from making a new object for each time a unit dies
+        /// </summary>
+        public void Reset()
+        {
+            // Health to max
+            // Move to spawn point
+            // 
+        }
+
         public void Update(GameTime gt, MouseState previousMouse, MouseState currentMouse, KeyboardState kbPrevState, KeyboardState kbState,
             List<Unit> userSelectedUnits, List<Enemy> otherUnits, Camera cam, Map map)
         {

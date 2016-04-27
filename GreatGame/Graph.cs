@@ -13,7 +13,11 @@ namespace GreatGame
         private Map map;
         private int width, height;  // Oveall width and height over the graph
         private int blockWidth, blockHeight;    // This is how big each one of the rectangles will be inside of the graph
-        private List<Rectangle> graph;
+
+        Dictionary<String, int> nodeNameToIndex;
+        List<Node> nodes;
+
+        Node selectedNode;
 
         /// <summary>
         /// This class will be used to do some A* pathfinding.
@@ -32,7 +36,6 @@ namespace GreatGame
             this.height = height;
             this.blockWidth = blockWidth;
             this.blockHeight = blockHeight;
-            graph = new List<Rectangle>();
         }
 
         /// <summary>
@@ -61,9 +64,30 @@ namespace GreatGame
             int numRowsTomake = maxHeight / blockHeight;
             int numColumnsToMake = maxWidth / blockWidth;
 
-
+            // Now we have the number of rows and coluns that we need to make.
+            int x = 0 , y = 0;
+            for(int i = 0; i < numRowsTomake; i++)
+            {
+                for(int j = 0; j < numColumnsToMake; j++)
+                {
+                    Rectangle rectangle = new Rectangle(x, y, blockWidth, blockHeight);
+                    Node newNode = new Node(rectangle, false);
+                    y += blockHeight;
+                }
+                x += blockWidth;
+            }
 
         }
 
+
+        /// <summary>
+        /// This method will take a start vertex, and a final vertex.
+        /// Also a ending vertex and it will find the shortest path
+        /// between them by using A*
+        /// </summary>
+        public void ShortestPath(Node start)
+        {
+            // If this start is not a wall
+        }
     }
 }

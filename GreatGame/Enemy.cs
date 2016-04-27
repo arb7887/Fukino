@@ -13,6 +13,7 @@ namespace GreatGame
         private BoundingSphere _FIRE_RADIUS;   // This is the radius that this enemy will use to see if it is colliding with any other units
         private double _DELAY_BETWEEN_SHOOTS;
         private Vector2 _SPAWN_POINT;
+        Color nameColor;
 
         public BoundingSphere FIRE_RADIUS { get { return this._FIRE_RADIUS; } set { _FIRE_RADIUS = value; } }
         public Double DELAY_BETWEEN_SHOOTS { get { return this._DELAY_BETWEEN_SHOOTS; } set { _DELAY_BETWEEN_SHOOTS = value; } }
@@ -30,6 +31,7 @@ namespace GreatGame
             : base(u, i)
         {
             _FIRE_RADIUS = new BoundingSphere(new Vector3(this.Position, 0), fireRadius);
+            this.nameColor = Color.Black;
             this.Team = Teams.Enemy;
         }
 
@@ -57,6 +59,7 @@ namespace GreatGame
                     if (CheckRange(u))
                     {
                         Shoot(u, gt);
+                        nameColor = Color.Red;
                         // Move away from that unit a little bit
                     }
                 }
@@ -64,6 +67,7 @@ namespace GreatGame
             else
             {
                 // Kill the unit
+                // Call the resetmethod
             }
         }
 
@@ -108,9 +112,10 @@ namespace GreatGame
             }
         }
 
+
         public void Draw(SpriteBatch sb, SpriteFont font)
         {
-            sb.DrawString(font, "HEALTH: " + this.Health, new Vector2(this.Position.X, this.Position.Y - 20), Color.Black);
+            sb.DrawString(font, "HEALTH: " + this.Health, new Vector2(this.Position.X, this.Position.Y - 20), nameColor);
 
             sb.Draw(this.Texture, new Rectangle((int)Position.X, (int)Position.Y, 50, 50), this.UnitColor);
         }
