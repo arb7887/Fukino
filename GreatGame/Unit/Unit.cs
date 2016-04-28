@@ -32,6 +32,8 @@ namespace GreatGame
         private Teams myTag;
         private Vector2 prevCamPos;
 
+        private Vector2 spawnLocation;
+        private int respawnTime;
 
 
         #endregion
@@ -60,6 +62,7 @@ namespace GreatGame
             prevCamPos = new Vector2(0,0);
             deathTimer = 5;
             isAlive = true;
+            respawnTime = 8;
         }
 
         public Unit(Unit newUnit, int index)
@@ -83,6 +86,10 @@ namespace GreatGame
         public Double RateOfFire { get { return this.rateOfFire; } set { this.rateOfFire = value; } }
 
         public bool IsAlive { get { return this.isAlive; } set { isAlive = value; } }
+
+        public int SpawnTime { get { return respawnTime; } set { SpawnTime = value; } }
+
+        public Vector2 SpawnLoc { get { return spawnLocation; } set { spawnLocation = value; } }
 
         public Texture2D Texture
         {
@@ -190,7 +197,7 @@ namespace GreatGame
 
         // Methods
         #region methods
-
+        
         public void AttackUnit(Unit u, GameTime gt)
         {
             Vector2 distance = new Vector2(center.X - u.Position.X, position.Y - u.position.Y);
@@ -238,7 +245,7 @@ namespace GreatGame
                 }
             }
         }
-
+        
         public void ProcessInput(Vector2 mouseLoc, Map m)
         {
             // SO, I have to take this mouse location, which is the location on the screen
@@ -282,31 +289,44 @@ namespace GreatGame
         #endregion
         public void Draw(SpriteBatch sb, SpriteFont font, Camera cam)
         {
-            // Basic draw function for the units class
+            if (isAlive)
+            {
+                sb.DrawString(font, "HEALTH: " + this.health, new Vector2(this.position.X, this.position.Y - 20), Color.Black);
 
-            sb.DrawString(font, "HEALTH: " + this.health, new Vector2(this.position.X, this.position.Y - 20), Color.Black);
-
-            sb.Draw(texture, new Rectangle((int)(position.X-radius), (int)(position.Y-radius), 50, 50), color);
-
+                sb.Draw(texture, new Rectangle((int)(position.X - radius), (int)(position.Y - radius), 50, 50), color);
+            }
         }
 
-        /// <summary>
-        /// This is a method to be called whenever the unit dies.
-        /// This will stop us from making a new object for each time a unit dies
-        /// </summary>
-        public void Reset()
-        {
-            // Health to max
-            // Move to spawn point
-            // 
-        }
-
+        private float timer;
         public void Update(GameTime gt, MouseState previousMouse, MouseState currentMouse, KeyboardState kbPrevState, KeyboardState kbState,
             List<Unit> userSelectedUnits, List<Enemy> otherUnits, Camera cam, Map map)
         {
-                bool allowedToMove = true;
-                // Check the collisions
+            bool allowedToMove = true;
+            // Check the collisions
 
+            if (!isAlive)
+            {
+                position = new Vector2(-20, -20);
+                center = position;
+                allowedToMove = false;
+
+                var delta = (float)gt.ElapsedGameTime.TotalSeconds;
+                timer += delta;
+                if (timer >= respawnTime)
+                {
+                    position = spawnLocation;
+                    center = position;
+                    timer = 0;
+                    isAlive = true;
+                    if(name == "Rifle")
+                    {
+                        health = 200;
+                    }
+                    return;
+                }
+            }
+            else
+            {
                 foreach (Wall w in map.Walls)
                 {
                     if (w.Colliding(this))
@@ -315,75 +335,75 @@ namespace GreatGame
 
                 map.checkCapturing(this);
 
-            // Checks the movement
+                // Checks the movement
 
-            if (allowedToMove)
-            {
-                if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
+                if (allowedToMove)
                 {
-                    // The previsous mouse vector
-                    Vector2 prevMouseVector = new Vector2(previousMouse.X, previousMouse.Y);
-                    // Get the mouse's world position
-                    Vector2 mouseWorldPos = GetMouseWorldPos(prevMouseVector, cam.Pos * cam.CamSpeed);
-
-                    // I need to account for the camera location in here
-                    if ((mouseWorldPos.X >= Position.X - radius) && (mouseWorldPos.X) <= Position.X + radius
-                        && (mouseWorldPos.Y) >= Position.Y - radius && (mouseWorldPos.Y) <= Position.Y + radius)
+                    if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
                     {
-                        prevCamPos = cam.Pos;
-                        IsSelected = true;
-                        color = Color.Cyan;
-                        userSelectedUnits.Add(this);
+                        // The previsous mouse vector
+                        Vector2 prevMouseVector = new Vector2(previousMouse.X, previousMouse.Y);
+                        // Get the mouse's world position
+                        Vector2 mouseWorldPos = GetMouseWorldPos(prevMouseVector, cam.Pos * cam.CamSpeed);
+
+                        // I need to account for the camera location in here
+                        if ((mouseWorldPos.X >= Position.X - radius) && (mouseWorldPos.X) <= Position.X + radius
+                            && (mouseWorldPos.Y) >= Position.Y - radius && (mouseWorldPos.Y) <= Position.Y + radius)
+                        {
+                            prevCamPos = cam.Pos;
+                            IsSelected = true;
+                            color = Color.Cyan;
+                            userSelectedUnits.Add(this);
+                        }
+                        else
+                        {
+                            IsSelected = false;
+                            color = Color.White;
+                            userSelectedUnits.Remove(this);
+                        }
                     }
-                    else
+                    if (IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
                     {
-                        IsSelected = false;
-                        color = Color.White;
-                        userSelectedUnits.Remove(this);
+                        destination = new Vector2(previousMouse.X + cam.Pos.X * cam.CamSpeed, previousMouse.Y + cam.Pos.Y * cam.CamSpeed);
+
+                        ProcessInput(destination, map);
+                        IsMoving = true;
+                    }
+                    else if (IsMoving)
+                    {
+                        ProcessInput(destination, map);
+                    }
+
+                    // Check if the use is hitting the shoot button
+                    if (isSelected && (kbPrevState.IsKeyDown(Keys.Space) && kbState.IsKeyUp(Keys.Space)))
+                    {
+                        AttackPosition(new Vector2(currentMouse.X + cam.Pos.X * cam.CamSpeed, currentMouse.Y + cam.Pos.Y * cam.CamSpeed), gt);
                     }
                 }
-                if (IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
-                {
-                    destination = new Vector2(previousMouse.X + cam.Pos.X * cam.CamSpeed, previousMouse.Y + cam.Pos.Y * cam.CamSpeed);
 
-                    ProcessInput(destination, map);
-                    IsMoving = true;
-                }
-                else if (IsMoving)
+                BulletCheck();
+                Unit closestEnemy = null;
+                double minDistance = Double.MaxValue;
+                foreach (Unit u in otherUnits)
                 {
-                    ProcessInput(destination, map);
+                    if (u.isAlive)
+                    {
+                        if (minDistance > new Vector2(position.X - u.Position.X, position.Y - u.Position.Y).Length())
+                        {
+                            closestEnemy = u;
+                            minDistance = new Vector2(position.X - u.Position.X, position.Y - u.Position.Y).Length();
+                        }
+                        for (int b = 0; b < activeBullets.Count; b++)
+                        {
+                            activeBullets[b].DamageCheck(u);
+                        }
+                    }
                 }
-
-                // Check if the use is hitting the shoot button
-                if (isSelected && (kbPrevState.IsKeyDown(Keys.Space) && kbState.IsKeyUp(Keys.Space)))
+                if (minDistance < attackRange && closestEnemy != null)
                 {
-                    AttackPosition(new Vector2(currentMouse.X + cam.Pos.X * cam.CamSpeed, currentMouse.Y + cam.Pos.Y * cam.CamSpeed), gt);
+                    AttackUnit(closestEnemy, gt);
                 }
             }
-
-            BulletCheck();
-            Unit closestEnemy = null;
-            double minDistance = Double.MaxValue;
-            foreach (Unit u in otherUnits)
-            {
-                if (u.isAlive)
-                {
-                    if (minDistance > new Vector2(position.X - u.Position.X, position.Y - u.Position.Y).Length())
-                    {
-                        closestEnemy = u;
-                        minDistance = new Vector2(position.X - u.Position.X, position.Y - u.Position.Y).Length();
-                    }
-                    for (int b = 0; b < activeBullets.Count; b++)
-                    {
-                        activeBullets[b].DamageCheck(u);
-                    }
-                }
-            }
-            if (minDistance < attackRange && closestEnemy != null)
-            {
-                AttackUnit(closestEnemy, gt);
-            }
-
         }
 
 

@@ -83,7 +83,7 @@ namespace GreatGame
         public void Initialize()
         {
             float radius = 25;
-            int x = 0;
+            int x = 150;
             int textCount = 0;
             // Set all of the player1 units textures to the same thing
             for(int i = 0; i < player1Units.Count; i++)
@@ -93,7 +93,8 @@ namespace GreatGame
                     textCount = 0;
                 }
                 player1Units[i].Texture = unitTextures[textCount];
-                player1Units[i].Position = new Vector2(x + 150, 200);
+                player1Units[i].SpawnLoc = gameMap.PlayerSpawnPoints[i];
+                player1Units[i].Position = player1Units[i].SpawnLoc;
                 player1Units[i].Size = 50;
                 player1Units[i].Center = new Vector2(player1Units[i].Position.X + radius, player1Units[i].Position.Y + radius);
                 player1Units[i].Bounds = new BoundingSphere(new Vector3(player1Units[i].Position, 0), radius);
@@ -105,20 +106,21 @@ namespace GreatGame
 
             Random r = new Random();
             // Generate 6 random enemy units
-            x = 4800;
+            x = 4850;
             for(int i = 0; i < player1Units.Count; i++)
             {
                 Unit unitToAdd = new Unit(allUnits.UnitList[r.Next(0, allUnits.UnitList.Count)], i);
                 enemy_Units.Add(new Enemy(unitToAdd, i, unitToAdd.AttackRange));
                 enemy_Units[i].Texture = UnitTextures[0];
-                enemy_Units[i].Position = new Vector2(x + 50, 250);
+                enemy_Units[i].SpawnLoc = gameMap.EnemySpawnPoints[i];
+                enemy_Units[i].Position = enemy_Units[i].SpawnLoc;
                 enemy_Units[i].Size = 50;
                 enemy_Units[i].Bounds = new BoundingSphere(new Vector3(enemy_Units[i].Position, 0), radius);
                 enemy_Units[i].Center = new Vector2(enemy_Units[i].Position.X + radius, enemy_Units[i].Position.Y + radius);
                 enemy_Units[i].BulletTexture = bulletTexture;
                 enemy_Units[i].Team = Teams.Enemy;
 
-                x += 100;
+                x += 75;
             }
             // ================Set only one of the units closer so we can test bullets and stuff easier
             enemy_Units[0].Position = new Vector2(1000, 1700);

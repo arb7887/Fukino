@@ -63,13 +63,33 @@ namespace GreatGame
                         // Move away from that unit a little bit
                     }
                 }
+                this.IsAlive = true;
             }
             else
             {
-                // Kill the unit
-                // Call the resetmethod
+                this.Position = new Vector2(-20, -20);
+                this.Center = this.Position;
+
+                var delta = (float)gt.ElapsedGameTime.TotalSeconds;
+                timer += delta;
+                if (timer >= this.SpawnTime)
+                {
+                    this.Position = this.SpawnLoc;
+                    this.Center = this.Position;
+                    timer = 0;
+                    if (this.Name == "Rifle")
+                    {
+                        this.Health = 200;
+                    }
+                    else
+                    {
+                        this.Health = 200;
+                    }
+                    return;
+                }
             }
         }
+        private float timer;
 
         /// <summary>
         /// This method simply checks if the given unit is inside of the bounding shpere
