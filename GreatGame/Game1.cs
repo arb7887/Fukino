@@ -98,10 +98,11 @@ namespace GreatGame
 
             font = Content.Load<SpriteFont>("Arial14");
 
-            manager.GameMap.WallTexture = Content.Load<Texture2D>("wallTexture.jpg");
+            manager.GameMap.WallTexture = Content.Load<Texture2D>("Black.png");
             manager.GameMap.LoadMap("Content/Walls.txt");
             manager.GameMap.CP = new CapturePoint(2400, 1400, 600, 600, Content.Load<Texture2D>("pointTexture"));
             bulletTexture = Content.Load<Texture2D>("Bullet.png");
+            manager.E_bulletTexture = Content.Load<Texture2D>("e_Bullet.png");
             manager.BulletTexture = bulletTexture;
             //UI Textures:
             UI.BottomLeft = Content.Load<Texture2D>("BottomLeftUI.png");

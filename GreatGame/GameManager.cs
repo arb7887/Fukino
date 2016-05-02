@@ -21,6 +21,7 @@ namespace GreatGame
         private List<Texture2D> unitTextures;
         private List<Texture2D> unitIcons;
         private Texture2D bulletTexture;
+        private Texture2D e_bulletTexture;
         // This is the menu handler for the main menu
         private MenuHandler menu;
         private PauseMenu pausemenu;
@@ -57,6 +58,7 @@ namespace GreatGame
         public MenuHandler Menu { get { return this.menu; } set { this.menu = value; } }
         public PauseMenu PMenu { get { return pausemenu; } set { pausemenu = value; } }
         public Map GameMap { get { return this.gameMap; } set { this.gameMap = value; } }
+        public Texture2D E_bulletTexture { get { return this.e_bulletTexture; } set { this.e_bulletTexture = value; } }
 
         #endregion
 
@@ -105,19 +107,23 @@ namespace GreatGame
 
             Random r = new Random();
             // Generate 6 random enemy units
-            x = 4800;
+            x = 1000;
             for(int i = 0; i < player1Units.Count; i++)
             {
                 Unit unitToAdd = new Unit(allUnits.UnitList[r.Next(0, allUnits.UnitList.Count)], i);
-                enemy_Units.Add(new Enemy(unitToAdd, i, unitToAdd.AttackRange));
-                enemy_Units[i].Texture = UnitTextures[0];
-                enemy_Units[i].Position = new Vector2(x + 50, 250);
-                enemy_Units[i].Size = 50;
-                enemy_Units[i].Bounds = new BoundingSphere(new Vector3(enemy_Units[i].Position, 0), radius);
-                enemy_Units[i].Center = new Vector2(enemy_Units[i].Position.X + radius, enemy_Units[i].Position.Y + radius);
-                enemy_Units[i].BulletTexture = bulletTexture;
-                enemy_Units[i].Team = Teams.Enemy;
+                
+                unitToAdd.Texture = UnitTextures[0];
+                unitToAdd.Position = new Vector2(x + 50, 250);
+                unitToAdd.Size = 50;
+                unitToAdd.Bounds = new BoundingSphere(new Vector3(unitToAdd.Position, 0), radius);
+                unitToAdd.Center = new Vector2(unitToAdd.Position.X + radius, unitToAdd.Position.Y + radius);
+                unitToAdd.BulletTexture = E_bulletTexture;
+                unitToAdd.Team = Teams.Enemy;
+                Enemy enemyToAdd = new Enemy(unitToAdd, i, unitToAdd.AttackRange);
 
+                enemy_Units.Add(enemyToAdd);
+                enemy_Units[i].Position = new Vector2(500 + x, 1700);
+                enemy_Units[i].Bounds = new BoundingSphere(new Vector3(enemy_Units[i].Position, 0), radius);
                 x += 100;
             }
             // ================Set only one of the units closer so we can test bullets and stuff easier
@@ -261,7 +267,7 @@ namespace GreatGame
                     {
                         if (enemy_Units[k].IsAlive)
                         {
-                            enemy_Units[k].Draw(sb, font, cam);
+                            enemy_Units[k].Draw(sb, font);
                             for (int l = 0; l < enemy_Units[k].ActiveBullets.Count; l++)
                             {
                                 if (!enemy_Units[k].ActiveBullets[l].ToDelete)
