@@ -10,15 +10,30 @@ namespace GreatGame
 {
     class Graph
     {
-        private Map map;
-        private int width, height;  // Oveall width and height over the graph
-        private int blockWidth, blockHeight;    // This is how big each one of the rectangles will be inside of the graph
+        #region Fields
 
-        Dictionary<String, int> nodeNameToIndex;
-        List<Node> nodes;
+        private Map _MAP;
+        private int _GRAPH_WIDTH, _GRAPH_HEIGHT;  // Oveall width and height over the graph
+        private int _BLOCK_SIZE;    // This is how big each one of the rectangles will be inside of the graph
 
-        Node selectedNode;
+        Dictionary<String, int> _NODE_NAME_TO_INDEX;
+        List<Node> _ALL_NODES;
 
+        private Node _SELECTED_NODE;
+        #endregion
+
+
+        #region Properties
+        public Map MAP { get { return this._MAP; } set { this._MAP = value; } }
+        public int GRAPH_WIDTH { get { return this._GRAPH_WIDTH; } }
+        public int GRAPH_HEIGHT { get { return this._GRAPH_HEIGHT; } }
+        public int BLOCK_SIZE { get { return this._BLOCK_SIZE; } }
+        public Node SELECTED_NODE { get { return this._SELECTED_NODE; } }
+
+        #endregion
+
+
+        #region Constructor
         /// <summary>
         /// This class will be used to do some A* pathfinding.
         /// Hopefully this will work, and I will make it based on the 
@@ -29,15 +44,22 @@ namespace GreatGame
         /// <param name="height"></param>
         /// <param name="blockWidth"></param>
         /// <param name="blockHeight"></param>
-        public Graph(Map m, int width, int height, int blockWidth, int blockHeight)
+        public Graph(Map m, int graphWidth, int graphHeight, int blockSize)
         {
-            map = m;
-            this.width = width;
-            this.height = height;
-            this.blockWidth = blockWidth;
-            this.blockHeight = blockHeight;
-        }
+            _MAP = m;
 
+            this._GRAPH_WIDTH = graphWidth;
+            this._GRAPH_HEIGHT = graphHeight;
+            this._BLOCK_SIZE = blockSize;
+
+            _NODE_NAME_TO_INDEX = new Dictionary<string, int>();
+            _ALL_NODES = new List<Node>();
+            
+        }
+        #endregion
+
+
+        #region Methods
         /// <summary>
         /// This method will use the coordinates of the map, and cross-check them with 
         /// the "graph" that I am gonna make. This "graph" will be a 
@@ -47,7 +69,7 @@ namespace GreatGame
             // Use the width and height things to determine how many rectangles I need to make
             int maxWidth = 0, maxHeight = 0;
 
-            foreach(Wall w in map.Walls)
+            foreach(Wall w in _MAP.Walls)
             {
                 // If the wall x position is greater then the current maxWidth, then chagne it
                 // Same thing for the height
@@ -61,21 +83,20 @@ namespace GreatGame
                 }
             }
 
-            int numRowsTomake = maxHeight / blockHeight;
-            int numColumnsToMake = maxWidth / blockWidth;
-
-            // Now we have the number of rows and coluns that we need to make.
-            int x = 0 , y = 0;
-            for(int i = 0; i < numRowsTomake; i++)
+            // Loop throgh and make the number of rows
+            for (int x = 0; x < maxWidth; x += _BLOCK_SIZE)
             {
-                for(int j = 0; j < numColumnsToMake; j++)
+                // For each row, make a column
+                for (int y = 0; y < maxHeight; y += _BLOCK_SIZE)
                 {
-                    Rectangle rectangle = new Rectangle(x, y, blockWidth, blockHeight);
-                    Node newNode = new Node(rectangle, false);
-                    y += blockHeight;
+                    // Make a new Vertex and add it to OPEN
+                    // Use blocksize - 1 in order to draw a little bit of space in between the blocks
+                    Node newNode = new Node(new Point(x, y), new Point(_BLOCK_SIZE), false);
+                    _ALL_NODES.Add(newNode);
                 }
-                x += blockWidth;
             }
+
+            // Select an initial node
 
         }
 
@@ -88,6 +109,9 @@ namespace GreatGame
         public void ShortestPath(Node start)
         {
             // If this start is not a wall
+
+
         }
+        #endregion
     }
 }

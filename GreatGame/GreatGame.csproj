@@ -42,6 +42,7 @@
     <Compile Include="Enemy.cs" />
     <Compile Include="Graph.cs" />
     <Compile Include="Node.cs" />
+    <Compile Include="PriorityQueue.cs" />
     <Compile Include="UI\PauseMenu.cs" />
     <Compile Include="Unit\Bullet.cs" />
     <Compile Include="UI\Camera.cs" />

@@ -10,22 +10,40 @@ namespace GreatGame
 {
     class Node
     {
-        private Rectangle rect;
+        #region Fields
+        private Rectangle rectangle;
         public bool isObsticle;
         private Node nearestNode;
         private int distance;
         private bool permanent;
+        #endregion
 
+
+        #region Constructor
         public Node(Rectangle rect, bool isObsticle)
         {
-            this.rect = rect;
+            this.rectangle = rect;
             this.isObsticle = isObsticle;
             Reset();
 
         }
 
-        public Rectangle Rect { get { return rect; } set { rect = value; } }
+        public Node(Point location, Point size, bool isObsticle)
+        {
+            rectangle = new Rectangle(location, size);
+            this.isObsticle = isObsticle;
 
+            Reset();
+        }
+        #endregion
+
+
+        #region Properties
+        public Rectangle Rectangle { get { return rectangle; } set { rectangle = value; } }
+        #endregion
+
+
+        #region Methods
         public void Reset()
         {
             permanent = false;
@@ -33,5 +51,6 @@ namespace GreatGame
             nearestNode = null;
             
         }
+        #endregion
     }
 }
