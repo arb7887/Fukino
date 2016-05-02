@@ -16,7 +16,7 @@ namespace GreatGame
         // Fields
         private String name;
         private int visionRange, attackRange, _ATTACK_STRENGTH, defense, size;
-        private double health, speed, rateOfFire, remainingDelay, deathTimer;
+        private double health, speed, rateOfFire, remainingDelay;
         private Boolean isSelected, isMoving, isAlive;
         private Vector2 position;
         private Vector2 center;
@@ -35,7 +35,7 @@ namespace GreatGame
         private Vector2 spawnLocation;
         private int respawnTime;
 
-
+        private Graph graph;
         #endregion
 
         // FSM for the alignment of this class
@@ -60,9 +60,10 @@ namespace GreatGame
             radius = 25;
             bounds = new BoundingSphere(new Vector3(position, 0), radius);
             prevCamPos = new Vector2(0,0);
-            deathTimer = 5;
             isAlive = true;
             respawnTime = 8;
+
+            
         }
 
         public Unit(Unit newUnit, int index)

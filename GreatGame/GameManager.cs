@@ -63,6 +63,7 @@ namespace GreatGame
         #endregion
 
 
+        #region Constructor
         // Take in a string with a file name, and move all the file input to here
         public GameManager(String fileName, String texturesFileName, MouseState curMouse, MouseState prevMosue)
         {
@@ -79,6 +80,9 @@ namespace GreatGame
             pausemenu = new PauseMenu();
         }
 
+        #endregion
+
+        #region Methods
         /// <summary>
         /// Eventually htis method will be used to match the names up to the different textures and stuff
         /// </summary>
@@ -327,5 +331,6 @@ namespace GreatGame
             if (curGameState == GameState.Game)
                 gameMap.Draw(sb);
         }
+        #endregion
     }
 }

@@ -13,7 +13,7 @@ namespace GreatGame
         private float _FIRE_RADIUS;   // This is the radius that this enemy will use to see if it is colliding with any other units
         private double _DELAY_BETWEEN_SHOOTS;
         private Vector2 _SPAWN_POINT;
-        Color nameColor;
+        Color _TEST_COLOR;
 
         public float FIRE_RADIUS { get { return this._FIRE_RADIUS; } set { _FIRE_RADIUS = value; } }
         public Double DELAY_BETWEEN_SHOOTS { get { return this._DELAY_BETWEEN_SHOOTS; } set { _DELAY_BETWEEN_SHOOTS = value; } }
@@ -31,10 +31,12 @@ namespace GreatGame
             : base(u, i)
         {
             _FIRE_RADIUS = fireRadius;
-            this.nameColor = Color.Black;
+            this._TEST_COLOR = Color.Black;
             this.Team = Teams.Enemy;
             this.BulletTexture = u.BulletTexture;
             this.Texture = u.Texture;
+
+            
         }
 
         /// <summary>
@@ -60,12 +62,12 @@ namespace GreatGame
                 {
                     if (CheckRange(u))
                     {
-                        nameColor = Color.Red;
+                        _TEST_COLOR = Color.Red;
                         Shoot(u, gt);
 
                         // Move away from that unit a little bit
                     }
-                    else { nameColor = Color.Black; }
+                    else { _TEST_COLOR = Color.Black; }
                 }
                 this.IsAlive = true;
             }
@@ -143,7 +145,7 @@ namespace GreatGame
 
         public void Draw(SpriteBatch sb, SpriteFont font)
         {
-            sb.DrawString(font, "BOUND: " + this.Bounds.Center, new Vector2(this.Position.X, this.Position.Y - 20), nameColor);
+            sb.DrawString(font, "BOUND: " + this.Bounds.Center, new Vector2(this.Position.X, this.Position.Y - 20), _TEST_COLOR);
 
             sb.Draw(this.Texture, new Rectangle((int)Position.X, (int)Position.Y, 50, 50), this.UnitColor);
 
