@@ -43,7 +43,7 @@ namespace GreatGame
         public int DISTANCE { get { return this._DISTANCE; } set { this._DISTANCE = value; } }
         public bool IS_OBSTICLE { get { return this._IS_OBSTICLE; } set { this._IS_OBSTICLE = value; } }
         public bool PERMANENT { get { return this._PERMANENT; } set { this._PERMANENT = value; } }
-        public Node NEAREST_NDOE { get { return this._NEAREST_NODE; }  set { this._NEAREST_NODE = value; } }
+        public Node NEAREST_NODE { get { return this._NEAREST_NODE; }  set { this._NEAREST_NODE = value; } }
         #endregion
 
 
