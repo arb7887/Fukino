@@ -102,7 +102,6 @@ namespace GreatGame
                 player1Units[i].SpawnLoc = gameMap.PlayerSpawnPoints[i];
                 player1Units[i].Position = player1Units[i].SpawnLoc;
                 player1Units[i].Size = 50;
-                player1Units[i].Center = new Vector2(player1Units[i].Position.X + radius, player1Units[i].Position.Y + radius);
                 player1Units[i].Bounds = new BoundingSphere(new Vector3(player1Units[i].Position, 0), radius);
                 textCount++;
                 x += 75;
@@ -121,10 +120,9 @@ namespace GreatGame
                 unitToAdd.Position = new Vector2(x + 50, 250);
                 unitToAdd.Size = 50;
                 unitToAdd.Bounds = new BoundingSphere(new Vector3(unitToAdd.Position, 0), radius);
-                unitToAdd.Center = new Vector2(unitToAdd.Position.X + radius, unitToAdd.Position.Y + radius);
                 unitToAdd.BulletTexture = E_bulletTexture;
                 unitToAdd.Team = Teams.Enemy;
-                Enemy enemyToAdd = new Enemy(unitToAdd, i, unitToAdd.AttackRange);
+                Enemy enemyToAdd = new Enemy(unitToAdd, i, unitToAdd.AttackRange, gameMap);
 
                 enemy_Units.Add(enemyToAdd);
 
