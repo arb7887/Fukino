@@ -38,7 +38,7 @@ namespace GreatGame
         {
             resume = new MenuButton(new Rectangle(590, 285, 100, 50), null, "Resume", Color.White, null);
             options = new MenuButton(new Rectangle(590, 335, 100, 50), null, "Options", Color.White, null);
-            mainmenu = new MenuButton(new Rectangle(590, 385, 100, 50), null, "Main Menu", Color.White, null);
+            mainmenu = new MenuButton(new Rectangle(590, 385, 100, 50), null, "Exit", Color.White, null);
         }
         public void LoadContent(Texture2D bt, SpriteFont bf)
         {

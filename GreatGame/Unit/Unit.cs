@@ -28,6 +28,8 @@ namespace GreatGame
         private BoundingSphere bounds;
         private int indexOfMe;
         private float radius;
+        private float timer;
+
 
         private Teams myTag;
         private Vector2 prevCamPos;
@@ -298,7 +300,6 @@ namespace GreatGame
             }
         }
 
-        private float timer;
         public void Update(GameTime gt, MouseState previousMouse, MouseState currentMouse, KeyboardState kbPrevState, KeyboardState kbState,
             List<Unit> userSelectedUnits, List<Enemy> otherUnits, Camera cam, Map map)
         {

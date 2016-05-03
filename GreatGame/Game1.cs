@@ -141,21 +141,55 @@ namespace GreatGame
 
             #region Camera Stuff
             if (manager.CurGameState == GameManager.GameState.Game)
-            {           
+            {
                 var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Vector2 possibleMove = _camera.Pos;
+
                 // camera movement
                 if (keyboardState.IsKeyDown(Keys.W))
-                    _camera.Pos -= new Vector2(0, 250) * deltaTime;
+                {
+                    possibleMove = _camera.Pos - new Vector2(0, 250) * deltaTime;
+                }
+
 
                 if (keyboardState.IsKeyDown(Keys.S))
-                    _camera.Pos += new Vector2(0, 250) * deltaTime;
+                {
+                    possibleMove = _camera.Pos + new Vector2(0, 250) * deltaTime;
+                }
+
 
                 if (keyboardState.IsKeyDown(Keys.A))
-                    _camera.Pos -= new Vector2(250, 0) * deltaTime;
+                {
+                    possibleMove = _camera.Pos - new Vector2(250, 0) * deltaTime;
+                }
+
 
                 if (keyboardState.IsKeyDown(Keys.D))
-                    _camera.Pos += new Vector2(250, 0) * deltaTime;
-        }
+                {
+                    possibleMove = _camera.Pos + new Vector2(250, 0) * deltaTime;
+                }
+                #region Zooming which i don't know how to fix when it comes to mouse clickings
+                /*
+                if (keyboardState.IsKeyDown(Keys.Up) && _camera.Zoom <= 1.5)
+                {
+                    // Zoom in 
+                    
+                    _camera.Zoom += deltaTime;
+                }
+
+                if (keyboardState.IsKeyDown(Keys.Down) && _camera.Zoom >= 0.5)
+                {
+                    _camera.Zoom -= deltaTime;
+                }*/
+                #endregion
+
+                // If the possible move is inside the bounds of the camera
+                if (possibleMove.X >= -20 && possibleMove.X <= 850
+                    && possibleMove.Y >= -20 && possibleMove.Y <= 350)
+                {
+                    _camera.Pos = possibleMove;
+                }
+            }
             #endregion
 
 
