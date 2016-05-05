@@ -21,8 +21,6 @@ namespace GreatGame
 
         private SpriteFont font;
 
-        private List<Unit> userSelectedUnits;   // The list of units that the user has selected
-
         Texture2D buttonTexture, bulletTexture;
         SpriteFont buttonFont;
 
@@ -72,8 +70,7 @@ namespace GreatGame
             manager.PMenu.Initialize();
 
             // Load in the Units.txt file, this works now
-            userSelectedUnits = new List<Unit>();
-            UI = new UserInterface(GraphicsDevice, userSelectedUnits);
+            UI = new UserInterface(GraphicsDevice);
 
             //gameMap = new Map();
 
@@ -200,7 +197,7 @@ namespace GreatGame
 
 
             MouseState mouse = Mouse.GetState();
-            manager.Update(gameTime, previousMouse, currentMouse, userSelectedUnits, GraphicsDevice, keyboardState, previousKeyboard, this, _camera);
+            manager.Update(gameTime, previousMouse, currentMouse, GraphicsDevice, keyboardState, previousKeyboard, this, _camera);
 
 
             base.Update(gameTime);

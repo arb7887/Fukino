@@ -26,6 +26,8 @@ namespace GreatGame
         private MenuHandler menu;
         private PauseMenu pausemenu;
 
+        private Unit selectedUnit;
+
         // FSM for the current game state
         public enum GameState { Menu, Game, Paused, GameOver }
         private GameState curGameState;
@@ -35,8 +37,7 @@ namespace GreatGame
         private MouseState previousMouse;
 
         private float timeRemaining;
-
-
+        
         // Map stuff
         private Map gameMap;
 
@@ -150,18 +151,10 @@ namespace GreatGame
             allUnits.LoadTextures();            
         }
 
-        /// <summary>
-        /// This method loops through all the units in the player1 list, and calls their update method
-        /// </summary>
-        /// <param name="gameTime"></param>
-        /// <param name="previousMouse"></param>
-        /// <param name="currentMouse"></param>
-        /// <param name="userSelectedUnits"></param>
-        /// <param name="graphics"></param>
-        public void Update(GameTime gameTime, MouseState previousMouse, MouseState currentMouse, List<Unit> userSelectedUnits, 
+        
+        public void Update(GameTime gameTime, MouseState previousMouse, MouseState currentMouse, 
             GraphicsDevice graphics, KeyboardState kbState, KeyboardState kbPState, Game1 game, Camera cam)
         {
-            // Loop through both of the arrays of units and call the Unit's update function
             switch (curGameState)
             {
                 case (GameState.Menu):
@@ -183,22 +176,45 @@ namespace GreatGame
                     }
                     break;
                 case (GameState.Game):
-                    gameMap.CP.Contested = false;
-                    // Call the updates on all of the units in the players list   
-                    for (int i = 0; i < player1Units.Count; i++)
+                    gameMap.CP.Contested = false; // first assue there is no unit contesting the point
+
+                    //then check to see if the player right clicked
+                    if (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released)
+                    {   //and set the destination of the selecred unit
+                        selectedUnit.Destination = new Vector2(previousMouse.X + cam.Pos.X * cam.CamSpeed, previousMouse.Y + cam.Pos.Y * cam.CamSpeed);
+                    }
+
+                    //then check to see if the player hit space
+                    if (kbPState.IsKeyDown(Keys.Space) && kbState.IsKeyUp(Keys.Space))
+                    {   //and use the selected unit to attack if he did
+                        selectedUnit.AttackPosition(new Vector2(currentMouse.X + cam.Pos.X * cam.CamSpeed, currentMouse.Y + cam.Pos.Y * cam.CamSpeed), gameTime);
+                    }
+
+                    //now check tp see if the player left clicked
+                    if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
+                    {   //if so, see what he clicked on
+                        Vector2 prevMouseVector = new Vector2(previousMouse.X, previousMouse.Y);
+                        Vector2 mouseWorldPos = GetMouseWorldPos(prevMouseVector, cam.Pos * cam.CamSpeed);
+                        foreach (Unit u in player1Units)
+                        {
+                            if (u.CheckClicked(mouseWorldPos))
+                                selectedUnit = u;
+                        }
+                    }
+
+                    //finally update each unit
+                    foreach (Unit u in player1Units)
                     {
-                        player1Units[i].Update(gameTime, previousMouse, currentMouse, kbPState, kbState, userSelectedUnits, enemy_Units, cam, gameMap);
+                        u.Update(gameTime, enemy_Units, cam, gameMap);
                     }
                     
                     // Update the enemy AI Units
-                    for (int i = 0; i < enemy_Units.Count; i++)
+                    foreach(Enemy e in enemy_Units)
                     {
-                        enemy_Units[i].Update(gameTime, player1Units);
+                        e.Update(gameTime, player1Units);
                     }
 
                     if (kbState.IsKeyDown(Keys.Escape) && kbPState.IsKeyUp(Keys.Escape)) curGameState = GameState.Paused;
-
-
 
                     var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
                     timer += delta;
@@ -294,6 +310,11 @@ namespace GreatGame
                     // Show the teams score and the points and stuff
                     break;
             }
+        }
+
+        public Vector2 GetMouseWorldPos(Vector2 screenPos, Vector2 camPos)
+        {
+            return screenPos + camPos;
         }
 
         // Sets the listOfUnits to whatever the buttons are that the player has selected on the screen

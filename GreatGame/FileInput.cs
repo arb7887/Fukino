@@ -52,7 +52,7 @@ namespace GreatGame
                     string name = input.ReadLine();
                     int health = (int.Parse(input.ReadLine()));
                     double speed = (double.Parse(input.ReadLine()));
-                    int range = (int.Parse(input.ReadLine()));
+                    int range = 5*(int.Parse(input.ReadLine()));
                     int dps = (int.Parse(input.ReadLine()));
                     double rateOfFire = (double.Parse(input.ReadLine()));
 

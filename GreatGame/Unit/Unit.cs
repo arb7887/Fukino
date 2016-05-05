@@ -31,7 +31,6 @@ namespace GreatGame
 
 
         private Teams myTag;
-        private Vector2 prevCamPos;
 
         // Respawn stuff
         private Vector2 spawnLocation;
@@ -94,7 +93,9 @@ namespace GreatGame
         public bool IsMoving { get { return isMoving; } set { isMoving = value; } }
         public Color UnitColor{get { return color; }set { color = value; }}
         public BoundingSphere Bounds{get { return bounds; }set { this.bounds = value; }}
-
+        public float Radius { get { return radius; } set { radius = value; } }
+        public Color Tint { get { return color; } set { color = value; } }
+        public Vector2 Destination { get { return destination; } set { destination = value; } }
         // Bullet properties=======================
        // public Vector2 Center { get { return center; } set { center = value; } }
         public int Size { get { return size; } set { size = value; } }
@@ -152,19 +153,19 @@ namespace GreatGame
         }
         #endregion
 
-        public void ProcessInput(Vector2 mouseLoc, Map m)
+        public void ProcessInput(Vector2 destination, Map m)
         {
             // SO, I have to take this mouse location, which is the location on the screen
             // And convert it to a "world" coordinate
 
-            Vector2 distance = new Vector2(mouseLoc.X - position.X, mouseLoc.Y - position.Y);
+            Vector2 distance = new Vector2(destination.X - position.X, destination.Y - position.Y);
 
 
             if (distance.Length() < speed)
             {
                 // This checks the collisions with the walls
 
-                BoundingSphere check = new BoundingSphere(new Vector3(mouseLoc, 0), radius);
+                BoundingSphere check = new BoundingSphere(new Vector3(destination, 0), radius);
                 foreach (Wall w in m.Walls)
                 {
                     if (w.Bounds.Intersects(check))
@@ -173,7 +174,7 @@ namespace GreatGame
                     }
                 }
 
-                position = mouseLoc;
+                position = destination;
 
                 isMoving = false;
             }
@@ -194,10 +195,8 @@ namespace GreatGame
                 bounds = new BoundingSphere(new Vector3(position, 0), radius);
             }
         }
-
-        #region Update
-        public void Update(GameTime gt, MouseState previousMouse, MouseState currentMouse, KeyboardState kbPrevState, KeyboardState kbState,
-            List<Unit> userSelectedUnits, List<Enemy> otherUnits, Camera cam, Map map)
+        
+        public void Update(GameTime gt, List<Enemy> otherUnits, Camera cam, Map map)
         {
             // This boolean is just for collision detection, if it is true thne move, 
             // If it is ever changed to false then stop moving
@@ -235,46 +234,7 @@ namespace GreatGame
 
                 if (allowedToMove)
                 {
-                    if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
-                    {
-                        // The previsous mouse vector
-                        Vector2 prevMouseVector = new Vector2(previousMouse.X, previousMouse.Y);
-                        // Get the mouse's world position
-                        Vector2 mouseWorldPos = GetMouseWorldPos(prevMouseVector, cam.Pos * cam.CamSpeed);
-
-                        // I need to account for the camera location in here
-                        if ((mouseWorldPos.X >= Position.X - radius) && (mouseWorldPos.X) <= Position.X + radius
-                            && (mouseWorldPos.Y) >= Position.Y - radius && (mouseWorldPos.Y) <= Position.Y + radius)
-                        {
-                            prevCamPos = cam.Pos;
-                            IsSelected = true;
-                            color = Color.Cyan;
-                            userSelectedUnits.Add(this);
-                        }
-                        else
-                        {
-                            IsSelected = false;
-                            color = Color.White;
-                            userSelectedUnits.Remove(this);
-                        }
-                    }
-                    if (IsSelected && (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released))
-                    {
-                        destination = new Vector2(previousMouse.X + cam.Pos.X * cam.CamSpeed, previousMouse.Y + cam.Pos.Y * cam.CamSpeed);
-
-                        ProcessInput(destination, map);
-                        IsMoving = true;
-                    }
-                    else if (IsMoving)
-                    {
-                        ProcessInput(destination, map);
-                    }
-
-                    // Check if the use is hitting the shoot button
-                    if (isSelected && (kbPrevState.IsKeyDown(Keys.Space) && kbState.IsKeyUp(Keys.Space)))
-                    {
-                        AttackPosition(new Vector2(currentMouse.X + cam.Pos.X * cam.CamSpeed, currentMouse.Y + cam.Pos.Y * cam.CamSpeed), gt);
-                    }
+                    ProcessInput(destination, map);
                 }
 
                 // Bullet check
@@ -303,8 +263,23 @@ namespace GreatGame
             }
             #endregion
         }
-        #endregion
-
+        
+        public bool CheckClicked(Vector2 clickedLoc)
+        {
+            BoundingBox clicked = new BoundingBox(new Vector3(clickedLoc.X, clickedLoc.Y, 0), new Vector3(clickedLoc.X+1, clickedLoc.Y+1, 0));
+            if (clicked.Intersects(bounds))
+            {
+                isSelected = true;
+                color = Color.Cyan;
+                return true;
+            }
+            else
+            {
+                isSelected = false;
+                color = Color.White;
+                return false;
+            }
+        }
 
         #region Draw
         public void Draw(SpriteBatch sb, SpriteFont font, Camera cam)
