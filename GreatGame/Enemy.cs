@@ -20,7 +20,7 @@ namespace GreatGame
         private double remainingTime_;
 
         // Pathfinding stuff
-        private Graph _MY_GRAPH;
+        private Grid _MY_GRID;
         #endregion
 
 
@@ -56,7 +56,9 @@ namespace GreatGame
             this.Texture = u.Texture;
 
             // Pathfinding graph
-            _MY_GRAPH = new Graph(map, 0, 0, 50);   
+            _MY_GRID = new Grid(map, Point.Zero, 50,Texture);
+
+
         }
         #endregion
 
@@ -67,10 +69,10 @@ namespace GreatGame
         /// </summary>
         public void ShortestPath()
         {
-            // Call the graph class, and get the next position for this unit to move.
-            
+
+
         }
-        
+
         /// <summary>
         /// All this update needs to do is check to see if there is an
         /// enemy withinthe range, and if soo then shoot in that direction
@@ -99,6 +101,10 @@ namespace GreatGame
                         _TEST_COLOR = Color.Black;
                     }
                 }
+
+                // Do the movement
+                //_MY_GRID.ShortestPath(_MY_GRID.ALL_VERTECIES[500]);
+
 
                 this.IsAlive = true;
             }
@@ -162,7 +168,7 @@ namespace GreatGame
         {
             Vector2 distance = new Vector2(this.Position.X - u.Position.X, Position.Y - u.Position.Y);
 
-            double timer = gt.ElapsedGameTime.TotalSeconds;
+             double timer = gt.ElapsedGameTime.TotalSeconds;
              remainingTime_ -= timer;
 
             if (_DELAY_BETWEEN_SHOOTS <= 0)
@@ -171,7 +177,6 @@ namespace GreatGame
                // {
                     Bullet newBullet = new Bullet(5, this.ATTACK_STRENGTH, FIRE_RADIUS, 5, this.Position, this.BulletTexture);
                     newBullet.Bounds = new BoundingSphere(new Vector3(this.Position.X, this.Position.Y, 0), (float)newBullet.Size / 2);
-                    //newBullet.Destination = u.Center;
                     ActiveBullets.Add(newBullet);
                     newBullet = null;
                // }
@@ -182,9 +187,13 @@ namespace GreatGame
 
         public void Draw(SpriteBatch sb, SpriteFont font)
         {
-            sb.DrawString(font, "BOUND: " + this.Bounds.Center, new Vector2(this.Position.X, this.Position.Y - 20), _TEST_COLOR);
+            sb.DrawString(font, "HEALTH: " + this.Health, new Vector2(this.Position.X, this.Position.Y - 20), _TEST_COLOR);
 
             sb.Draw(this.Texture, new Rectangle((int)Position.X, (int)Position.Y, 50, 50), this.UnitColor);
+
+            // Draw the grid, this wont happen in the end
+           // _MY_GRID.Draw(sb);
+            
 
         }
         #endregion
