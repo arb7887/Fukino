@@ -66,7 +66,7 @@ namespace GreatGame
             
             // Make a new Game Manager
             manager = new GameManager("Content/Units.txt", "Content/Textures.txt", currentMouse, previousMouse, UI);
-
+            UI.Map = manager.GameMap;
             // Instantiates the list of units
             manager.Menu.initialize();
             manager.PMenu.Initialize();
@@ -106,6 +106,7 @@ namespace GreatGame
             //UI Textures:
             UI.BottomLeft = Content.Load<Texture2D>("BottomLeftUI.png");
             UI.BottomRight = Content.Load<Texture2D>("BottomRightUI.png");
+            UI.Timer = Content.Load<Texture2D>("TimerOverlay.png");
 
             // Load in the list of units from the files here
             manager.LoadContent();

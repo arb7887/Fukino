@@ -101,6 +101,9 @@
     <Content Include="Content\Textures.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\TimerOverlay.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\troop.png" />
     <Content Include="Content\Units.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
