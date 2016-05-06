@@ -133,6 +133,8 @@ namespace GreatGame
                 }
             }
             #endregion
+
+            BulletCheck();
         }
 
         /// <summary>
@@ -165,20 +167,33 @@ namespace GreatGame
             double timer = gt.ElapsedGameTime.TotalSeconds;
              remainingTime_ -= timer;
 
-            if (_DELAY_BETWEEN_SHOOTS <= 0)
+            if (remainingTime_ <= 0)
             {
-               // if (distance.Length() <= this.AttackRange)
-               // {
-                    Bullet newBullet = new Bullet(5, this.AttackStrength, FIRE_RADIUS, 5, this.Position, this.BulletTexture);
-                    newBullet.Bounds = new BoundingSphere(new Vector3(this.Position.X, this.Position.Y, 0), (float)newBullet.Size / 2);
-                    //newBullet.Destination = u.Center;
-                    ActiveBullets.Add(newBullet);
-                    newBullet = null;
-               // }
+                Bullet newBullet = new Bullet(50, this.AttackStrength, FIRE_RADIUS, 5, this.Position, BulletTexture);
+                newBullet.Bounds = new BoundingSphere(new Vector3(newBullet.Position.X, newBullet.Position.Y, 0), (float)newBullet.Size / 2);
+                newBullet.Destination = u.Position;
+                ActiveBullets.Add(newBullet);
+                newBullet = null;
+                
                 remainingTime_ = _DELAY_BETWEEN_SHOOTS;
             }
         }
 
+        public void BulletCheck()
+        {
+            for (int i = 0; i < ActiveBullets.Count; i++)
+            {
+                if (ActiveBullets[i].ToDelete)
+                {
+                    ActiveBullets.RemoveAt(i);
+                }
+                else
+                {
+                    ActiveBullets[i].Move();
+                    ActiveBullets[i].DistanceCheck();
+                }
+            }
+        }
 
         public void Draw(SpriteBatch sb, SpriteFont font)
         {
