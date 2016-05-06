@@ -51,7 +51,7 @@ namespace GreatGame
                     ": \nHealth: " + selected.Health + 
                     "\nSpeed: " + selected.Speed + "0%" +
                     "\nRange: " + selected.AttackRange + "%" +
-                    "\nDamage: " + selected.ATTACK_STRENGTH, 
+                    "\nDamage: " + selected.AttackStrength, 
                     textpos,
                     Color.White);
                 sb.DrawString(font,

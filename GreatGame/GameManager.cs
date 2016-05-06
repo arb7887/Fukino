@@ -13,7 +13,8 @@ namespace GreatGame
         // Fields
         #region Fields
         // List of units for the players to choose from
-        private FileInput allUnits;   
+        private FileInput allUnits;
+        private Dictionary<string, Unit> unitDictionary;
         // Lists of the players 1 and 2 units
         private List<Unit> player1Units;
         private List<Enemy> enemy_Units;
@@ -32,12 +33,9 @@ namespace GreatGame
         public enum GameState { Menu, Game, Paused, GameOver }
         private GameState curGameState;
 
-        // Mouse stuff
-        private MouseState currentMouse;
-        private MouseState previousMouse;
+        UserInterface userInterface;
+        bool changingClass;
 
-        private float timeRemaining;
-        
         // Map stuff
         private Map gameMap;
 
@@ -66,7 +64,7 @@ namespace GreatGame
 
         #region Constructor
         // Take in a string with a file name, and move all the file input to here
-        public GameManager(String fileName, String texturesFileName, MouseState curMouse, MouseState prevMosue)
+        public GameManager(String fileName, String texturesFileName, MouseState curMouse, MouseState prevMosue, UserInterface ui)
         {
             allUnits = new FileInput(fileName, texturesFileName);
             player1Units = new List<Unit>();
@@ -77,8 +75,9 @@ namespace GreatGame
             menu = new MenuHandler(MenuStates.Main);
             gameMap = new Map();
             timer = 0;
-            timeRemaining = 10000;
             pausemenu = new PauseMenu();
+            userInterface = ui;
+            unitDictionary = new Dictionary<string, Unit>();
         }
 
         #endregion
@@ -89,9 +88,16 @@ namespace GreatGame
         /// </summary>
         public void Initialize()
         {
+            changingClass = false;
+
             float radius = 25;
             int x = 150;
             int textCount = 0;
+            
+            foreach(Unit u in player1Units)
+            {
+                u.UnitsDictionary = unitDictionary;
+            }
             // Set all of the player1 units textures to the same thing
             for(int i = 0; i < player1Units.Count; i++)
             {
@@ -115,7 +121,7 @@ namespace GreatGame
             x = 4850;
             for(int i = 0; i < player1Units.Count; i++)
             {
-                Unit unitToAdd = new Unit(allUnits.UnitList[r.Next(0, allUnits.UnitList.Count)], i);
+                Unit unitToAdd = new Unit(allUnits.UnitList[r.Next(0, allUnits.UnitList.Count)]);
                 
                 unitToAdd.Texture = UnitTextures[0];
                 unitToAdd.Position = new Vector2(x + 50, 250);
@@ -123,7 +129,7 @@ namespace GreatGame
                 unitToAdd.Bounds = new BoundingSphere(new Vector3(unitToAdd.Position, 0), radius);
                 unitToAdd.BulletTexture = E_bulletTexture;
                 unitToAdd.Team = Teams.Enemy;
-                Enemy enemyToAdd = new Enemy(unitToAdd, i, unitToAdd.AttackRange, gameMap);
+                Enemy enemyToAdd = new Enemy(unitToAdd, unitToAdd.AttackRange, gameMap);
 
                 enemy_Units.Add(enemyToAdd);
 
@@ -165,6 +171,10 @@ namespace GreatGame
                         curGameState = GameState.Game;
                         // Load in the list of class selected units and add them to the list of units in 
                         // This game one class's list called 'userSelectedUnits'
+                        foreach (Unit u in allUnits.UnitList)
+                        {
+                            unitDictionary.Add(u.Name, u);
+                        }
                         SetUnitsFromButtons();
                         Initialize();
                     }
@@ -177,17 +187,68 @@ namespace GreatGame
                     break;
                 case (GameState.Game):
                     gameMap.CP.Contested = false; // first assue there is no unit contesting the point
+                    
 
                     //then check to see if the player right clicked
                     if (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released)
                     {   //and set the destination of the selecred unit
-                        selectedUnit.Destination = new Vector2(previousMouse.X + cam.Pos.X * cam.CamSpeed, previousMouse.Y + cam.Pos.Y * cam.CamSpeed);
+                        if(selectedUnit != null)
+                            selectedUnit.Destination = new Vector2(previousMouse.X + cam.Pos.X * cam.CamSpeed, previousMouse.Y + cam.Pos.Y * cam.CamSpeed);
+                        
                     }
 
                     //then check to see if the player hit space
                     if (kbPState.IsKeyDown(Keys.Space) && kbState.IsKeyUp(Keys.Space))
                     {   //and use the selected unit to attack if he did
-                        selectedUnit.AttackPosition(new Vector2(currentMouse.X + cam.Pos.X * cam.CamSpeed, currentMouse.Y + cam.Pos.Y * cam.CamSpeed), gameTime);
+                        if(selectedUnit != null)
+                            selectedUnit.AttackPosition(new Vector2(currentMouse.X + cam.Pos.X * cam.CamSpeed, currentMouse.Y + cam.Pos.Y * cam.CamSpeed), gameTime);
+                    }
+
+                    //check to see if the player hit c to change a unit class
+                    if(kbPState.IsKeyDown(Keys.C) && kbState.IsKeyUp(Keys.C))
+                    {
+                        if (selectedUnit != null && selectedUnit.Bounds.Intersects(gameMap.PlayerSpawn))
+                        {
+                            changingClass = true;
+                            selectedUnit.Tint = Color.Yellow;
+                        }
+                    }
+                    if (changingClass)
+                    {
+                        #region numpads input
+                        if (kbPState.IsKeyDown(Keys.NumPad0))
+                        {
+                            selectedUnit.changeClass("Alien"); changingClass = false;
+                        }
+                        if (kbPState.IsKeyDown(Keys.NumPad1))
+                        {
+                            selectedUnit.changeClass("Assassin"); changingClass = false;
+                        }
+                        if (kbPState.IsKeyDown(Keys.NumPad2))
+                        {
+                            selectedUnit.changeClass("Engineer"); changingClass = false;
+                        }
+                        if (kbPState.IsKeyDown(Keys.NumPad3))
+                        { 
+                            selectedUnit.changeClass("Medic"); changingClass = false;
+                        }
+                        if (kbPState.IsKeyDown(Keys.NumPad4))
+                        {
+                            selectedUnit.changeClass("Minigun"); changingClass = false;
+                        }
+                        if (kbPState.IsKeyDown(Keys.NumPad5))
+                        {
+                            selectedUnit.changeClass("Rifle"); changingClass = false;
+                        }
+                        if (kbPState.IsKeyDown(Keys.NumPad6))
+                        {
+                            selectedUnit.changeClass("Shotgun"); changingClass = false;
+                        }
+                        if (kbPState.IsKeyDown(Keys.NumPad7))
+                        {
+                            selectedUnit.changeClass("Sniper"); changingClass = false;
+                        }
+                        #endregion
                     }
 
                     //now check tp see if the player left clicked
@@ -195,10 +256,16 @@ namespace GreatGame
                     {   //if so, see what he clicked on
                         Vector2 prevMouseVector = new Vector2(previousMouse.X, previousMouse.Y);
                         Vector2 mouseWorldPos = GetMouseWorldPos(prevMouseVector, cam.Pos * cam.CamSpeed);
+                        selectedUnit = null;
+                        userInterface.Selected = selectedUnit;
                         foreach (Unit u in player1Units)
                         {
                             if (u.CheckClicked(mouseWorldPos))
+                            {
                                 selectedUnit = u;
+                                userInterface.Selected = selectedUnit;
+                                break;
+                            }
                         }
                     }
 
@@ -323,14 +390,8 @@ namespace GreatGame
             menu.UserSelectedNames = this.Menu.GetButtonNames();
             for (int i = 0; i < menu.UserSelectedNames.Count; i++)
             {
-                // Go through and find the actual unit object with the same name as the button
-                for (int j = 0; j < this.AllUnits.ListCount; j++)
-                {
-                    if (menu.UserSelectedNames[i] == this.AllUnits.UnitList[j].Name)
-                    {
-                        player1Units.Add(new Unit(allUnits.UnitList[j], i));
-                    }
-                }
+                Unit tempUnit = unitDictionary[menu.UserSelectedNames[i]];
+                player1Units.Add(new Unit(tempUnit));
             }
         }
 

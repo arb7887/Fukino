@@ -40,8 +40,8 @@ namespace GreatGame
         /// </summary>
         /// <param name="u">Unit of which we are basing the enemy on</param>
         /// <param name="i">Index in the array for this unit</param>
-        public Enemy(Unit u, int i, float fireRadius, Map map) 
-            : base(u, i)
+        public Enemy(Unit u, float fireRadius, Map map) 
+            : base(u)
         {
             // This is used to determine if the unit is inside the range of being shot
             _FIRE_RADIUS = fireRadius;
@@ -169,7 +169,7 @@ namespace GreatGame
             {
                // if (distance.Length() <= this.AttackRange)
                // {
-                    Bullet newBullet = new Bullet(5, this.ATTACK_STRENGTH, FIRE_RADIUS, 5, this.Position, this.BulletTexture);
+                    Bullet newBullet = new Bullet(5, this.AttackStrength, FIRE_RADIUS, 5, this.Position, this.BulletTexture);
                     newBullet.Bounds = new BoundingSphere(new Vector3(this.Position.X, this.Position.Y, 0), (float)newBullet.Size / 2);
                     //newBullet.Destination = u.Center;
                     ActiveBullets.Add(newBullet);
