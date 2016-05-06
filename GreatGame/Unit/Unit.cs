@@ -105,26 +105,20 @@ namespace GreatGame
         #region Attacking Methods
         public void AttackUnit(Unit u, GameTime gt)
         {
-            Vector2 distance = new Vector2(position.X - u.Position.X, position.Y - u.position.Y);
+            Vector2 distance = new Vector2(position.X - u.Position.X, position.Y - u.Position.Y);
             double timer = gt.ElapsedGameTime.TotalSeconds;
             remainingDelay -= timer;
 
             if (remainingDelay <= 0)
             {
-                if (distance.Length() <= attackRange)   
-                {
-                    Bullet newBullet = new Bullet(5, attackStrength, attackRange, 5, this.position, bulletTexture);
-                    newBullet.Bounds = new BoundingSphere(new Vector3(newBullet.Position.X, newBullet.Position.Y, 0), (float)newBullet.Size / 2);
-                    activeBullets.Add(newBullet);
-                    newBullet = null;
-                }
+                AttackPosition(u.Position);
                 remainingDelay = rateOfFire;
             }
         }
 
-        public void AttackPosition(Vector2 target, GameTime gt)
+        public void AttackPosition(Vector2 target)
         {
-            Bullet newBullet = new Bullet(5, attackStrength, attackRange, 5, this.position, bulletTexture);
+            Bullet newBullet = new Bullet(50, attackStrength, attackRange, 5, this.position, bulletTexture);
             newBullet.Bounds = new BoundingSphere(new Vector3(newBullet.Position.X, newBullet.Position.Y, 0), (float)newBullet.Size / 2);
             newBullet.Destination = target;
             activeBullets.Add(newBullet);

@@ -184,7 +184,7 @@ namespace GreatGame
         {
             sb.DrawString(font, "BOUND: " + this.Bounds.Center, new Vector2(this.Position.X, this.Position.Y - 20), _TEST_COLOR);
 
-            sb.Draw(this.Texture, new Rectangle((int)Position.X, (int)Position.Y, 50, 50), this.UnitColor);
+            sb.Draw(this.Texture, new Rectangle((int)Position.X-25, (int)Position.Y-25, 50, 50), this.UnitColor);
 
         }
         #endregion

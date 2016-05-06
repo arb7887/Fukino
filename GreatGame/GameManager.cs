@@ -135,8 +135,7 @@ namespace GreatGame
 
                 enemy_Units[i].SpawnLoc = gameMap.EnemySpawnPoints[i];
                 enemy_Units[i].Position = enemy_Units[i].SpawnLoc;
-
-                enemy_Units[i].Position = new Vector2(500 + x, 1700);
+                
                 enemy_Units[i].Bounds = new BoundingSphere(new Vector3(enemy_Units[i].Position, 0), radius);
                 x += 75;
 
@@ -201,7 +200,7 @@ namespace GreatGame
                     if (kbPState.IsKeyDown(Keys.Space) && kbState.IsKeyUp(Keys.Space))
                     {   //and use the selected unit to attack if he did
                         if(selectedUnit != null)
-                            selectedUnit.AttackPosition(new Vector2(currentMouse.X + cam.Pos.X * cam.CamSpeed, currentMouse.Y + cam.Pos.Y * cam.CamSpeed), gameTime);
+                            selectedUnit.AttackPosition(new Vector2(currentMouse.X + cam.Pos.X * cam.CamSpeed, currentMouse.Y + cam.Pos.Y * cam.CamSpeed));
                     }
 
                     //check to see if the player hit c to change a unit class
