@@ -36,8 +36,6 @@ namespace GreatGame
         private Vector2 spawnLocation;
         private int respawnTime;
 
-        // Stuff for pathfinding
-        private Graph graph;
         #endregion
 
 
@@ -74,7 +72,7 @@ namespace GreatGame
         }
         #endregion
 
-        // Properties
+
         #region Properties
         public int ATTACK_STRENGTH { get { return _ATTACK_STRENGTH; } set { _ATTACK_STRENGTH = value; } }
         public Double Health { get { return health; } set { health = value; } }
@@ -97,13 +95,13 @@ namespace GreatGame
         public Color Tint { get { return color; } set { color = value; } }
         public Vector2 Destination { get { return destination; } set { destination = value; } }
         // Bullet properties=======================
-       // public Vector2 Center { get { return center; } set { center = value; } }
         public int Size { get { return size; } set { size = value; } }
         public Texture2D BulletTexture { get { return bulletTexture; } set { bulletTexture = value; } }
         public Bullet Bullet { get { return bullet; } set { bullet = value; } }
         public List<Bullet> ActiveBullets { get { return activeBullets; } set { activeBullets = value; } }
         //===========================================
         #endregion
+
 
         #region methods
 

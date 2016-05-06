@@ -40,8 +40,8 @@
   <ItemGroup>
     <Compile Include="CapturePoint.cs" />
     <Compile Include="Enemy.cs" />
-    <Compile Include="Graph.cs" />
-    <Compile Include="Node.cs" />
+    <Compile Include="Grid.cs" />
+    <Compile Include="Vertex.cs" />
     <Compile Include="PriorityQueue.cs" />
     <Compile Include="UI\PauseMenu.cs" />
     <Compile Include="Unit\Bullet.cs" />

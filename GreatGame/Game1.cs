@@ -148,18 +148,15 @@ namespace GreatGame
                     possibleMove = _camera.Pos - new Vector2(0, 250) * deltaTime;
                 }
 
-
                 if (keyboardState.IsKeyDown(Keys.S))
                 {
                     possibleMove = _camera.Pos + new Vector2(0, 250) * deltaTime;
                 }
 
-
                 if (keyboardState.IsKeyDown(Keys.A))
                 {
                     possibleMove = _camera.Pos - new Vector2(250, 0) * deltaTime;
                 }
-
 
                 if (keyboardState.IsKeyDown(Keys.D))
                 {

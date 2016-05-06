@@ -9,17 +9,16 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GreatGame
 {
-    // This is from my A* homework
     class PriorityQueue
     {
 
-        public List<Node> heap;
+        public List<Vertex> heap;
 
         public int Count { get { return heap.Count; } }
 
         public PriorityQueue()
         {
-            heap = new List<Node>();
+            heap = new List<Vertex>();
         }
 
         #region Methods
@@ -27,7 +26,7 @@ namespace GreatGame
         /// Adds the given data to the priority queue
         /// </summary>
         /// <param name="data"></param>
-        public void Enqueue(Node v)
+        public void Enqueue(Vertex v)
         {
             // Add the data to the end of the list
             heap.Add(v);
@@ -40,10 +39,10 @@ namespace GreatGame
 
             // Is the parent's value larger? if so, swap the parent and the
             // child Data
-            if (heap[parentIndex].DISTANCE > heap[dataIndex].DISTANCE)
+            if (heap[parentIndex].Distance > heap[dataIndex].Distance)
             {
-                Node tempParent = heap[parentIndex];
-                Node tempData = heap[dataIndex];
+                Vertex tempParent = heap[parentIndex];
+                Vertex tempData = heap[dataIndex];
 
                 heap[dataIndex] = tempParent;
                 heap[parentIndex] = tempData;
@@ -60,11 +59,11 @@ namespace GreatGame
         /// the queue/heap
         /// </summary>
         /// <returns></returns>
-        public Node Dequeue()
+        public Vertex Dequeue()
         {
             // This will be the root node since it's the smallest number
             // The root node is going to be the smallest number
-            Node peek = Peek();
+            Vertex peek = Peek();
 
             int rootNodeIndex = 0;
 
@@ -74,13 +73,13 @@ namespace GreatGame
 
             if (heap.Count > 0)
             {
-                lastNodeData = heap[heap.Count - 1].DISTANCE;
+                lastNodeData = heap[heap.Count - 1].Distance;
                 heap.Remove(heap[heap.Count - 1]);
             }
 
 
             // Put the last node's data in the root node's position
-            heap[rootNodeIndex].DISTANCE = lastNodeData;
+            heap[rootNodeIndex].Distance = lastNodeData;
 
             // Calculate the children's indexes
             int leftChildIndex = (2 * rootNodeIndex) + 1;
@@ -88,11 +87,11 @@ namespace GreatGame
 
             // If the current value is greater then both children
             // Then swap with the smaller child
-            if (heap[rootNodeIndex].DISTANCE > heap[rightChildIndex].DISTANCE
-                && heap[rootNodeIndex].DISTANCE > heap[leftChildIndex].DISTANCE)
+            if (heap[rootNodeIndex].Distance > heap[rightChildIndex].Distance
+                && heap[rootNodeIndex].Distance > heap[leftChildIndex].Distance)
             {
                 // Swap with the smaller child
-                if (heap[leftChildIndex].DISTANCE < heap[rightChildIndex].DISTANCE)
+                if (heap[leftChildIndex].Distance < heap[rightChildIndex].Distance)
                 {
                     // Swap with the left
                     Swap(rootNodeIndex, leftChildIndex);
@@ -103,12 +102,12 @@ namespace GreatGame
                     Swap(rootNodeIndex, rightChildIndex);
                 }
             }
-            else if (heap[rootNodeIndex].DISTANCE > heap[leftChildIndex].DISTANCE)
+            else if (heap[rootNodeIndex].Distance > heap[leftChildIndex].Distance)
             {
                 // Swap with the right child
                 Swap(rootNodeIndex, leftChildIndex);
             }
-            else if (heap[rootNodeIndex].DISTANCE > heap[rightChildIndex].DISTANCE)
+            else if (heap[rootNodeIndex].Distance > heap[rightChildIndex].Distance)
             {
                 Swap(rootNodeIndex, rightChildIndex);
             }
@@ -127,19 +126,19 @@ namespace GreatGame
         /// If queue is empty, result is undefined
         /// O(log n)
         /// </summary>
-        public Node DequeueTwo()
+        public Vertex DequeueTwo()
         {
             int bestIndex = 0;
 
             for (int i = 0; i < heap.Count; i++)
             {
-                if (heap[i].DISTANCE < heap[bestIndex].DISTANCE)
+                if (heap[i].Distance < heap[bestIndex].Distance)
                 {
                     bestIndex = i;
                 }
             }
 
-            Node bestItem = heap[bestIndex];
+            Vertex bestItem = heap[bestIndex];
             heap.RemoveAt(bestIndex);
             return bestItem;
         }
@@ -152,8 +151,8 @@ namespace GreatGame
         /// <param name="secondIndex"></param>
         public void Swap(int firstIndex, int secondIndex)
         {
-            Node tempFirstData = heap[firstIndex];
-            Node tempSecData = heap[secondIndex];
+            Vertex tempFirstData = heap[firstIndex];
+            Vertex tempSecData = heap[secondIndex];
 
             heap[firstIndex] = tempSecData;
             heap[secondIndex] = tempFirstData;
@@ -164,7 +163,7 @@ namespace GreatGame
         /// This should be the smallest thing in the list
         /// </summary>
         /// <returns></returns>
-        public Node Peek()
+        public Vertex Peek()
         {
             if (!IsEmpty())
                 return heap[0];
