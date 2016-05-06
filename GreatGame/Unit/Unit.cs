@@ -15,7 +15,7 @@ namespace GreatGame
         // Keeping these private is the whole point of object oriented programming
         // Fields
         private String name;
-        private int  attackRange, _ATTACK_STRENGTH, size;
+        private int  attackRange, attackStrength, size;
         private double health, speed, rateOfFire, remainingDelay;
         private Boolean isSelected, isMoving, isAlive;
         private Vector2 position;
@@ -25,10 +25,9 @@ namespace GreatGame
         private Bullet bullet;
         private List<Bullet> activeBullets;
         private BoundingSphere bounds;
-        private int indexOfMe;
         private float radius;
         private float timer;
-
+        private Dictionary<string, Unit> unitsDictionary;
 
         private Teams myTag;
 
@@ -40,15 +39,14 @@ namespace GreatGame
 
 
         #region Constructors
-        public Unit(String name, int health, double speed, int attackRange, int attack, double rateOfFire, int indexOfMe)
+        public Unit(String name, int health, double speed, int attackRange, int attack, double rateOfFire)
         {
             this.name = name;
             this.health = health;
             this.speed = speed;
             this.attackRange = attackRange;
-            this._ATTACK_STRENGTH = attack;
+            this.attackStrength = attack;
             this.rateOfFire = rateOfFire;
-            this.indexOfMe = indexOfMe;
 
             isSelected = false;
             isMoving = false;
@@ -61,20 +59,16 @@ namespace GreatGame
             bounds = new BoundingSphere(new Vector3(position, 0), radius);
             isAlive = true;
             respawnTime = 8;
-
-            
         }
 
-        public Unit(Unit newUnit, int index)
-            : this(newUnit.name, (int)newUnit.health, newUnit.Speed, newUnit.attackRange, newUnit.ATTACK_STRENGTH, newUnit.rateOfFire, index)
-        {
-
-        }
+        public Unit(Unit newUnit)
+            : this(newUnit.name, (int)newUnit.health, newUnit.Speed, newUnit.attackRange, newUnit.attackStrength, newUnit.rateOfFire)
+        {}
         #endregion
 
 
         #region Properties
-        public int ATTACK_STRENGTH { get { return _ATTACK_STRENGTH; } set { _ATTACK_STRENGTH = value; } }
+        public int AttackStrength { get { return attackStrength; } set { attackStrength = value; } }
         public Double Health { get { return health; } set { health = value; } }
         public String Name { get { return name; } }
         public Teams Team { get { return this.myTag; } set { myTag = value; } }
@@ -100,6 +94,7 @@ namespace GreatGame
         public Bullet Bullet { get { return bullet; } set { bullet = value; } }
         public List<Bullet> ActiveBullets { get { return activeBullets; } set { activeBullets = value; } }
         //===========================================
+        public Dictionary<string, Unit> UnitsDictionary { get { return unitsDictionary; } set { unitsDictionary = value; } }
         #endregion
 
 
@@ -108,26 +103,20 @@ namespace GreatGame
         #region Attacking Methods
         public void AttackUnit(Unit u, GameTime gt)
         {
-            Vector2 distance = new Vector2(position.X - u.Position.X, position.Y - u.position.Y);
+            Vector2 distance = new Vector2(position.X - u.Position.X, position.Y - u.Position.Y);
             double timer = gt.ElapsedGameTime.TotalSeconds;
             remainingDelay -= timer;
 
             if (remainingDelay <= 0)
             {
-                if (distance.Length() <= attackRange)   
-                {
-                    Bullet newBullet = new Bullet(5, ATTACK_STRENGTH, attackRange, 5, this.position, bulletTexture);
-                    newBullet.Bounds = new BoundingSphere(new Vector3(newBullet.Position.X, newBullet.Position.Y, 0), (float)newBullet.Size / 2);
-                    activeBullets.Add(newBullet);
-                    newBullet = null;
-                }
+                AttackPosition(u.Position);
                 remainingDelay = rateOfFire;
             }
         }
 
-        public void AttackPosition(Vector2 target, GameTime gt)
+        public void AttackPosition(Vector2 target)
         {
-            Bullet newBullet = new Bullet(5, ATTACK_STRENGTH, attackRange, 5, this.position, bulletTexture);
+            Bullet newBullet = new Bullet(50, attackStrength, attackRange, 5, this.position, bulletTexture);
             newBullet.Bounds = new BoundingSphere(new Vector3(newBullet.Position.X, newBullet.Position.Y, 0), (float)newBullet.Size / 2);
             newBullet.Destination = target;
             activeBullets.Add(newBullet);
@@ -193,6 +182,24 @@ namespace GreatGame
                 bounds = new BoundingSphere(new Vector3(position, 0), radius);
             }
         }
+
+        public void Reset()
+        {
+            isAlive = true;
+            position = spawnLocation;
+            timer = 0;
+            this.health = unitsDictionary[this.name].Health;
+        }
+
+        public void changeClass(string nameToBe)
+        {
+            this.health = unitsDictionary[nameToBe].Health;
+            this.speed = unitsDictionary[nameToBe].Speed;
+            this.attackRange = unitsDictionary[nameToBe].AttackRange;
+            this.attackStrength = unitsDictionary[nameToBe].AttackStrength;
+            this.rateOfFire = unitsDictionary[nameToBe].RateOfFire;
+            this.name = nameToBe;
+        }
         
         public void Update(GameTime gt, List<Enemy> otherUnits, Camera cam, Map map)
         {
@@ -209,15 +216,7 @@ namespace GreatGame
                 timer += delta;
                 if (timer >= respawnTime)
                 {
-                    position = spawnLocation;
-                    //center = position;
-                    timer = 0;
-                    isAlive = true;
-                    if(name == "Rifle")
-                    {
-                        health = 200;
-                    }
-                    return;
+                    Reset();
                 }
             }
             #endregion

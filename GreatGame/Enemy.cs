@@ -40,8 +40,8 @@ namespace GreatGame
         /// </summary>
         /// <param name="u">Unit of which we are basing the enemy on</param>
         /// <param name="i">Index in the array for this unit</param>
-        public Enemy(Unit u, int i, float fireRadius, Map map) 
-            : base(u, i)
+        public Enemy(Unit u, float fireRadius, Map map) 
+            : base(u)
         {
             // This is used to determine if the unit is inside the range of being shot
             _FIRE_RADIUS = fireRadius;
@@ -139,6 +139,8 @@ namespace GreatGame
                 }
             }
             #endregion
+
+            BulletCheck();
         }
 
         /// <summary>
@@ -171,8 +173,10 @@ namespace GreatGame
              double timer = gt.ElapsedGameTime.TotalSeconds;
              remainingTime_ -= timer;
 
-            if (_DELAY_BETWEEN_SHOOTS <= 0)
+            if (remainingTime_ <= 0)
             {
+                /*
+<<<<<<< HEAD
                // if (distance.Length() <= this.AttackRange)
                // {
                     Bullet newBullet = new Bullet(5, this.ATTACK_STRENGTH, FIRE_RADIUS, 5, this.Position, this.BulletTexture);
@@ -180,16 +184,41 @@ namespace GreatGame
                     ActiveBullets.Add(newBullet);
                     newBullet = null;
                // }
+=======*/
+                Bullet newBullet = new Bullet(50, this.AttackStrength, FIRE_RADIUS, 5, this.Position, BulletTexture);
+                newBullet.Bounds = new BoundingSphere(new Vector3(newBullet.Position.X, newBullet.Position.Y, 0), (float)newBullet.Size / 2);
+                newBullet.Destination = u.Position;
+                ActiveBullets.Add(newBullet);
+                newBullet = null;
+                
+//>>>>>>> origin/master
+
+
                 remainingTime_ = _DELAY_BETWEEN_SHOOTS;
             }
         }
 
+        public void BulletCheck()
+        {
+            for (int i = 0; i < ActiveBullets.Count; i++)
+            {
+                if (ActiveBullets[i].ToDelete)
+                {
+                    ActiveBullets.RemoveAt(i);
+                }
+                else
+                {
+                    ActiveBullets[i].Move();
+                    ActiveBullets[i].DistanceCheck();
+                }
+            }
+        }
 
         public void Draw(SpriteBatch sb, SpriteFont font)
         {
             sb.DrawString(font, "HEALTH: " + this.Health, new Vector2(this.Position.X, this.Position.Y - 20), _TEST_COLOR);
 
-            sb.Draw(this.Texture, new Rectangle((int)Position.X, (int)Position.Y, 50, 50), this.UnitColor);
+            sb.Draw(this.Texture, new Rectangle((int)Position.X-25, (int)Position.Y-25, 50, 50), this.UnitColor);
 
             // Draw the grid, this wont happen in the end
            // _MY_GRID.Draw(sb);

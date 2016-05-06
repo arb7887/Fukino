@@ -62,15 +62,17 @@ namespace GreatGame
         /// </summary>
         protected override void Initialize()
         {
+            UI = new UserInterface(GraphicsDevice);
+            
             // Make a new Game Manager
-            manager = new GameManager("Content/Units.txt", "Content/Textures.txt", currentMouse, previousMouse);
+            manager = new GameManager("Content/Units.txt", "Content/Textures.txt", currentMouse, previousMouse, UI);
 
             // Instantiates the list of units
             manager.Menu.initialize();
             manager.PMenu.Initialize();
 
             // Load in the Units.txt file, this works now
-            UI = new UserInterface(GraphicsDevice);
+            
 
             //gameMap = new Map();
 
