@@ -69,7 +69,7 @@ namespace GreatGame
 
             // Remove the last element of the List and put its data 
             // In the root's postion
-            int lastNodeData = 0;
+            double lastNodeData = 0;
 
             if (heap.Count > 0)
             {

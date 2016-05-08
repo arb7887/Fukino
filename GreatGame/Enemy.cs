@@ -20,7 +20,6 @@ namespace GreatGame
         private double remainingTime_;
 
         // Pathfinding stuff
-        private Grid _MY_GRID;
         #endregion
 
 
@@ -55,23 +54,11 @@ namespace GreatGame
             // Set the texture
             this.Texture = u.Texture;
 
-            // Pathfinding graph
-            _MY_GRID = new Grid(map, Point.Zero, 50,Texture);
-
-
         }
         #endregion
 
 
         #region Methods
-        /// <summary>
-        /// This method will be used to find the shortest path to the objective
-        /// </summary>
-        public void ShortestPath()
-        {
-
-
-        }
 
         /// <summary>
         /// All this update needs to do is check to see if there is an

@@ -41,12 +41,17 @@ namespace GreatGame
 
         //For control point logic
         private float timer;
+
+        private Grid _Grid;
+        private Texture2D grid_texture;
         #endregion
 
 
         #region Properties
 
         // Properties
+        public Texture2D Grid_Texture { get { return grid_texture; } set { grid_texture = value; } }
+        public Grid Grid { get { return _Grid; } set { _Grid = value; } }
         public GameState CurGameState { get { return this.curGameState; } set { this.curGameState = value; } }
         public FileInput AllUnits { get { return this.allUnits; } }
         public List<Unit> Player1Units {get { return this.player1Units; } set { this.player1Units = value; } }
@@ -116,6 +121,7 @@ namespace GreatGame
                 player1Units[i].BulletTexture = bulletTexture;
             }
 
+
             Random r = new Random();
             // Generate 6 random enemy units
             x = 4850;
@@ -129,6 +135,7 @@ namespace GreatGame
                 unitToAdd.Bounds = new BoundingSphere(new Vector3(unitToAdd.Position, 0), radius);
                 unitToAdd.BulletTexture = E_bulletTexture;
                 unitToAdd.Team = Teams.Enemy;
+                
                 Enemy enemyToAdd = new Enemy(unitToAdd, unitToAdd.AttackRange, gameMap);
 
                 enemy_Units.Add(enemyToAdd);
@@ -143,6 +150,11 @@ namespace GreatGame
             // ================Set only one of the units closer so we can test bullets and stuff easier
             enemy_Units[0].Position = new Vector2(1000, 1700);
             enemy_Units[0].Bounds = new BoundingSphere(new Vector3(enemy_Units[0].Position, 0), radius);
+
+            // Map the grid for pathfinding
+            int[] wallArray = new int[] { 5 };
+
+            _Grid = new Grid( Point.Zero,50, grid_texture, gameMap.Walls, gameMap);
 
         }
 
@@ -367,6 +379,8 @@ namespace GreatGame
                             }
                         }
                     }
+
+                    //_Grid.Draw(sb);
                     break;
                 case (GameState.Paused):
                     // Show some text about the current score, and the current untis health and what not

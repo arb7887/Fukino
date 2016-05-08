@@ -16,6 +16,8 @@ namespace GreatGame
         private List<Vertex> _CLOSED, _ALL_VERTECIES;
         private Vertex _currentVertex;  // This is the currently selected vertex
         private Texture2D _pixel;       // This is the texture that I will use to draw the grid
+        private Vertex _START;
+        private bool _IS_FIRST;
         private int gridWidth, gridHeight;
         #endregion
 
@@ -30,20 +32,19 @@ namespace GreatGame
 
 
         #region Constructor
-        public Grid(Map map, Point location, int blockSize, Texture2D pixelTexture)
+        public Grid(Point location, int blockSize, Texture2D pixel, List<Wall> walls, Map m)
         {
-            //_pixel = pixelTexture;
-            _pixel = null;
             // Create and fill a simple 1x1 texture
+            _pixel = pixel;
+
             _OPEN = new PriorityQueue();
             _CLOSED = new List<Vertex>();
             _ALL_VERTECIES = new List<Vertex>();
 
-            // Get the size of the map 
-            GetMapSize(map);
+            gridWidth = GetMapSize(m).X;
+            gridHeight = GetMapSize(m).Y;
 
-            // Initialized this grid
-            Initialize(location, GetMapSize(map).X, GetMapSize(map).Y, blockSize);
+            Initialize(location, gridWidth, gridHeight, blockSize, walls);
         }
         #endregion
 
@@ -54,7 +55,7 @@ namespace GreatGame
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        public void Initialize(Point startLocation, int gridWidth, int gridHeight, int blockSize)
+        public void Initialize(Point startLocation, int gridWidth, int gridHeight, int blockSize, List<Wall> walls)
         {
             // Loop throgh and make the number of rows
             for (int x = startLocation.X; x < gridWidth + startLocation.X; x += blockSize)
@@ -69,6 +70,11 @@ namespace GreatGame
                 }
             }
 
+
+            // Set the walls
+            SetWalls(walls);
+
+
             // Pick a current vertex
             if (_ALL_VERTECIES.Capacity > 0)
                 _currentVertex = _ALL_VERTECIES[0];
@@ -82,17 +88,33 @@ namespace GreatGame
             OPEN.Enqueue(_currentVertex);
         }
 
+        public void SetWalls(List<Wall> walls)
+        {
+            // Set the walls
+            for (int i = 0; i < walls.Count; i++)
+            {
+                foreach(Vertex v in _ALL_VERTECIES)
+                {
+                    if (walls[i].Rectangle.Intersects(v.RECTANGLE))
+                    {
+                        // Set this vertex as a wall
+                        v.Is_Wall = true;
+                    }
+                }
+            }
+        }
+
         public Point GetMapSize(Map m)
         {
             Point mapSize = new Point(0, 0);
 
-            foreach(Wall w in m.Walls)
+            foreach (Wall w in m.Walls)
             {
-                if(w.Bounds.Max.X >= mapSize.X)
+                if (w.Bounds.Max.X >= mapSize.X)
                 {
                     mapSize.X = (int)w.Bounds.Max.X;
                 }
-                if(w.Bounds.Max.Y >= mapSize.Y)
+                if (w.Bounds.Max.Y >= mapSize.Y)
                 {
                     mapSize.Y = (int)w.Bounds.Max.Y;
                 }
@@ -127,7 +149,7 @@ namespace GreatGame
                 foreach (Vertex neighbor in currentNeighbors)
                 {
                     // Get the cost, which is G(current)
-                    int cost = _currentVertex.Distance + GetCost(_currentVertex, neighbor);
+                    double cost = _currentVertex.Distance + GetCost(_currentVertex, neighbor);
 
                     // If neighbor is in OPEN and cost less then neighbor.distance
                     // Neighbor.Distance is G(neighbor)
@@ -158,61 +180,7 @@ namespace GreatGame
             ColorPath(startingPoint, GOAL);
         }
 
-        /// <summary>
-        /// This method will be called if you want to do this as the 
-        /// game plays, not all at once
-        /// </summary>
-        /// <param name="GOAL"></param>
-        public void ShortestPathSlow(Vertex GOAL)
-        {
-
-            if (_currentVertex == GOAL)
-            {
-                return;
-            }
-
-            // Set this so taht we can traverse later
-            Vertex startingPoint = _currentVertex;
-
-            GOAL.VertColor = Color.Red;
-
-            // Take the current node out of open
-            // Current should be the thing on top of the priority queue
-            _currentVertex = _OPEN.DequeueTwo();
-            _CLOSED.Add(_currentVertex);
-
-            // Find all of the neighbors of the current vertex
-            List<Vertex> currentNeighbors = GetNieghbors(_currentVertex);
-
-            foreach (Vertex neighbor in currentNeighbors)
-            {
-                // Get the cost, which is G(current)
-                int cost = _currentVertex.Distance + GetCost(_currentVertex, neighbor);
-
-                // If neighbor is in OPEN and cost less then neighbor.distance
-                // Neighbor.Distance is G(neighbor)
-                if (_OPEN.heap.Contains(neighbor) && cost < neighbor.Distance)
-                {
-                    // Remove neighbor from OPEN, because the new path is better
-                    _OPEN.heap.Remove(neighbor);
-                    _currentVertex = OPEN.DequeueTwo();
-                }
-                // If neighbor is in CLOSED and cost is less then g(neighbor)
-                if (_CLOSED.Contains(neighbor) && cost < neighbor.Distance)
-                {
-                    // Remove neighbor from CLOSED
-                    _CLOSED.Remove(neighbor);
-                }
-                // If neighbor is not in open and neighbor is not in CLOSED:
-                if (!_OPEN.heap.Contains(neighbor) && !_CLOSED.Contains(neighbor))
-                {
-                    neighbor.Distance = cost;
-                    _OPEN.Enqueue(neighbor);
-
-                    neighbor.NeighboringVertex = _currentVertex;
-                }
-            }
-        }
+    
 
         /// <summary>
         /// This method checks if any vertex to the left, right, top or bottom
@@ -239,19 +207,19 @@ namespace GreatGame
             {
                 if (vertex != v)
                 {
-                    if (leftCheck.Intersects(vertex.RECTANGLE))
+                    if (leftCheck.Intersects(vertex.RECTANGLE) && !vertex.Is_Wall)
                     {
                         neighboringVertecies.Add(vertex);
                     }
-                    if (rightCheck.Intersects(vertex.RECTANGLE))
+                    if (rightCheck.Intersects(vertex.RECTANGLE) && !vertex.Is_Wall)
                     {
                         neighboringVertecies.Add(vertex);
                     }
-                    if (topCheck.Intersects(vertex.RECTANGLE))
+                    if (topCheck.Intersects(vertex.RECTANGLE) && !vertex.Is_Wall)
                     {
                         neighboringVertecies.Add(vertex);
                     }
-                    if (botCheck.Intersects(vertex.RECTANGLE))
+                    if (botCheck.Intersects(vertex.RECTANGLE) && !vertex.Is_Wall)
                     {
                         neighboringVertecies.Add(vertex);
                     }
@@ -300,10 +268,20 @@ namespace GreatGame
         /// The cost is the absoulte value of the (cur X - next X) + (cur Y - next Y)
         /// </summary>
         /// <returns>Absolute value of the difference between the distances</returns>
-        public int GetCost(Vertex current, Vertex next)
+        public double GetCost(Vertex current, Vertex next)
         {
             return Math.Abs(current.RECTANGLE.X - next.RECTANGLE.X)
                 + Math.Abs(current.RECTANGLE.Y - next.RECTANGLE.Y);
+
+            /* double  xDist = Math.Abs((current.RECTANGLE.X - current.RECTANGLE.Width / 2) - (next.RECTANGLE.X - next.RECTANGLE.Width / 2));
+             double  yDist = Math.Abs((current.RECTANGLE.Y - current.RECTANGLE.Height / 2) - (next.RECTANGLE.Y - next.RECTANGLE.Height / 2));
+             if (xDist > yDist)
+             {
+                 return 1.4 * yDist + (xDist - yDist);
+             }
+             else {
+                 return 1.4 * xDist + (yDist - xDist);
+             }*/
         }
 
         /// <summary>
@@ -334,47 +312,11 @@ namespace GreatGame
             // Draw them with their tint color
             foreach (Vertex v in _ALL_VERTECIES)
             {
-                v.Draw(sb, _pixel, v.VertColor);
+                v.Draw(sb, _pixel);
             }
         }
 
 
-
-        public void DrawSlow(SpriteBatch sb)
-        {
-            if (_CLOSED.Count != 0)
-            {
-                foreach (Vertex v in _CLOSED)
-                {
-                    if (v.VertColor == Color.White)
-                        v.VertColor = Color.Gray;
-                }
-            }
-
-            if (!_OPEN.IsEmpty())
-            {
-                foreach (Vertex v in _OPEN.heap)
-                {
-                    if (v.VertColor == Color.White)
-                        v.VertColor = Color.HotPink;
-                }
-            }
-            foreach (Vertex v in _ALL_VERTECIES)
-            {
-                v.Draw(sb, _pixel, v.VertColor);
-            }
-
-            ColorOne(_currentVertex);
-            if (_currentVertex.NeighboringVertex != null)
-            {
-                _currentVertex.NeighboringVertex.VertColor = Color.Aqua;
-                ColorOne(_currentVertex.NeighboringVertex);
-
-            }
-            //ColorOne(_currentVertex.NeighboringVertex);
-
-            _currentVertex.Draw(sb, _pixel, _currentVertex.VertColor);
-        }
         #endregion
 
     }

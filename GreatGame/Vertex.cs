@@ -16,7 +16,8 @@ namespace GreatGame
         private Vertex neighborVertex;
         private Boolean permanent;
         private Rectangle rectangle;
-        private int distance;
+        private double distance;
+        private bool is_Wall;
         #endregion
 
 
@@ -25,14 +26,15 @@ namespace GreatGame
         public Vertex NeighboringVertex { get { return neighborVertex; } set { this.neighborVertex = value; } }
         public Boolean Permanent { get { return permanent; } set { this.permanent = value; } }
         public Rectangle RECTANGLE { get { return this.rectangle; } set { this.rectangle = value; } }
-        public int Distance { get { return this.distance; } set { this.distance = value; } }
+        public double Distance { get { return this.distance; } set { this.distance = value; } }
+        public bool Is_Wall { get { return this.is_Wall; } set { this.is_Wall = value; } }
 
         #endregion
 
 
         #region Constructor
         /// <summary>
-        /// 
+        /// The default is that this vertex is not a wall.
         /// </summary>
         /// <param name="location"> This point is for the location of the rectangle</param>
         /// <param name="size"> This is for the size of the block </param>
@@ -40,7 +42,7 @@ namespace GreatGame
         {
             // Make a new rectangle with the given information
             rectangle = new Rectangle(location, size);
-
+            is_Wall = false;
             // Default this
             Reset();
         }
@@ -56,20 +58,28 @@ namespace GreatGame
         {
             vertColor = Color.White;
             permanent = false;
-            distance = int.MaxValue;
+            distance = double.MaxValue;
             neighborVertex = null;
         }
 
         /// <summary>
         /// Draws the rectangle of this object along with it's color using
-        /// the texture that gets passed in
+        /// the texture that gets passed in. If this is a wall then
+        /// it will be drawn in yellow, because yellow is gross.
         /// </summary>
         /// <param name="sb">Spritebatch used to draw </param>
         /// <param name="pixel">The pixel texture that should be white in order to tint any color</param>
-        public void Draw(SpriteBatch sb, Texture2D pixel, Color color)
+        public void Draw(SpriteBatch sb, Texture2D pixel)
         {
+            if (is_Wall)
+            {
+                sb.Draw(pixel, RECTANGLE, Color.Yellow);
 
-            sb.Draw(pixel, RECTANGLE, color);
+            }
+            else
+            {
+                sb.Draw(pixel, RECTANGLE, this.vertColor);
+            }
 
         }
         #endregion

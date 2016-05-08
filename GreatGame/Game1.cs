@@ -111,6 +111,8 @@ namespace GreatGame
             // Load in the list of units from the files here
             manager.LoadContent();
 
+            manager.Grid_Texture = Content.Load<Texture2D>("gridBlock.png");
+
             for (int i = 0; i < manager.AllUnits.TextureList.Count; i++)
             {
                 Texture2D newTexture = Content.Load<Texture2D>(manager.AllUnits.TextureList[i]);
