@@ -54,6 +54,7 @@ namespace GreatGame
             // Set the texture
             this.Texture = u.Texture;
 
+            this.DELAY_BETWEEN_SHOOTS = u.RateOfFire;
         }
         #endregion
 
@@ -103,7 +104,7 @@ namespace GreatGame
                 // Kill the unit
                 // Call the resetmethod
                 
-                this.Position = new Vector2(-20, -20);
+                this.Position = new Vector2(-200, -200);
 
                 var delta = (float)gt.ElapsedGameTime.TotalSeconds;
                 timer += delta;
@@ -111,23 +112,22 @@ namespace GreatGame
                 if (timer >= this.SpawnTime)
                 {
                     this.Position = this.SpawnLoc;
-
                     timer = 0;
-
-                    if (this.Name == "Rifle")
-                    {
-                        this.Health = 200;
-                    }
-                    else
-                    {
-                        this.Health = 200;
-                    }
+                    Reset();
                     return;
                 }
             }
             #endregion
 
             BulletCheck();
+
+            foreach(Bullet b in ActiveBullets)
+            {
+                foreach(Unit u in units)
+                {
+                    b.DamageCheck(u);
+                }
+            }
         }
 
         /// <summary>
@@ -162,25 +162,12 @@ namespace GreatGame
 
             if (remainingTime_ <= 0)
             {
-                /*
-<<<<<<< HEAD
-               // if (distance.Length() <= this.AttackRange)
-               // {
-                    Bullet newBullet = new Bullet(5, this.ATTACK_STRENGTH, FIRE_RADIUS, 5, this.Position, this.BulletTexture);
-                    newBullet.Bounds = new BoundingSphere(new Vector3(this.Position.X, this.Position.Y, 0), (float)newBullet.Size / 2);
-                    ActiveBullets.Add(newBullet);
-                    newBullet = null;
-               // }
-=======*/
                 Bullet newBullet = new Bullet(50, this.AttackStrength, FIRE_RADIUS, 5, this.Position, BulletTexture);
                 newBullet.Bounds = new BoundingSphere(new Vector3(newBullet.Position.X, newBullet.Position.Y, 0), (float)newBullet.Size / 2);
                 newBullet.Destination = u.Position;
                 ActiveBullets.Add(newBullet);
                 newBullet = null;
                 
-//>>>>>>> origin/master
-
-
                 remainingTime_ = _DELAY_BETWEEN_SHOOTS;
             }
         }

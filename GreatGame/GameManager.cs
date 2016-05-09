@@ -104,6 +104,7 @@ namespace GreatGame
             {
                 u.UnitsDictionary = unitDictionary;
             }
+            
             // Set all of the player1 units textures to the same thing
             for(int i = 0; i < player1Units.Count; i++)
             {
@@ -115,6 +116,7 @@ namespace GreatGame
                 player1Units[i].SpawnLoc = gameMap.PlayerSpawnPoints[i];
                 player1Units[i].Position = player1Units[i].SpawnLoc;
                 player1Units[i].Size = 50;
+                player1Units[i].Destination = player1Units[i].Position;
                 player1Units[i].Bounds = new BoundingSphere(new Vector3(player1Units[i].Position, 0), radius);
                 textCount++;
                 x += 75;
@@ -151,6 +153,11 @@ namespace GreatGame
             // ================Set only one of the units closer so we can test bullets and stuff easier
             enemy_Units[0].Position = new Vector2(1000, 1700);
             enemy_Units[0].Bounds = new BoundingSphere(new Vector3(enemy_Units[0].Position, 0), radius);
+
+            foreach (Unit u in enemy_Units)
+            {
+                u.UnitsDictionary = unitDictionary;
+            }
 
             // Map the grid for pathfinding
             int[] wallArray = new int[] { 5 };
@@ -232,6 +239,85 @@ namespace GreatGame
                         }
                     }
 
+                    //check to see if the player wants to quickSelect a class using shift, and a number
+                    if (kbState.IsKeyDown(Keys.LeftShift) || kbState.IsKeyDown(Keys.RightShift))
+                    {
+                        #region number input
+                        if (kbState.IsKeyDown(Keys.D1))
+                        {
+                            if (selectedUnit != null)
+                            {
+                                selectedUnit.Tint = Color.White;
+                                selectedUnit.IsSelected = false;
+                            }
+                            selectedUnit = player1Units[0];
+                            selectedUnit.Tint = Color.Cyan;
+                            selectedUnit.IsSelected = true;
+                            userInterface.Selected = selectedUnit;
+                        }
+                        if (kbState.IsKeyDown(Keys.D2))
+                        {
+                            if (selectedUnit != null)
+                            {
+                                selectedUnit.Tint = Color.White;
+                                selectedUnit.IsSelected = false;
+                            }
+                            selectedUnit = player1Units[1];
+                            selectedUnit.Tint = Color.Cyan;
+                            selectedUnit.IsSelected = true;
+                            userInterface.Selected = selectedUnit;
+                        }
+                        if (kbState.IsKeyDown(Keys.D3))
+                        {
+                            if (selectedUnit != null)
+                            {
+                                selectedUnit.Tint = Color.White;
+                                selectedUnit.IsSelected = false;
+                            }
+                            selectedUnit = player1Units[2];
+                            selectedUnit.Tint = Color.Cyan;
+                            selectedUnit.IsSelected = true;
+                            userInterface.Selected = selectedUnit;
+                        }
+                        if (kbState.IsKeyDown(Keys.D4))
+                        {
+                            if (selectedUnit != null)
+                            {
+                                selectedUnit.Tint = Color.White;
+                                selectedUnit.IsSelected = false;
+                            }
+                            selectedUnit = player1Units[3];
+                            selectedUnit.Tint = Color.Cyan;
+                            selectedUnit.IsSelected = true;
+                            userInterface.Selected = selectedUnit;
+                        }
+                        if (kbState.IsKeyDown(Keys.D5))
+                        {
+                            if (selectedUnit != null)
+                            {
+                                selectedUnit.Tint = Color.White;
+                                selectedUnit.IsSelected = false;
+                            }
+                            selectedUnit = player1Units[4];
+                            selectedUnit.Tint = Color.Cyan;
+                            selectedUnit.IsSelected = true;
+                            userInterface.Selected = selectedUnit;
+                        }
+                        if (kbState.IsKeyDown(Keys.D6))
+                        {
+                            if (selectedUnit != null)
+                            {
+                                selectedUnit.Tint = Color.White;
+                                selectedUnit.IsSelected = false;
+                            }
+                            selectedUnit = player1Units[5];
+                            selectedUnit.Tint = Color.Cyan;
+                            selectedUnit.IsSelected = true;
+                            userInterface.Selected = selectedUnit;
+                        }
+                        #endregion
+                    }
+
                     if (changingClass)
                     {
                         #region numpads input
@@ -270,7 +356,7 @@ namespace GreatGame
                         #endregion
                     }
 
-                    //now check tp see if the player left clicked
+                    //now check to see if the player left clicked
                     if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
                     {   //if so, see what he clicked on
                         Vector2 prevMouseVector = new Vector2(previousMouse.X, previousMouse.Y);
@@ -281,7 +367,15 @@ namespace GreatGame
                         {
                             if (u.CheckClicked(mouseWorldPos))
                             {
+                                if(selectedUnit != null)
+                                {
+                                    selectedUnit.Tint = Color.White;
+                                    selectedUnit.IsSelected = false;
+                                }
+
                                 selectedUnit = u;
+                                selectedUnit.Tint = Color.Cyan;
+                                selectedUnit.IsSelected = true;
                                 userInterface.Selected = selectedUnit;
                                 break;
                             }
@@ -388,7 +482,7 @@ namespace GreatGame
                         }
                     }
 
-                    _Grid.Draw(sb);
+                    //_Grid.Draw(sb);
                     break;
                 case (GameState.Paused):
                     // Show some text about the current score, and the current untis health and what not

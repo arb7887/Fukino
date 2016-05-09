@@ -26,7 +26,7 @@ namespace GreatGame
         private List<Bullet> activeBullets;
         private BoundingSphere bounds;
         private float radius;
-        private float timer;
+        private float spawnTimer;
         private Dictionary<string, Unit> unitsDictionary;
 
         private Teams myTag;
@@ -205,8 +205,9 @@ namespace GreatGame
         {
             isAlive = true;
             position = spawnLocation;
-            timer = 0;
+            spawnTimer = 0;
             this.health = unitsDictionary[this.name].Health;
+            destination = position;
         }
 
         public void changeClass(string nameToBe)
@@ -217,10 +218,12 @@ namespace GreatGame
             this.attackStrength = unitsDictionary[nameToBe].AttackStrength;
             this.rateOfFire = unitsDictionary[nameToBe].RateOfFire;
             this.name = nameToBe;
+            
         }
         
         public void Update(GameTime gt, List<Enemy> otherUnits, Camera cam, Map map)
         {
+            bounds = new BoundingSphere(new Vector3(position, 0), radius);
             // This boolean is just for collision detection, if it is true thne move, 
             // If it is ever changed to false then stop moving
             bool allowedToMove = true;
@@ -231,8 +234,8 @@ namespace GreatGame
                 allowedToMove = false;
 
                 var delta = (float)gt.ElapsedGameTime.TotalSeconds;
-                timer += delta;
-                if (timer >= respawnTime)
+                spawnTimer += delta;
+                if (spawnTimer >= respawnTime)
                 {
                     Reset();
                 }
@@ -246,6 +249,12 @@ namespace GreatGame
                 map.checkCapturing(this);
 
                 // Checks the movement
+
+                if(health <= 0)
+                {
+                    isAlive = false;
+                    position = new Vector2(-200, -200);
+                }
 
                 if (allowedToMove)
                 {
@@ -265,10 +274,10 @@ namespace GreatGame
                             closestEnemy = u;
                             minDistance = new Vector2(position.X - u.Position.X, position.Y - u.Position.Y).Length();
                         }
-                        for (int b = 0; b < activeBullets.Count; b++)
-                        {
-                            activeBullets[b].DamageCheck(u);
-                        }
+                    }
+                    for (int b = 0; b < activeBullets.Count; b++)
+                    {
+                        activeBullets[b].DamageCheck(u);
                     }
                 }
                 if (minDistance < attackRange && closestEnemy != null)
@@ -304,10 +313,6 @@ namespace GreatGame
                 sb.DrawString(font, "HEALTH: " + this.health, new Vector2(this.position.X, this.position.Y - 20), Color.Black);
 
                 sb.Draw(texture, new Rectangle((int)(position.X - radius), (int)(position.Y - radius), 50, 50), color);
-
-                sb.DrawString(font, "X", this.position, Color.Red);
-                sb.DrawString(font, "X", new Vector2(this.bounds.Center.X, this.bounds.Center.Y), Color.Blue);
-
             }
         }
         #endregion 
