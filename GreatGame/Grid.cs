@@ -16,7 +16,7 @@ namespace GreatGame
         private List<Vertex> _CLOSED, _ALL_VERTECIES;
         private Vertex _currentVertex;  // This is the currently selected vertex
         private Texture2D _pixel;       // This is the texture that I will use to draw the grid
-        private Vertex _START;
+        private Vertex _START, _GOAL;
         private bool _IS_FIRST;
         private int gridWidth, gridHeight;
         #endregion
@@ -88,6 +88,11 @@ namespace GreatGame
             OPEN.Enqueue(_currentVertex);
         }
 
+        /// <summary>
+        /// Takes in a list of walls, and check to see if the rectangles on 
+        /// the grid are intersecting with the wall
+        /// </summary>
+        /// <param name="walls"></param>
         public void SetWalls(List<Wall> walls)
         {
             // Set the walls
@@ -104,6 +109,11 @@ namespace GreatGame
             }
         }
 
+        /// <summary>
+        /// Takes in a map, and finds out the largest X and Y values of that map
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns></returns>
         public Point GetMapSize(Map m)
         {
             Point mapSize = new Point(0, 0);
@@ -180,7 +190,11 @@ namespace GreatGame
             ColorPath(startingPoint, GOAL);
         }
 
-    
+        public void ShortestPathShort()
+        {
+
+        }
+
 
         /// <summary>
         /// This method checks if any vertex to the left, right, top or bottom
@@ -230,15 +244,6 @@ namespace GreatGame
             return neighboringVertecies;
         }
 
-        public void ColorOne(Vertex v)
-        {
-            if (_CLOSED.Contains(v) && v.VertColor != Color.Green && v.VertColor != Color.Red)
-                v.VertColor = Color.Gray;
-
-            if (_OPEN.heap.Contains(v) && v.VertColor != Color.Green && v.VertColor != Color.Red)
-                v.VertColor = Color.HotPink;
-        }
-
         /// <summary>
         /// This method will go backwards through the list and
         /// change each color of the tile to something along the 
@@ -273,6 +278,8 @@ namespace GreatGame
             return Math.Abs(current.RECTANGLE.X - next.RECTANGLE.X)
                 + Math.Abs(current.RECTANGLE.Y - next.RECTANGLE.Y);
 
+            // The following is another heuristic that works, but it does the same thing i think.
+
             /* double  xDist = Math.Abs((current.RECTANGLE.X - current.RECTANGLE.Width / 2) - (next.RECTANGLE.X - next.RECTANGLE.Width / 2));
              double  yDist = Math.Abs((current.RECTANGLE.Y - current.RECTANGLE.Height / 2) - (next.RECTANGLE.Y - next.RECTANGLE.Height / 2));
              if (xDist > yDist)
@@ -283,6 +290,25 @@ namespace GreatGame
                  return 1.4 * xDist + (yDist - xDist);
              }*/
         }
+
+        /// <summary>
+        /// This will check to see which 
+        /// </summary>
+        /// <param name="mouseLoc"></param>
+        public void SelectVertex(Vector2 mouseLoc)
+        {
+            foreach(Vertex v in _ALL_VERTECIES)
+            {
+                if (v.RECTANGLE.Contains(mouseLoc))
+                {
+                    if(_GOAL != null)
+                        _GOAL.VertColor = Color.White;
+                    _GOAL = v;
+                    _GOAL.VertColor = Color.Red;
+                }
+            }
+        }
+
 
         /// <summary>
         /// This method loops though and calls the draw method
@@ -314,6 +340,7 @@ namespace GreatGame
             {
                 v.Draw(sb, _pixel);
             }
+            
         }
 
 

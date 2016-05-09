@@ -35,6 +35,9 @@ namespace GreatGame
         private Vector2 spawnLocation;
         private int respawnTime;
 
+        // Pathfinding stuffs
+        private Vertex _Destination_Vertex;
+
         #endregion
 
 
@@ -68,6 +71,7 @@ namespace GreatGame
 
 
         #region Properties
+        public Vertex Destination_Vertex { get { return _Destination_Vertex; } set { _Destination_Vertex = value; } }
         public int AttackStrength { get { return attackStrength; } set { attackStrength = value; } }
         public Double Health { get { return health; } set { health = value; } }
         public String Name { get { return name; } }
@@ -182,6 +186,20 @@ namespace GreatGame
                 bounds = new BoundingSphere(new Vector3(position, 0), radius);
             }
         }
+
+
+        /// <summary>
+        /// This method will take in a vertex, and move the unit in the general direction of that
+        /// </summary>
+        /// <param name="selected"></param>
+        public void Move(Grid my_Grid)
+        {
+            my_Grid.ShortestPath(_Destination_Vertex);
+
+            
+
+        }
+
 
         public void Reset()
         {

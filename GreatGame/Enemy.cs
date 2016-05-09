@@ -22,7 +22,7 @@ namespace GreatGame
         // Pathfinding stuff
         #endregion
 
-
+        
         #region Properties
         public float FIRE_RADIUS { get { return this._FIRE_RADIUS; } set { _FIRE_RADIUS = value; } }
         public Double DELAY_BETWEEN_SHOOTS { get { return this._DELAY_BETWEEN_SHOOTS; } set { _DELAY_BETWEEN_SHOOTS = value; } }

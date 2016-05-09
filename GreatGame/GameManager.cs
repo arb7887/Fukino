@@ -87,6 +87,7 @@ namespace GreatGame
 
         #endregion
 
+
         #region Methods
         /// <summary>
         /// Eventually htis method will be used to match the names up to the different textures and stuff
@@ -196,18 +197,24 @@ namespace GreatGame
                         game.Quit();
                     }
                     break;
+
                 case (GameState.Game):
-                    gameMap.CP.Contested = false; // first assue there is no unit contesting the point
+                    gameMap.CP.Contested = false; // first assume there is no unit contesting the point
                     
 
                     //then check to see if the player right clicked
                     if (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released)
                     {   //and set the destination of the selecred unit
                         if(selectedUnit != null)
+                        {
                             selectedUnit.Destination = new Vector2(previousMouse.X + cam.Pos.X * cam.CamSpeed, previousMouse.Y + cam.Pos.Y * cam.CamSpeed);
+
+                            // Set the DESTINATION VERTEX of this unit to where evere th mouse is over
+                            _Grid.SelectVertex(selectedUnit.Destination); 
+                        }
                         
                     }
-
+                    
                     //then check to see if the player hit space
                     if (kbPState.IsKeyDown(Keys.Space) && kbState.IsKeyUp(Keys.Space))
                     {   //and use the selected unit to attack if he did
@@ -224,6 +231,7 @@ namespace GreatGame
                             selectedUnit.Tint = Color.Yellow;
                         }
                     }
+
                     if (changingClass)
                     {
                         #region numpads input
@@ -380,7 +388,7 @@ namespace GreatGame
                         }
                     }
 
-                    //_Grid.Draw(sb);
+                    _Grid.Draw(sb);
                     break;
                 case (GameState.Paused):
                     // Show some text about the current score, and the current untis health and what not
