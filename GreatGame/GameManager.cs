@@ -108,7 +108,7 @@ namespace GreatGame
             // Set all of the player1 units textures to the same thing
             for(int i = 0; i < player1Units.Count; i++)
             {
-                if(textCount >= 3)
+                if(textCount >= 4)
                 {
                     textCount = 0;
                 }

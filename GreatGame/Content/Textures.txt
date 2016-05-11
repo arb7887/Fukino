@@ -1,4 +1,5 @@
-3
-troop
-Kamui
+4
 sniper
+Shotgun
+Medic
+Minigun
