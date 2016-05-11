@@ -244,7 +244,7 @@ namespace GreatGame
                     if (kbPState.IsKeyDown(Keys.Space) && kbState.IsKeyUp(Keys.Space))
                     {   //and use the selected unit to attack if he did
                         if(selectedUnit != null)
-                            selectedUnit.AttackPosition(new Vector2(currentMouse.X + cam.Pos.X * cam.CamSpeed, currentMouse.Y + cam.Pos.Y * cam.CamSpeed));
+                            selectedUnit.ShotgunSpray(new Vector2(currentMouse.X + cam.Pos.X * cam.CamSpeed, currentMouse.Y + cam.Pos.Y * cam.CamSpeed));
                     }
 
                     //check to see if the player hit c to change a unit class

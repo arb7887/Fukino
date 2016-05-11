@@ -137,6 +137,27 @@ namespace GreatGame
             newBullet = null;
         }
 
+
+        public void ShotgunSpray(Vector2 target)
+        {
+            List<Bullet> bulletSpray = new List<Bullet>();
+            double degree = -5;
+            double angle = degree * (Math.PI / 180);
+            for (int i = 0; i < 5; i++)
+            {
+                Bullet newBullet = new Bullet(50, attackStrength, attackRange, 5, this.position, bulletTexture);
+                newBullet.Bounds = new BoundingSphere(new Vector3(newBullet.Position.X, newBullet.Position.Y, 0), (float)newBullet.Size / 2);
+                newBullet.Destination = new Vector2((float)((target.X * Math.Cos(angle)) - (target.Y * Math.Sin(angle))), (float)((target.X * Math.Sin(angle)) + (target.Y * Math.Cos(angle))));
+                bulletSpray.Add(newBullet);
+                degree += 2.5;
+                angle = degree * (Math.PI / 180);
+            }
+            foreach (Bullet b in bulletSpray)
+            {
+                activeBullets.Add(b);
+            }
+        }
+
         public void BulletCheck()
         {
             for (int i = 0; i < activeBullets.Count; i++)
