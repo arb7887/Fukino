@@ -36,8 +36,11 @@ namespace GreatGame
         private int respawnTime;
 
         // Pathfinding stuffs
-        private Vertex _Destination_Vertex;
-
+        private Vertex _Destination_Vertex, _Vertex_Im_On;
+        private List<Vertex> _backwards_List;
+        private int _Where_I_Am_in_List;
+        private float _timePassed, _timeBetween;
+        private bool _IS_FIRST_MOVE, _DONE_MOVING;
         #endregion
 
 
@@ -62,6 +65,10 @@ namespace GreatGame
             bounds = new BoundingSphere(new Vector3(position, 0), radius);
             isAlive = true;
             respawnTime = 8;
+
+            _timeBetween = 200f;
+            _timePassed = 0f;
+            _IS_FIRST_MOVE = true;
         }
 
         public Unit(Unit newUnit)
@@ -71,6 +78,9 @@ namespace GreatGame
 
 
         #region Properties
+        public bool DONE_MOVING { get { return _DONE_MOVING; } set { _DONE_MOVING = value; }}
+        public Vertex Vertex_Im_ON { get { return _Vertex_Im_On; } set { _Vertex_Im_On = value; } }
+        public List<Vertex> Backwards_List { get { return _backwards_List; } set { _backwards_List = value; } }
         public Vertex Destination_Vertex { get { return _Destination_Vertex; } set { _Destination_Vertex = value; } }
         public int AttackStrength { get { return attackStrength; } set { attackStrength = value; } }
         public Double Health { get { return health; } set { health = value; } }
@@ -102,7 +112,7 @@ namespace GreatGame
         #endregion
 
 
-        #region methods
+        #region Methods
 
         #region Attacking Methods
         public void AttackUnit(Unit u, GameTime gt)
@@ -188,15 +198,62 @@ namespace GreatGame
         }
 
 
+        public void newInput(Vector2 destination)
+        {
+            // SO, I have to take this mouse location, which is the location on the screen
+            // And convert it to a "world" coordinate
+
+            Vector2 distance = new Vector2(destination.X - position.X, destination.Y - position.Y);
+
+
+            if (distance.Length() < speed)
+            {
+                // This checks the collisions with the walls
+                position = destination;
+
+                isMoving = false;
+            }
+            else
+            {
+                //distance.Normalize();
+                Vector2 toMove = new Vector2((int)(distance.X * speed), (int)(distance.Y * speed));
+                // Checks with the walls... again?
+
+                position += distance;
+                bounds = new BoundingSphere(new Vector3(position, 0), radius);
+            }
+        }
+
         /// <summary>
         /// This method will take in a vertex, and move the unit in the general direction of that
         /// </summary>
         /// <param name="selected"></param>
-        public void Move(Grid my_Grid)
+        public void Move(GameTime gameTime)
         {
-            my_Grid.ShortestPath(_Destination_Vertex);
-
+            // Set my current vertex to the positoin in the backwards list
+            _timePassed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             
+            if(_timePassed >= _timeBetween)
+            {
+                _DONE_MOVING = false;
+                // Update the location of the unit
+                if (_Where_I_Am_in_List >= 0)
+                {
+                    _timePassed = 0;
+                    _Destination_Vertex = _backwards_List[_Where_I_Am_in_List];
+                    _Where_I_Am_in_List--;
+                    _Destination_Vertex.VertColor = Color.Aqua;
+                    newInput(new Vector2(_Destination_Vertex.RECTANGLE.Center.X, _Destination_Vertex.RECTANGLE.Center.Y));
+                    // Move the unit to the destination vertex
+
+                }
+                else
+                {
+                    // Tell me that I am done moving
+                    _DONE_MOVING = true;
+                }
+
+            }
 
         }
 
@@ -209,6 +266,7 @@ namespace GreatGame
             this.health = unitsDictionary[this.name].Health;
             destination = position;
         }
+
 
         public void changeClass(string nameToBe)
         {
@@ -258,6 +316,18 @@ namespace GreatGame
 
                 if (allowedToMove)
                 {
+                    // I am getting to this dont delete it
+                    if(_backwards_List != null)
+                    {
+                        if (_IS_FIRST_MOVE)
+                        {
+                            _Where_I_Am_in_List = _backwards_List.Count - 1;
+                            _IS_FIRST_MOVE = false;
+                        }
+                       // _Where_I_Am_in_List = _backwards_List.Count - 1;
+                        //Move(gt);
+                    }
+
                     ProcessInput(destination, map);
                 }
 
@@ -288,6 +358,7 @@ namespace GreatGame
             #endregion
         }
         
+
         public bool CheckClicked(Vector2 clickedLoc)
         {
             BoundingBox clicked = new BoundingBox(new Vector3(clickedLoc.X, clickedLoc.Y, 0), new Vector3(clickedLoc.X+1, clickedLoc.Y+1, 0));
@@ -305,6 +376,7 @@ namespace GreatGame
             }
         }
 
+
         #region Draw
         public void Draw(SpriteBatch sb, SpriteFont font, Camera cam)
         {
@@ -316,6 +388,7 @@ namespace GreatGame
             }
         }
         #endregion 
+
 
         public Vector2 GetMouseWorldPos(Vector2 screenPos, Vector2 camPos)
         {

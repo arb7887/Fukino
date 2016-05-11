@@ -17,12 +17,15 @@ namespace GreatGame
         private Vertex _currentVertex;  // This is the currently selected vertex
         private Texture2D _pixel;       // This is the texture that I will use to draw the grid
         private Vertex _START, _GOAL;
-        private bool _IS_FIRST;
         private int gridWidth, gridHeight;
+        private List<Vertex> _ONES_TO_DRAW;
+
         #endregion
 
 
         #region Properties
+        public List<Vertex> ONES_TO_DRAW { get { return _ONES_TO_DRAW; } set { _ONES_TO_DRAW = value; } }
+
         public PriorityQueue OPEN { get { return this._OPEN; } set { this._OPEN = value; } }
         public List<Vertex> CLOSED { get { return this._CLOSED; } set { this._CLOSED = value; } }
         public Vertex CurrentVertex { get { return this._currentVertex; } set { this._currentVertex = value; } }
@@ -47,6 +50,7 @@ namespace GreatGame
             Initialize(location, gridWidth, gridHeight, blockSize, walls);
         }
         #endregion
+
 
         #region Methods
         /// <summary>
@@ -88,6 +92,7 @@ namespace GreatGame
             OPEN.Enqueue(_currentVertex);
         }
 
+
         /// <summary>
         /// Takes in a list of walls, and check to see if the rectangles on 
         /// the grid are intersecting with the wall
@@ -108,6 +113,20 @@ namespace GreatGame
                 }
             }
         }
+
+        public void ResetAllVertecies(Vertex currentVertex)
+        {
+            foreach(Vertex v in _ALL_VERTECIES)
+            {
+                v.Reset();
+            }
+            OPEN.Clear();
+            CLOSED.Clear();
+
+            _currentVertex = currentVertex;
+            OPEN.Enqueue(_currentVertex);
+        }
+
 
         /// <summary>
         /// Takes in a map, and finds out the largest X and Y values of that map
@@ -135,11 +154,12 @@ namespace GreatGame
             return mapSize;
         }
 
+
         /// <summary>
         /// This is where A* will be implemented
         /// </summary>
         /// <param name="GOAL">This is the vertex that we start at</param>
-        public void ShortestPath(Vertex GOAL)
+        public void ShortestPath( Vertex GOAL)
         {
             // Set this so taht we can traverse later
             Vertex startingPoint = _currentVertex;
@@ -190,9 +210,63 @@ namespace GreatGame
             ColorPath(startingPoint, GOAL);
         }
 
-        public void ShortestPathShort()
-        {
 
+        public List<Vertex> ShortestPathSlow(Vertex START, Vertex GOAL)
+        {
+            OPEN.Clear();
+            CLOSED.Clear();
+            _currentVertex = START;
+            OPEN.Enqueue(_currentVertex);
+
+            // Set this so taht we can traverse later
+            Vertex startingPoint = _currentVertex;
+
+            GOAL.VertColor = Color.Red;
+            // While the peek of open is not the goal
+            while (_OPEN.Peek() != GOAL)
+            {
+                // Take the current node out of open
+                // Current should be the thing on top of the priority queue
+                _currentVertex = _OPEN.DequeueTwo();
+                _CLOSED.Add(_currentVertex);
+
+                // Find all of the neighbors of the current vertex
+                List<Vertex> currentNeighbors = GetNieghbors(_currentVertex);
+
+                foreach (Vertex neighbor in currentNeighbors)
+                {
+                    // Get the cost, which is G(current)
+                    double cost = _currentVertex.Distance + GetCost(_currentVertex, neighbor);
+
+                    // If neighbor is in OPEN and cost less then neighbor.distance
+                    // Neighbor.Distance is G(neighbor)
+                    if (_OPEN.heap.Contains(neighbor) && cost < neighbor.Distance)
+                    {
+                        // Remove neighbor from OPEN, because the new path is better
+                        _OPEN.heap.Remove(neighbor);
+                        _currentVertex = OPEN.DequeueTwo();
+                    }
+                    // If neighbor is in CLOSED and cost is less then g(neighbor)
+                    if (_CLOSED.Contains(neighbor) && cost < neighbor.Distance)
+                    {
+                        // Remove neighbor from CLOSED
+                        _CLOSED.Remove(neighbor);
+                    }
+                    // If neighbor is not in open and neighbor is not in CLOSED:
+                    if (!_OPEN.heap.Contains(neighbor) && !_CLOSED.Contains(neighbor))
+                    {
+                        neighbor.Distance = cost;
+                        _OPEN.Enqueue(neighbor);
+
+                        neighbor.NeighboringVertex = _currentVertex;
+                    }
+                }
+            }
+
+            // Reconstruct the reverse path from goal to start
+
+            _ONES_TO_DRAW = ColorPathSlow(startingPoint, GOAL);
+            return _ONES_TO_DRAW;
         }
 
 
@@ -244,6 +318,34 @@ namespace GreatGame
             return neighboringVertecies;
         }
 
+
+        public List<Vertex> ColorPathSlow(Vertex start, Vertex goal)
+        {
+            Vertex currentPathVertex = goal;
+
+            List<Vertex> backwardsResults = new List<Vertex>();
+            backwardsResults.Add(currentPathVertex);
+
+            while (currentPathVertex != start)
+            {
+                if (currentPathVertex.NeighboringVertex != null && currentPathVertex.NeighboringVertex.VertColor != Color.Green)
+                {
+                    currentPathVertex = currentPathVertex.NeighboringVertex;
+                    currentPathVertex.VertColor = Color.Aqua;
+                    backwardsResults.Add(currentPathVertex);
+                }
+                else
+                {
+                    return backwardsResults;
+                    //return;
+                }
+            }
+
+            return backwardsResults;
+
+        }
+
+
         /// <summary>
         /// This method will go backwards through the list and
         /// change each color of the tile to something along the 
@@ -268,6 +370,7 @@ namespace GreatGame
 
         }
 
+
         /// <summary>
         /// This is a helper method that I will use to compute the cost
         /// The cost is the absoulte value of the (cur X - next X) + (cur Y - next Y)
@@ -291,22 +394,28 @@ namespace GreatGame
              }*/
         }
 
+
         /// <summary>
         /// This will check to see which 
         /// </summary>
         /// <param name="mouseLoc"></param>
-        public void SelectVertex(Vector2 mouseLoc)
+        public Vertex SelectVertex(Vector2 mouseLoc)
         {
+            Vertex VHere = new Vertex(Point.Zero, Point.Zero);
+
             foreach(Vertex v in _ALL_VERTECIES)
             {
                 if (v.RECTANGLE.Contains(mouseLoc))
                 {
                     if(_GOAL != null)
                         _GOAL.VertColor = Color.White;
-                    _GOAL = v;
-                    _GOAL.VertColor = Color.Red;
+                    //_GOAL = v;
+                    VHere = v;
+                    //_GOAL.VertColor = Color.Red;
+                    VHere.VertColor = Color.Red;
                 }
             }
+            return VHere;
         }
 
 
@@ -317,30 +426,11 @@ namespace GreatGame
         /// <param name="sb"></param>
         public void Draw(SpriteBatch sb)
         {
-            if (_CLOSED.Count != 0)
-            {
-                foreach (Vertex v in _CLOSED)
-                {
-                    if (v.VertColor == Color.White)
-                        v.VertColor = Color.Gray;
-                }
-            }
-
-            if (!_OPEN.IsEmpty())
-            {
-                foreach (Vertex v in _OPEN.heap)
-                {
-                    if (v.VertColor == Color.White)
-                        v.VertColor = Color.HotPink;
-                }
-            }
-            // In the draw method I need to go through the list of all the vertecies and 
-            // Draw them with their tint color
             foreach (Vertex v in _ALL_VERTECIES)
             {
                 v.Draw(sb, _pixel);
             }
-            
+
         }
 
 
