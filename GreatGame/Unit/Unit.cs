@@ -78,6 +78,7 @@ namespace GreatGame
 
 
         #region Properties
+        public int Where_I_Am_In_List { get { return _Where_I_Am_in_List; } set { _Where_I_Am_in_List = value; } }
         public bool DONE_MOVING { get { return _DONE_MOVING; } set { _DONE_MOVING = value; }}
         public Vertex Vertex_Im_ON { get { return _Vertex_Im_On; } set { _Vertex_Im_On = value; } }
         public List<Vertex> Backwards_List { get { return _backwards_List; } set { _backwards_List = value; } }
@@ -254,7 +255,7 @@ namespace GreatGame
             // Set my current vertex to the positoin in the backwards list
             _timePassed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             
-            if(_timePassed >= _timeBetween)
+            if(_timePassed >= _timeBetween && _Where_I_Am_in_List != -1)
             {
                 _DONE_MOVING = false;
                 // Update the location of the unit
@@ -346,10 +347,10 @@ namespace GreatGame
                             _IS_FIRST_MOVE = false;
                         }
                        // _Where_I_Am_in_List = _backwards_List.Count - 1;
-                        //Move(gt);
+                        Move(gt);
                     }
 
-                    ProcessInput(destination, map);
+                    //ProcessInput(destination, map);
                 }
 
                 // Bullet check

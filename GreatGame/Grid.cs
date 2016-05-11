@@ -114,6 +114,10 @@ namespace GreatGame
             }
         }
 
+        /// <summary>
+        /// Calls the Reset() method on every vertex in the grid
+        /// </summary>
+        /// <param name="currentVertex"></param>
         public void ResetAllVertecies(Vertex currentVertex)
         {
             foreach(Vertex v in _ALL_VERTECIES)
@@ -156,61 +160,13 @@ namespace GreatGame
 
 
         /// <summary>
-        /// This is where A* will be implemented
+        /// Returns a list that is the path that the unit should take. 
+        /// The list is 'backwards' so to speak, as in the closest move to make
+        /// is at the end of the list. 
         /// </summary>
-        /// <param name="GOAL">This is the vertex that we start at</param>
-        public void ShortestPath( Vertex GOAL)
-        {
-            // Set this so taht we can traverse later
-            Vertex startingPoint = _currentVertex;
-
-            GOAL.VertColor = Color.Red;
-            // While the peek of open is not the goal
-            while (_OPEN.Peek() != GOAL)
-            {
-                // Take the current node out of open
-                // Current should be the thing on top of the priority queue
-                _currentVertex = _OPEN.DequeueTwo();
-                _CLOSED.Add(_currentVertex);
-
-                // Find all of the neighbors of the current vertex
-                List<Vertex> currentNeighbors = GetNieghbors(_currentVertex);
-
-                foreach (Vertex neighbor in currentNeighbors)
-                {
-                    // Get the cost, which is G(current)
-                    double cost = _currentVertex.Distance + GetCost(_currentVertex, neighbor);
-
-                    // If neighbor is in OPEN and cost less then neighbor.distance
-                    // Neighbor.Distance is G(neighbor)
-                    if (_OPEN.heap.Contains(neighbor) && cost < neighbor.Distance)
-                    {
-                        // Remove neighbor from OPEN, because the new path is better
-                        _OPEN.heap.Remove(neighbor);
-                        _currentVertex = OPEN.DequeueTwo();
-                    }
-                    // If neighbor is in CLOSED and cost is less then g(neighbor)
-                    if (_CLOSED.Contains(neighbor) && cost < neighbor.Distance)
-                    {
-                        // Remove neighbor from CLOSED
-                        _CLOSED.Remove(neighbor);
-                    }
-                    // If neighbor is not in open and neighbor is not in CLOSED:
-                    if (!_OPEN.heap.Contains(neighbor) && !_CLOSED.Contains(neighbor))
-                    {
-                        neighbor.Distance = cost;
-                        _OPEN.Enqueue(neighbor);
-
-                        neighbor.NeighboringVertex = _currentVertex;
-                    }
-                }
-            }
-
-            // Reconstruct the reverse path from goal to start
-            ColorPath(startingPoint, GOAL);
-        }
-
-
+        /// <param name="START"></param>
+        /// <param name="GOAL"></param>
+        /// <returns></returns>
         public List<Vertex> ShortestPathSlow(Vertex START, Vertex GOAL)
         {
             OPEN.Clear();
@@ -319,6 +275,14 @@ namespace GreatGame
         }
 
 
+        /// <summary>
+        /// This returns a list that has the closest move to make at the 
+        /// end of the lsit, so to traverse this list hten you have to 
+        /// make sure that you account for that.
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="goal"></param>
+        /// <returns></returns>
         public List<Vertex> ColorPathSlow(Vertex start, Vertex goal)
         {
             Vertex currentPathVertex = goal;
@@ -342,31 +306,6 @@ namespace GreatGame
             }
 
             return backwardsResults;
-
-        }
-
-
-        /// <summary>
-        /// This method will go backwards through the list and
-        /// change each color of the tile to something along the 
-        /// path
-        /// </summary>
-        public void ColorPath(Vertex start, Vertex goal)
-        {
-            Vertex currentPathVertex = goal;
-
-            while (currentPathVertex != start)
-            {
-                if (currentPathVertex.NeighboringVertex != null && currentPathVertex.NeighboringVertex.VertColor != Color.Green)
-                {
-                    currentPathVertex = currentPathVertex.NeighboringVertex;
-                    currentPathVertex.VertColor = Color.Aqua;
-                }
-                else
-                {
-                    return;
-                }
-            }
 
         }
 
@@ -420,8 +359,7 @@ namespace GreatGame
 
 
         /// <summary>
-        /// This method loops though and calls the draw method
-        /// each vertex object in OPEN and CLOSED
+        /// Draws all the vertecies in the list _ALL_VERTECIES
         /// </summary>
         /// <param name="sb"></param>
         public void Draw(SpriteBatch sb)

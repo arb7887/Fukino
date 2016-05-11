@@ -47,7 +47,6 @@ namespace GreatGame
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
             // Make full screen when we get to the point of that
-            //graphics.IsFullScreen = true;
 
 
             Content.RootDirectory = "Content";

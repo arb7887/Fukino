@@ -14,7 +14,6 @@ namespace GreatGame
         private float _FIRE_RADIUS;   // This is the radius that this enemy will use to see if it is colliding with any other units
         private double _DELAY_BETWEEN_SHOOTS;
         private Vector2 _SPAWN_POINT;
-        Color _TEST_COLOR;
         private float timer;
         // Hansoo wtf is wrong with your variable naming they are all the fucking same
         private double remainingTime_;
@@ -44,8 +43,6 @@ namespace GreatGame
         {
             // This is used to determine if the unit is inside the range of being shot
             _FIRE_RADIUS = fireRadius;
-
-            this._TEST_COLOR = Color.Black;
             
             // Set this enemy has an Enemy in the game
             this.Team = Teams.Enemy;
@@ -79,20 +76,15 @@ namespace GreatGame
                     {
                         // Change the test color to see if collision is working,
                         // And call the shoot method with them
-                        _TEST_COLOR = Color.Red;
                         Shoot(u, gt);
 
                         // Move away from that unit a little bit
                     }
                     else
                     {
-                        _TEST_COLOR = Color.Black;
+
                     }
                 }
-
-                // Do the movement
-                //_MY_GRID.ShortestPath(_MY_GRID.ALL_VERTECIES[500]);
-
 
                 this.IsAlive = true;
             }
@@ -172,25 +164,14 @@ namespace GreatGame
             }
         }
 
-        public void BulletCheck()
-        {
-            for (int i = 0; i < ActiveBullets.Count; i++)
-            {
-                if (ActiveBullets[i].ToDelete)
-                {
-                    ActiveBullets.RemoveAt(i);
-                }
-                else
-                {
-                    ActiveBullets[i].Move();
-                    ActiveBullets[i].DistanceCheck();
-                }
-            }
-        }
-
+        /// <summary>
+        /// Draws the enemy's texture and the health right about it
+        /// </summary>
+        /// <param name="sb"></param>
+        /// <param name="font"></param>
         public void Draw(SpriteBatch sb, SpriteFont font)
         {
-            sb.DrawString(font, "HEALTH: " + this.Health, new Vector2(this.Position.X, this.Position.Y - 20), _TEST_COLOR);
+            sb.DrawString(font, "HEALTH: " + this.Health, new Vector2(this.Position.X, this.Position.Y - 20), Color.Black);
 
             sb.Draw(this.Texture, new Rectangle((int)Position.X-25, (int)Position.Y-25, 50, 50), this.UnitColor);
 

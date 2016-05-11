@@ -211,7 +211,7 @@ namespace GreatGame
                     //then check to see if the player right clicked
                     if (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released)
                     {   //and set the destination of the selecred unit
-                       /* if(selectedUnit != null)
+                        if(selectedUnit != null)
                         {
                             selectedUnit.Vertex_Im_ON = _Grid.SelectVertex(selectedUnit.Position);
 
@@ -220,23 +220,24 @@ namespace GreatGame
                                 _Grid.ResetAllVertecies(selectedUnit.Vertex_Im_ON);
                                 selectedUnit.Backwards_List.Clear();
                                 selectedUnit.DONE_MOVING = false;
-
+                                selectedUnit.Where_I_Am_In_List = -1;
                             }
                             else
-                            {*/
+                            {
 
 
                                 selectedUnit.Destination = new Vector2(previousMouse.X + cam.Pos.X * cam.CamSpeed, previousMouse.Y + cam.Pos.Y * cam.CamSpeed);
-                        /*
+                        
                                 // Set the DESTINATION VERTEX of this unit to where evere th mouse is over
                                 selectedUnit.Destination_Vertex = _Grid.SelectVertex(selectedUnit.Destination);
                                 // Set the vertex that the current unit is on
 
                                 selectedUnit.Backwards_List = _Grid.ShortestPathSlow(selectedUnit.Vertex_Im_ON, selectedUnit.Destination_Vertex);
+                                selectedUnit.Where_I_Am_In_List = selectedUnit.Backwards_List.Count - 1;
                             }
 
 
-                        }*/
+                        }
                         
                     }
                     
@@ -385,7 +386,7 @@ namespace GreatGame
                         {
                             if (u.CheckClicked(mouseWorldPos))
                             {
-                                if(selectedUnit != null)
+                                if(selectedUnit != null && selectedUnit.IsAlive)
                                 {
                                     selectedUnit.Tint = Color.White;
                                     selectedUnit.IsSelected = false;
@@ -500,7 +501,7 @@ namespace GreatGame
                         }
                     }
 
-                   // _Grid.Draw(sb);
+                    //_Grid.Draw(sb);
                     break;
                 case (GameState.Paused):
                     // Show some text about the current score, and the current untis health and what not
