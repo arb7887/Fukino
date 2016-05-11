@@ -1,5 +1,9 @@
-4
+8
 sniper
 Shotgun
 Medic
 Minigun
+Rifle
+Assassin
+Alien
+Engineer
