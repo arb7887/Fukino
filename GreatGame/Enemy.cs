@@ -15,14 +15,20 @@ namespace GreatGame
         private double _DELAY_BETWEEN_SHOOTS;
         private Vector2 _SPAWN_POINT;
         private float timer;
-        // Hansoo wtf is wrong with your variable naming they are all the fucking same
         private double remainingTime_;
+        private bool _IS_FIRST_CALL;
 
-        // Pathfinding stuff
+        // Pathfinding stuffs
+        private Vertex _Destination_Vertex, _Vertex_Im_On;
+        private List<Vertex> _backwards_List;
+        private int _Where_I_Am_in_List;
+        private float _timePassed, _timeBetween;
+        private bool _IS_FIRST_MOVE, _DONE_MOVING;
         #endregion
 
-        
+
         #region Properties
+        public bool IS_FIRST_CALL { get { return _IS_FIRST_CALL; } set { _IS_FIRST_CALL = value;} }
         public float FIRE_RADIUS { get { return this._FIRE_RADIUS; } set { _FIRE_RADIUS = value; } }
         public Double DELAY_BETWEEN_SHOOTS { get { return this._DELAY_BETWEEN_SHOOTS; } set { _DELAY_BETWEEN_SHOOTS = value; } }
         public Vector2 SPAWN_POINT { get { return this._SPAWN_POINT;  } set { this._SPAWN_POINT = value; } }
@@ -38,7 +44,7 @@ namespace GreatGame
         /// </summary>
         /// <param name="u">Unit of which we are basing the enemy on</param>
         /// <param name="i">Index in the array for this unit</param>
-        public Enemy(Unit u, float fireRadius, Map map) 
+        public Enemy(Unit u, float fireRadius, Vector2 destination) 
             : base(u)
         {
             // This is used to determine if the unit is inside the range of being shot
@@ -52,6 +58,13 @@ namespace GreatGame
             this.Texture = u.Texture;
 
             this.DELAY_BETWEEN_SHOOTS = u.RateOfFire;
+
+            _IS_FIRST_CALL = true;
+
+            base.Destination = destination;
+            base.Destination_Vertex = new Vertex(new Point((int)destination.X, (int)destination.Y), new Point(50, 50));
+            base.Backwards_List = new List<Vertex>();
+            base.Vertex_Im_ON = new Vertex(new Point((int)SPAWN_POINT.X,(int)SPAWN_POINT.Y), new Point(u.Size, u.Size));
         }
         #endregion
 
@@ -99,7 +112,8 @@ namespace GreatGame
             {
                 // Kill the unit
                 // Call the resetmethod
-                
+                _IS_FIRST_CALL = true;
+
                 this.Position = new Vector2(-200, -200);
 
                 var delta = (float)gt.ElapsedGameTime.TotalSeconds;
@@ -124,7 +138,13 @@ namespace GreatGame
                     b.DamageCheck(u);
                 }
             }
+
+
+            // Pathfinding
+
+            base.Move(gt);
         }
+
 
         /// <summary>
         /// This method simply checks if the given unit is inside of the bounding shpere
@@ -142,6 +162,7 @@ namespace GreatGame
 
             return false;
         }
+
 
         /// <summary>
         /// This method is used to shoot in the direction of another Unit object
@@ -168,6 +189,11 @@ namespace GreatGame
             }
         }
 
+        public void SetUpMovement()
+        {
+            
+        }
+
         /// <summary>
         /// Draws the enemy's texture and the health right about it
         /// </summary>
@@ -175,13 +201,9 @@ namespace GreatGame
         /// <param name="font"></param>
         public void Draw(SpriteBatch sb, SpriteFont font)
         {
-            sb.DrawString(font, "HEALTH: " + this.Health, new Vector2(this.Position.X, this.Position.Y - 20), Color.Black);
+            sb.DrawString(font, "HEALTH: " + base.Health, new Vector2(this.Position.X, this.Position.Y - 20), Color.Black);
 
             sb.Draw(this.UnitsDictionary[this.Name].Texture, new Rectangle((int)Position.X-25, (int)Position.Y-25, 50, 50), this.UnitColor);
-
-            // Draw the grid, this wont happen in the end
-           // _MY_GRID.Draw(sb);
-            
 
         }
         #endregion

@@ -179,48 +179,6 @@ namespace GreatGame
         }
         #endregion
 
-        public void ProcessInput(Vector2 destination, Map m)
-        {
-            // SO, I have to take this mouse location, which is the location on the screen
-            // And convert it to a "world" coordinate
-
-            Vector2 distance = new Vector2(destination.X - position.X, destination.Y - position.Y);
-
-
-            if (distance.Length() < speed)
-            {
-                // This checks the collisions with the walls
-
-                BoundingSphere check = new BoundingSphere(new Vector3(destination, 0), radius);
-                foreach (Wall w in m.Walls)
-                {
-                    if (w.Bounds.Intersects(check))
-                    {
-                        return;
-                    }
-                }
-
-                position = destination;
-
-                isMoving = false;
-            }
-            else
-            {
-                distance.Normalize();
-                Vector2 toMove = new Vector2((int)(distance.X * speed), (int)(distance.Y * speed));
-                // Checks with the walls... again?
-                BoundingSphere check = new BoundingSphere(new Vector3(position + toMove, 0), radius);
-                foreach (Wall w in m.Walls)
-                {
-                    if (w.Bounds.Intersects(check))
-                    {
-                        return;
-                    }
-                }
-                position += toMove;
-                bounds = new BoundingSphere(new Vector3(position, 0), radius);
-            }
-        }
 
 
         public void MoveToVector2(Vector2 destination)
@@ -340,21 +298,20 @@ namespace GreatGame
                     position = new Vector2(-200, -200);
                 }
 
-              //  if (allowedToMove)
-             //   {
 
-                    if(_backwards_List != null)
+
+                if (_backwards_List != null)
+                {
+                    // This makes sure that the positoin in the list is not always rest, only when it needs to be
+                    if (_IS_FIRST_MOVE)
                     {
-                        // This makes sure that the positoin in the list is not always rest, only when it needs to be
-                        if (_IS_FIRST_MOVE)
-                        {
-                            _Where_I_Am_in_List = _backwards_List.Count - 1;
-                            _IS_FIRST_MOVE = false;
-                        }
+                        _Where_I_Am_in_List = _backwards_List.Count - 1;
+                        _IS_FIRST_MOVE = false;
+                    }
 
-                        // This method tells the unit to update it's position
-                        Move(gt);
-                 //   }
+                    // This method tells the unit to update it's position
+                    Move(gt);
+
 
                 }
 

@@ -127,9 +127,16 @@ namespace GreatGame
                 player1Units[i].BulletTexture = bulletTexture;
             }
 
+            List<Vector2> enemyDestinations = new List<Vector2>();
+            enemyDestinations.Add(new Vector2(2950, 1400));
+            enemyDestinations.Add(new Vector2(2450, 1450));
+            enemyDestinations.Add(new Vector2(2550, 1600));
+            enemyDestinations.Add(new Vector2(2750, 1750));
+            enemyDestinations.Add(new Vector2(2400, 1950));
+            enemyDestinations.Add(new Vector2(2950, 1950));
 
-            Random r = new Random();
             // Generate 6 random enemy units
+            Random r = new Random();
             x = 4850;
             for(int i = 0; i < player1Units.Count; i++)
             {
@@ -142,20 +149,21 @@ namespace GreatGame
                 unitToAdd.BulletTexture = E_bulletTexture;
                 unitToAdd.Team = Teams.Enemy;
                 
-                Enemy enemyToAdd = new Enemy(unitToAdd, unitToAdd.AttackRange, gameMap);
-
+                Enemy enemyToAdd = new Enemy(unitToAdd, unitToAdd.AttackRange, enemyDestinations[i]);
                 enemy_Units.Add(enemyToAdd);
 
                 enemy_Units[i].SpawnLoc = gameMap.EnemySpawnPoints[i];
                 enemy_Units[i].Position = enemy_Units[i].SpawnLoc;
-                
+
                 enemy_Units[i].Bounds = new BoundingSphere(new Vector3(enemy_Units[i].Position, 0), radius);
                 x += 75;
 
             }
             // ================Set only one of the units closer so we can test bullets and stuff easier
+
             enemy_Units[0].Position = new Vector2(1000, 1700);
             enemy_Units[0].Bounds = new BoundingSphere(new Vector3(enemy_Units[0].Position, 0), radius);
+            
 
             foreach (Unit u in enemy_Units)
             {
@@ -215,6 +223,7 @@ namespace GreatGame
                     gameMap.CP.Contested = false; // first assume there is no unit contesting the point
 
                     //then check to see if the player right clicked
+                    #region Player Movement with A*
                     if (previousMouse.RightButton == ButtonState.Pressed && currentMouse.RightButton == ButtonState.Released)
                     {   //and set the destination of the selecred unit
                         if(selectedUnit != null)
@@ -256,9 +265,11 @@ namespace GreatGame
                         }
                         
                     }
-
+                    #endregion
+                    #region Other shit
                     //then check to see if the player hit space
                     //This is what you call cheating
+
                     /* 
                     if (kbPState.IsKeyDown(Keys.Space) && kbState.IsKeyUp(Keys.Space))
                     {   //and use the selected unit to attack if he did
@@ -425,15 +436,49 @@ namespace GreatGame
                     {
                         u.Update(gameTime, enemy_Units, cam, gameMap);
                     }
-                    
+                    #endregion
+
+
                     // Update the enemy AI Units
-                    foreach(Enemy e in enemy_Units)
+                    foreach (Enemy e in enemy_Units)
                     {
+                        #region Enemy movement using A*
+                        if (e.IS_FIRST_CALL)
+                        {
+                            try
+                            {
+                                e.Vertex_Im_ON = _Grid.SelectVertex(e.Position);
+                                e.Destination_Vertex = _Grid.SelectVertex(e.Destination);
+
+                                e.Backwards_List = _Grid.ShortestPathSlow(e.Vertex_Im_ON, e.Destination_Vertex);
+                                e.Where_I_Am_In_List = e.Backwards_List.Count - 1;
+                                e.IS_FIRST_CALL = false;
+                                e.DONE_MOVING = false;
+                            }
+                            catch(Exception exception)
+                            {
+
+                                return;
+                            }
+                        }
+
+                        if (e.DONE_MOVING)
+                        {
+                            _Grid.ResetAllVertecies(e.Vertex_Im_ON);
+                            e.Backwards_List.Clear();
+                            e.DONE_MOVING = false;
+                            e.Where_I_Am_In_List = -1;
+                        }
+                        #endregion
+
                         e.Update(gameTime, player1Units);
                     }
 
-                    if (kbState.IsKeyDown(Keys.Escape) && kbPState.IsKeyUp(Keys.Escape)) curGameState = GameState.Paused;
+                    // Check if we need to pause the game
+                    if (kbState.IsKeyDown(Keys.Escape) && kbPState.IsKeyUp(Keys.Escape))
+                        curGameState = GameState.Paused;
 
+                    // This is the timer stuff for the actual capture point
                     var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
                     timer += delta;
                     if (timer >= 1)
