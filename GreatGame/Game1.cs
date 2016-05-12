@@ -66,12 +66,13 @@ namespace GreatGame
             // Make a new Game Manager
             manager = new GameManager("Content/Units.txt", "Content/Textures.txt", currentMouse, previousMouse, UI);
             UI.Map = manager.GameMap;
+            
             // Instantiates the list of units
             manager.Menu.initialize();
             manager.PMenu.Initialize();
-
+            UI.Player1Units = manager.Player1Units;
             // Load in the Units.txt file, this works now
-            
+
 
             //gameMap = new Map();
 

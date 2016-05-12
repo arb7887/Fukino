@@ -10,14 +10,18 @@ namespace GreatGame
 {
     class UserInterface
     {
+        #region Fields
+        // textures:
         private Texture2D bottomLeft;
         private Texture2D bottomRight;
         private Texture2D icon;
         private Texture2D timer;
+        //locations:
         private Vector2 textpos;
         private Vector2 textpos2;
         private Vector2 timertext1;
         private Vector2 timertext2;
+        //Rectangles:
         private Rectangle Rect1;
         private Rectangle Rect2;
         private Rectangle Rect3;
@@ -28,9 +32,13 @@ namespace GreatGame
         private Rectangle redRect;
         private Rectangle blueRect;
         private Rectangle iconRect;
+        //Other
         private Unit selected;
+        private List<Unit> player1units;
         private Map map;
+        #endregion
 
+        #region Properties
         public Texture2D BottomLeft { get { return bottomLeft; } set { bottomLeft = value; } }
         public Texture2D BottomRight { get { return bottomRight; } set { bottomRight = value; } }
         public Texture2D Timer { get { return timer; } set { timer = value; } }
@@ -38,7 +46,8 @@ namespace GreatGame
         public Rectangle IconRect { get { return iconRect; } set { iconRect = value; } }
         public Map Map { get { return map; } set { map = value; } }
         public Unit Selected { get { return selected; } set { selected = value; } }
-
+        public List<Unit> Player1Units { get { return player1units; } set { player1units = value; } }
+        #endregion
         public UserInterface(GraphicsDevice gd)
         {
             Rect1 = new Rectangle(0, (gd.Viewport.Height / 2) - 300, 100, 100);
