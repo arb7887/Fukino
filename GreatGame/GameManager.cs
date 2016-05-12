@@ -99,10 +99,13 @@ namespace GreatGame
             float radius = 25;
             int x = 150;
             int textCount = 0;
-            
+
+            int index = 0;
             foreach(Unit u in player1Units)
             {
+                u.Texture = unitTextures[index];
                 u.UnitsDictionary = unitDictionary;
+                index++;
             }
             
             // Set all of the player1 units textures to the same thing
@@ -190,9 +193,12 @@ namespace GreatGame
                         curGameState = GameState.Game;
                         // Load in the list of class selected units and add them to the list of units in 
                         // This game one class's list called 'userSelectedUnits'
+                        int index = 0;
                         foreach (Unit u in allUnits.UnitList)
                         {
+                            u.Texture = unitTextures[index];
                             unitDictionary.Add(u.Name, u);
+                            index++;
                         }
                         SetUnitsFromButtons();
                         Initialize();
@@ -250,16 +256,19 @@ namespace GreatGame
                         }
                         
                     }
-                    
+
                     //then check to see if the player hit space
+                    //This is what you call cheating
+                    /* 
                     if (kbPState.IsKeyDown(Keys.Space) && kbState.IsKeyUp(Keys.Space))
                     {   //and use the selected unit to attack if he did
                         if(selectedUnit != null)
                             selectedUnit.ShotgunSpray(new Vector2(currentMouse.X + cam.Pos.X * cam.CamSpeed, currentMouse.Y + cam.Pos.Y * cam.CamSpeed));
                     }
+                    */
 
                     //check to see if the player hit c to change a unit class
-                    if(kbPState.IsKeyDown(Keys.C) && kbState.IsKeyUp(Keys.C))
+                    if (kbPState.IsKeyDown(Keys.C) && kbState.IsKeyUp(Keys.C))
                     {
                         if (selectedUnit != null && selectedUnit.Bounds.Intersects(gameMap.PlayerSpawn))
                         {

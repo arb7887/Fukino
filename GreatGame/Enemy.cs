@@ -76,6 +76,7 @@ namespace GreatGame
                     {
                         // Change the test color to see if collision is working,
                         // And call the shoot method with them
+
                         Shoot(u, gt);
 
                         // Move away from that unit a little bit
@@ -176,7 +177,7 @@ namespace GreatGame
         {
             sb.DrawString(font, "HEALTH: " + this.Health, new Vector2(this.Position.X, this.Position.Y - 20), Color.Black);
 
-            sb.Draw(this.Texture, new Rectangle((int)Position.X-25, (int)Position.Y-25, 50, 50), this.UnitColor);
+            sb.Draw(this.UnitsDictionary[this.Name].Texture, new Rectangle((int)Position.X-25, (int)Position.Y-25, 50, 50), this.UnitColor);
 
             // Draw the grid, this wont happen in the end
            // _MY_GRID.Draw(sb);

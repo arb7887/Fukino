@@ -1,9 +1,9 @@
 8
-sniper
-Shotgun
+Alien
+Assassin
+Engineer
 Medic
 Minigun
 Rifle
-Assassin
-Alien
-Engineer
+Shotgun
+sniper

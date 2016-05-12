@@ -124,8 +124,11 @@ namespace GreatGame
 
             if (remainingDelay <= 0)
             {
-                AttackPosition(u.Position);
-                remainingDelay = rateOfFire;
+                if (this.Name == "Shotgun")
+                    ShotgunSpray(u.position);
+                else
+                    AttackPosition(u.Position);
+                remainingDelay = 1/rateOfFire;
             }
         }
 
@@ -408,7 +411,7 @@ namespace GreatGame
             {
                 sb.DrawString(font, "HEALTH: " + this.health, new Vector2(this.position.X, this.position.Y - 20), Color.Black);
 
-                sb.Draw(texture, new Rectangle((int)(position.X - radius), (int)(position.Y - radius), 50, 50), color);
+                sb.Draw(unitsDictionary[this.name].Texture, new Rectangle((int)(position.X - radius), (int)(position.Y - radius), 50, 50), color);
             }
         }
         #endregion 
