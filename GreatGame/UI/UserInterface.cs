@@ -14,7 +14,6 @@ namespace GreatGame
         // textures:
         private Texture2D bottomLeft;
         private Texture2D bottomRight;
-        private Texture2D icon;
         private Texture2D timer;
         //locations:
         private Vector2 textpos;
@@ -57,7 +56,7 @@ namespace GreatGame
             Rect5 = new Rectangle(0, (gd.Viewport.Height / 2) + 100, 100, 100);
             Rect6 = new Rectangle(0, (gd.Viewport.Height / 2) + 200, 100, 100);
             brRect = new Rectangle(gd.Viewport.Width - 375, gd.Viewport.Height - 150, 375, 150);
-            iconRect = new Rectangle(0, gd.Viewport.Height - 150, 100, 100);
+            iconRect = new Rectangle(gd.Viewport.Width - 67, gd.Viewport.Height - 127, 40, 40);
             textpos = new Vector2(brRect.Location.X + 60, brRect.Location.Y + 50);
             textpos2 = new Vector2(brRect.Location.X + 200, brRect.Location.Y + 50);
             blueRect = new Rectangle((gd.Viewport.Width / 2) - 128, 0, 128, 64);

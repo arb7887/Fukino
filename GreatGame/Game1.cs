@@ -118,10 +118,17 @@ namespace GreatGame
                 Texture2D newTexture = Content.Load<Texture2D>(manager.AllUnits.TextureList[i]);
                 manager.UnitTextures.Add(newTexture);
             }
-            for(int i = 0; i < manager.Player1Units.Count; i++)
-            {
-                manager.Player1Units[i].Icon = Content.Load<Texture2D>("SniperIcon.png");
-            }
+
+            #region Unit Icons
+            manager.UnitIcons.Add("Alien", Content.Load<Texture2D>("AlienIcon"));
+            manager.UnitIcons.Add("Assassin", Content.Load<Texture2D>("AssassinIcon"));
+            manager.UnitIcons.Add("Engineer", Content.Load<Texture2D>("EngineerIcon"));
+            manager.UnitIcons.Add("Medic", Content.Load<Texture2D>("MedicIcon"));
+            manager.UnitIcons.Add("Minigun", Content.Load<Texture2D>("MinigunIcon"));
+            manager.UnitIcons.Add("Rifle", Content.Load<Texture2D>("RifleIcon"));
+            manager.UnitIcons.Add("Shotgun", Content.Load<Texture2D>("ShotgunIcon"));
+            manager.UnitIcons.Add("Sniper", Content.Load<Texture2D>("SniperIcon"));
+            #endregion
         }
 
         /// <summary>

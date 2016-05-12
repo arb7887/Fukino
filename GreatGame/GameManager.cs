@@ -20,7 +20,7 @@ namespace GreatGame
         private List<Enemy> enemy_Units;
         // This is a list of textures that has been loaded in
         private List<Texture2D> unitTextures;
-        private List<Texture2D> unitIcons;
+        private Dictionary<string, Texture2D> unitIcons;
         private Texture2D bulletTexture;
         private Texture2D e_bulletTexture;
         // This is the menu handler for the main menu
@@ -57,7 +57,7 @@ namespace GreatGame
         public List<Unit> Player1Units {get { return this.player1Units; } set { this.player1Units = value; } }
         public List<Enemy> Enemy_Units { get { return this.enemy_Units; } }
         public List<Texture2D> UnitTextures { get { return this.unitTextures; } set { this.unitTextures = value; } }
-        public List<Texture2D> UnitIcons { get { return this.unitIcons; } set { this.unitIcons = value; } }
+        public Dictionary<string, Texture2D> UnitIcons { get { return this.unitIcons; } set { this.unitIcons = value; } }
         public Texture2D BulletTexture { get { return this.bulletTexture; } set { this.bulletTexture = value; } }
         public MenuHandler Menu { get { return this.menu; } set { this.menu = value; } }
         public PauseMenu PMenu { get { return pausemenu; } set { pausemenu = value; } }
@@ -75,7 +75,7 @@ namespace GreatGame
             player1Units = new List<Unit>();
             enemy_Units = new List<Enemy>();
             unitTextures = new List<Texture2D>();
-            unitIcons = new List<Texture2D>();
+            unitIcons = new Dictionary<string, Texture2D>();
             curGameState = GameState.Menu;
             menu = new MenuHandler(MenuStates.Main);
             gameMap = new Map();
@@ -116,6 +116,7 @@ namespace GreatGame
                     textCount = 0;
                 }
                 player1Units[i].Texture = unitTextures[textCount];
+                player1Units[i].Icon = UnitIcons[player1Units[i].Name];
                 player1Units[i].SpawnLoc = gameMap.PlayerSpawnPoints[i];
                 player1Units[i].Position = player1Units[i].SpawnLoc;
                 player1Units[i].Size = 50;
