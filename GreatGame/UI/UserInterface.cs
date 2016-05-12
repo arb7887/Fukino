@@ -27,6 +27,12 @@ namespace GreatGame
         private Rectangle Rect4;
         private Rectangle Rect5;
         private Rectangle Rect6;
+        private Rectangle icon1;
+        private Rectangle icon2;
+        private Rectangle icon3;
+        private Rectangle icon4;
+        private Rectangle icon5;
+        private Rectangle icon6;
         private Rectangle brRect;
         private Rectangle redRect;
         private Rectangle blueRect;
@@ -55,6 +61,12 @@ namespace GreatGame
             Rect4 = new Rectangle(0, (gd.Viewport.Height / 2), 100, 100);
             Rect5 = new Rectangle(0, (gd.Viewport.Height / 2) + 100, 100, 100);
             Rect6 = new Rectangle(0, (gd.Viewport.Height / 2) + 200, 100, 100);
+            icon1 = new Rectangle(18, (gd.Viewport.Height / 2) - 270, 40, 40);
+            icon2 = new Rectangle(18, (gd.Viewport.Height / 2) - 170, 40, 40);
+            icon3 = new Rectangle(18, (gd.Viewport.Height / 2) - 70, 40, 40);
+            icon4 = new Rectangle(18, (gd.Viewport.Height / 2) + 30, 40, 40);
+            icon5 = new Rectangle(18, (gd.Viewport.Height / 2) + 130, 40, 40);
+            icon6 = new Rectangle(18, (gd.Viewport.Height / 2) + 230, 40, 40);
             brRect = new Rectangle(gd.Viewport.Width - 375, gd.Viewport.Height - 150, 375, 150);
             iconRect = new Rectangle(gd.Viewport.Width - 67, gd.Viewport.Height - 127, 40, 40);
             textpos = new Vector2(brRect.Location.X + 60, brRect.Location.Y + 50);
@@ -73,6 +85,12 @@ namespace GreatGame
             sb.Draw(bottomLeft, Rect4, Color.White);
             sb.Draw(bottomLeft, Rect5, Color.White);
             sb.Draw(bottomLeft, Rect6, Color.White);
+            sb.Draw(player1units[0].Icon, icon1, Color.White);
+            sb.Draw(player1units[1].Icon, icon2, Color.White);
+            sb.Draw(player1units[2].Icon, icon3, Color.White);
+            sb.Draw(player1units[3].Icon, icon4, Color.White);
+            sb.Draw(player1units[4].Icon, icon5, Color.White);
+            sb.Draw(player1units[5].Icon, icon6, Color.White);
             sb.Draw(bottomRight, brRect, Color.White);
             sb.Draw(timer, blueRect, Color.CornflowerBlue);
             sb.Draw(timer, redRect, new Color(255, 147, 147));
