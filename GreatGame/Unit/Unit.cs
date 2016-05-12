@@ -220,7 +220,7 @@ namespace GreatGame
         }
 
 
-        public void newInput(Vector2 destination)
+        public void MoveToVector2(Vector2 destination)
         {
             // SO, I have to take this mouse location, which is the location on the screen
             // And convert it to a "world" coordinate
@@ -246,6 +246,7 @@ namespace GreatGame
             }
         }
 
+
         /// <summary>
         /// This method will take in a vertex, and move the unit in the general direction of that
         /// </summary>
@@ -265,7 +266,7 @@ namespace GreatGame
                     _Destination_Vertex = _backwards_List[_Where_I_Am_in_List];
                     _Where_I_Am_in_List--;
                     _Destination_Vertex.VertColor = Color.Aqua;
-                    newInput(new Vector2(_Destination_Vertex.RECTANGLE.Center.X, _Destination_Vertex.RECTANGLE.Center.Y));
+                    MoveToVector2(new Vector2(_Destination_Vertex.RECTANGLE.Center.X, _Destination_Vertex.RECTANGLE.Center.Y));
                     // Move the unit to the destination vertex
 
                 }
@@ -306,12 +307,12 @@ namespace GreatGame
             bounds = new BoundingSphere(new Vector3(position, 0), radius);
             // This boolean is just for collision detection, if it is true thne move, 
             // If it is ever changed to false then stop moving
-            bool allowedToMove = true;
+            //bool allowedToMove = true;
 
             #region If the unit is dead
             if (!isAlive)
             {
-                allowedToMove = false;
+                //allowedToMove = false;
 
                 var delta = (float)gt.ElapsedGameTime.TotalSeconds;
                 spawnTimer += delta;
@@ -336,21 +337,22 @@ namespace GreatGame
                     position = new Vector2(-200, -200);
                 }
 
-                if (allowedToMove)
-                {
-                    // I am getting to this dont delete it
+              //  if (allowedToMove)
+             //   {
+
                     if(_backwards_List != null)
                     {
+                        // This makes sure that the positoin in the list is not always rest, only when it needs to be
                         if (_IS_FIRST_MOVE)
                         {
                             _Where_I_Am_in_List = _backwards_List.Count - 1;
                             _IS_FIRST_MOVE = false;
                         }
-                       // _Where_I_Am_in_List = _backwards_List.Count - 1;
-                        Move(gt);
-                    }
 
-                    //ProcessInput(destination, map);
+                        // This method tells the unit to update it's position
+                        Move(gt);
+                 //   }
+
                 }
 
                 // Bullet check

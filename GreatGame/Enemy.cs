@@ -86,6 +86,9 @@ namespace GreatGame
                     }
                 }
 
+                // Move the unit to the next destination
+                
+
                 this.IsAlive = true;
             }
             #endregion

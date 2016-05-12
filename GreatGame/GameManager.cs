@@ -224,16 +224,26 @@ namespace GreatGame
                             }
                             else
                             {
+                                // Sometime the priority queue class returns some error of being out of range, 
+                                // So i use a try catch to keep the game moving if that happens. I'm not really sure why 
+                                // It does that. This allso prevents the game from blowing up if you click on wanting to 
+                                // Move into a wall. 
+                                try
+                                {
+                                    selectedUnit.Destination = new Vector2(previousMouse.X + cam.Pos.X * cam.CamSpeed, previousMouse.Y + cam.Pos.Y * cam.CamSpeed);
 
+                                    // Set the DESTINATION VERTEX of this unit to where evere th mouse is over
+                                    selectedUnit.Destination_Vertex = _Grid.SelectVertex(selectedUnit.Destination);
+                                    // Set the vertex that the current unit is on
 
-                                selectedUnit.Destination = new Vector2(previousMouse.X + cam.Pos.X * cam.CamSpeed, previousMouse.Y + cam.Pos.Y * cam.CamSpeed);
-                        
-                                // Set the DESTINATION VERTEX of this unit to where evere th mouse is over
-                                selectedUnit.Destination_Vertex = _Grid.SelectVertex(selectedUnit.Destination);
-                                // Set the vertex that the current unit is on
+                                    selectedUnit.Backwards_List = _Grid.ShortestPathSlow(selectedUnit.Vertex_Im_ON, selectedUnit.Destination_Vertex);
+                                    selectedUnit.Where_I_Am_In_List = selectedUnit.Backwards_List.Count - 1;
+                                }
+                                catch(Exception e)
+                                {
+                                    return;
+                                }
 
-                                selectedUnit.Backwards_List = _Grid.ShortestPathSlow(selectedUnit.Vertex_Im_ON, selectedUnit.Destination_Vertex);
-                                selectedUnit.Where_I_Am_In_List = selectedUnit.Backwards_List.Count - 1;
                             }
 
 
