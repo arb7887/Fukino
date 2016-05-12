@@ -18,7 +18,12 @@ namespace GreatGame
         private Vector2 textpos2;
         private Vector2 timertext1;
         private Vector2 timertext2;
-        private Rectangle blRect;
+        private Rectangle Rect1;
+        private Rectangle Rect2;
+        private Rectangle Rect3;
+        private Rectangle Rect4;
+        private Rectangle Rect5;
+        private Rectangle Rect6;
         private Rectangle brRect;
         private Rectangle redRect;
         private Rectangle blueRect;
@@ -29,7 +34,6 @@ namespace GreatGame
         public Texture2D BottomLeft { get { return bottomLeft; } set { bottomLeft = value; } }
         public Texture2D BottomRight { get { return bottomRight; } set { bottomRight = value; } }
         public Texture2D Timer { get { return timer; } set { timer = value; } }
-        public Rectangle BLRect { get { return blRect; } set { blRect = value; } }
         public Rectangle BRRect { get { return brRect; } set { brRect = value; } }
         public Rectangle IconRect { get { return iconRect; } set { iconRect = value; } }
         public Map Map { get { return map; } set { map = value; } }
@@ -37,7 +41,12 @@ namespace GreatGame
 
         public UserInterface(GraphicsDevice gd)
         {
-            blRect = new Rectangle(0, gd.Viewport.Height - 150, 150, 150);
+            Rect1 = new Rectangle(0, (gd.Viewport.Height / 2) - 300, 100, 100);
+            Rect2 = new Rectangle(0, (gd.Viewport.Height / 2) - 200, 100, 100);
+            Rect3 = new Rectangle(0, (gd.Viewport.Height / 2) - 100, 100, 100);
+            Rect4 = new Rectangle(0, (gd.Viewport.Height / 2), 100, 100);
+            Rect5 = new Rectangle(0, (gd.Viewport.Height / 2) + 100, 100, 100);
+            Rect6 = new Rectangle(0, (gd.Viewport.Height / 2) + 200, 100, 100);
             brRect = new Rectangle(gd.Viewport.Width - 375, gd.Viewport.Height - 150, 375, 150);
             iconRect = new Rectangle(0, gd.Viewport.Height - 150, 100, 100);
             textpos = new Vector2(brRect.Location.X + 60, brRect.Location.Y + 50);
@@ -50,7 +59,12 @@ namespace GreatGame
 
         public void Draw(SpriteBatch sb, SpriteFont font)
         {
-            sb.Draw(bottomLeft, blRect, Color.White);
+            sb.Draw(bottomLeft, Rect1, Color.White);
+            sb.Draw(bottomLeft, Rect2, Color.White);
+            sb.Draw(bottomLeft, Rect3, Color.White);
+            sb.Draw(bottomLeft, Rect4, Color.White);
+            sb.Draw(bottomLeft, Rect5, Color.White);
+            sb.Draw(bottomLeft, Rect6, Color.White);
             sb.Draw(bottomRight, brRect, Color.White);
             sb.Draw(timer, blueRect, Color.CornflowerBlue);
             sb.Draw(timer, redRect, new Color(255, 147, 147));
