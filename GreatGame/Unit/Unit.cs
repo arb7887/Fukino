@@ -162,7 +162,7 @@ namespace GreatGame
             }
         }
 
-        public void BulletCheck()
+        public void BulletCheck(Map m)
         {
             for (int i = 0; i < activeBullets.Count; i++)
             {
@@ -174,6 +174,10 @@ namespace GreatGame
                 {
                     activeBullets[i].Move();
                     activeBullets[i].DistanceCheck();
+                    foreach (Wall w in m.Walls)
+                    {
+                        activeBullets[i].WallCheck(w);
+                    }
                 }
             }
         }
@@ -260,7 +264,6 @@ namespace GreatGame
             this.attackStrength = unitsDictionary[nameToBe].AttackStrength;
             this.rateOfFire = unitsDictionary[nameToBe].RateOfFire;
             this.name = nameToBe;
-            
         }
         
         public void Update(GameTime gt, List<Enemy> otherUnits, Camera cam, Map map)
@@ -316,7 +319,7 @@ namespace GreatGame
                 }
 
                 // Bullet check
-                BulletCheck();
+                BulletCheck(map);
                 Unit closestEnemy = null;
                 double minDistance = Double.MaxValue;
                 foreach (Unit u in otherUnits)

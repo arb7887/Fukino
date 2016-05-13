@@ -76,7 +76,7 @@ namespace GreatGame
         /// enemy withinthe range, and if soo then shoot in that direction
         /// </summary>
         /// <param name="units"></param>
-        public void Update(GameTime gt, List<Unit> units)
+        public void Update(GameTime gt, List<Unit> units, Map map)
         {
             #region If  the unit is alive
             // Check if the unit is still alive
@@ -129,7 +129,7 @@ namespace GreatGame
             }
             #endregion
 
-            BulletCheck();
+            BulletCheck(map);
 
             foreach(Bullet b in ActiveBullets)
             {

@@ -406,6 +406,12 @@ namespace GreatGame
                         #endregion
                     }
 
+                    if (kbPState.IsKeyDown(Keys.Space) && kbState.IsKeyUp(Keys.Space))
+                    {   //and use the selected unit to attack if he did
+                        if (selectedUnit != null)
+                            selectedUnit.ShotgunSpray(new Vector2(currentMouse.X + cam.Pos.X * cam.CamSpeed, currentMouse.Y + cam.Pos.Y * cam.CamSpeed));
+                    }
+
                     //now check to see if the player left clicked
                     if (previousMouse.LeftButton == ButtonState.Pressed && currentMouse.LeftButton == ButtonState.Released)
                     {   //if so, see what he clicked on
@@ -472,7 +478,7 @@ namespace GreatGame
                         }
                         #endregion
 
-                        e.Update(gameTime, player1Units);
+                        e.Update(gameTime, player1Units, gameMap);
                     }
 
                     // Check if we need to pause the game
