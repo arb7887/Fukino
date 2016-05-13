@@ -82,6 +82,7 @@ namespace GreatGame
             // Check if the unit is still alive
             if (this.Health > 0)
             {
+                map.checkCapturing(this);
                 // Check if there are any player units inside of the range, if so, shoot them   
                 foreach (Unit u in units)
                 {
