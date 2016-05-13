@@ -113,10 +113,10 @@ namespace GreatGame
             {
                 // Kill the unit
                 // Call the resetmethod
-                _IS_FIRST_CALL = true;
+                //_IS_FIRST_CALL = true;
 
-                this.Position = new Vector2(-200, -200);
-
+                //this.Position = new Vector2(-200, -200);
+                this.Position = this.SpawnLoc;
                 var delta = (float)gt.ElapsedGameTime.TotalSeconds;
                 timer += delta;
 
