@@ -49,5 +49,15 @@ namespace GreatGame
             sb.Draw(texture, green, Color.Green);
             // sb.DrawString(font, "" + health, textpos, Color.White);
         }
+        public void Draw(SpriteBatch sb, SpriteFont font, Vector2 position)
+        {
+            red.X = (int)position.X;
+            red.Y = (int)position.Y;
+            green.X = (int)position.X;
+            green.Y = (int)position.Y;
+            sb.Draw(texture, red, Color.Red);
+            sb.Draw(texture, green, Color.Green);
+            sb.DrawString(font, "" + health, textpos, Color.White);
+        }
     }
 }

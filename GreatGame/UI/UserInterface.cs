@@ -85,6 +85,12 @@ namespace GreatGame
             sb.Draw(bottomLeft, Rect4, Color.White);
             sb.Draw(bottomLeft, Rect5, Color.White);
             sb.Draw(bottomLeft, Rect6, Color.White);
+            player1units[0].Healthbar.Draw(sb, font, new Vector2(Rect1.X + 5, Rect1.Y + 70));
+            player1units[1].Healthbar.Draw(sb, font, new Vector2(Rect2.X + 5, Rect2.Y + 70));
+            player1units[2].Healthbar.Draw(sb, font, new Vector2(Rect3.X + 5, Rect3.Y + 70));
+            player1units[3].Healthbar.Draw(sb, font, new Vector2(Rect4.X + 5, Rect4.Y + 70));
+            player1units[4].Healthbar.Draw(sb, font, new Vector2(Rect5.X + 5, Rect5.Y + 70));
+            player1units[5].Healthbar.Draw(sb, font, new Vector2(Rect6.X + 5, Rect6.Y + 70));
             sb.Draw(player1units[0].Icon, icon1, Color.White);
             sb.Draw(player1units[1].Icon, icon2, Color.White);
             sb.Draw(player1units[2].Icon, icon3, Color.White);

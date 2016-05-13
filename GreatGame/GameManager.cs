@@ -158,6 +158,7 @@ namespace GreatGame
 
                 enemy_Units[i].SpawnLoc = gameMap.EnemySpawnPoints[i];
                 enemy_Units[i].Position = enemy_Units[i].SpawnLoc;
+                
 
                 enemy_Units[i].Bounds = new BoundingSphere(new Vector3(enemy_Units[i].Position, 0), radius);
                 x += 75;
@@ -172,6 +173,7 @@ namespace GreatGame
             foreach (Unit u in enemy_Units)
             {
                 u.UnitsDictionary = unitDictionary;
+                u.Healthbar.Texture = healthbarTexture;
             }
 
             // Map the grid for pathfinding

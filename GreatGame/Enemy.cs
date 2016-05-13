@@ -138,7 +138,7 @@ namespace GreatGame
                     b.DamageCheck(u);
                 }
             }
-
+            Healthbar.Update(Health, Position);
 
             // Pathfinding
 
@@ -202,7 +202,7 @@ namespace GreatGame
         public void Draw(SpriteBatch sb, SpriteFont font)
         {
             sb.DrawString(font, "HEALTH: " + base.Health, new Vector2(this.Position.X, this.Position.Y - 20), Color.Black);
-
+            base.Healthbar.Draw(sb, font);
             sb.Draw(this.UnitsDictionary[this.Name].Texture, new Rectangle((int)Position.X-25, (int)Position.Y-25, 50, 50), this.UnitColor);
 
         }
