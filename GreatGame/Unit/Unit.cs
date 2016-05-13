@@ -133,9 +133,22 @@ namespace GreatGame
                     ShotgunSpray(u.position);
                 else
                     AttackPosition(u.Position);
-                remainingDelay = 1/rateOfFire;
+                remainingDelay = 1 / rateOfFire;
             }
         }
+
+        public void AttackLocation(Vector2 loc, GameTime gt)
+        {
+            if (remainingDelay <= 0)
+            {
+                if (this.Name == "Shotgun")
+                    ShotgunSpray(loc);
+                else
+                    AttackPosition(loc);
+                remainingDelay = 1 / rateOfFire;
+            }
+        }
+
 
         public void AttackPosition(Vector2 target)
         {
@@ -187,8 +200,6 @@ namespace GreatGame
             }
         }
         #endregion
-
-
 
         public void MoveToVector2(Vector2 destination)
         {
@@ -340,6 +351,11 @@ namespace GreatGame
                 if (minDistance < attackRange && closestEnemy != null)
                 {
                     AttackUnit(closestEnemy, gt);
+                }
+                if (remainingDelay > 0)
+                {
+                    double timer = gt.ElapsedGameTime.TotalSeconds;
+                    remainingDelay -= timer;
                 }
             }
             #endregion

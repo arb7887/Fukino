@@ -276,13 +276,12 @@ namespace GreatGame
                     //then check to see if the player hit space
                     //This is what you call cheating
 
-                    /* 
-                    if (kbPState.IsKeyDown(Keys.Space) && kbState.IsKeyUp(Keys.Space))
+                    if (kbPState.IsKeyDown(Keys.Space))
                     {   //and use the selected unit to attack if he did
                         if(selectedUnit != null)
-                            selectedUnit.ShotgunSpray(new Vector2(currentMouse.X + cam.Pos.X * cam.CamSpeed, currentMouse.Y + cam.Pos.Y * cam.CamSpeed));
+                            selectedUnit.AttackLocation(new Vector2(currentMouse.X + cam.Pos.X * cam.CamSpeed, currentMouse.Y + cam.Pos.Y * cam.CamSpeed), gameTime);
                     }
-                    */
+
 
                     //check to see if the player hit c to change a unit class
                     if (kbPState.IsKeyDown(Keys.C) && kbState.IsKeyUp(Keys.C))
@@ -378,43 +377,37 @@ namespace GreatGame
                         #region numpads input
                         if (kbPState.IsKeyDown(Keys.NumPad0))
                         {
-                            selectedUnit.changeClass("Alien"); changingClass = false;
+                            selectedUnit.changeClass("Alien"); selectedUnit.Icon = UnitIcons[selectedUnit.Name]; changingClass = false;
                         }
                         if (kbPState.IsKeyDown(Keys.NumPad1))
                         {
-                            selectedUnit.changeClass("Assassin"); changingClass = false;
+                            selectedUnit.changeClass("Assassin"); selectedUnit.Icon = UnitIcons[selectedUnit.Name]; changingClass = false;
                         }
                         if (kbPState.IsKeyDown(Keys.NumPad2))
                         {
-                            selectedUnit.changeClass("Engineer"); changingClass = false;
+                            selectedUnit.changeClass("Engineer"); selectedUnit.Icon = UnitIcons[selectedUnit.Name]; changingClass = false;
                         }
                         if (kbPState.IsKeyDown(Keys.NumPad3))
-                        { 
-                            selectedUnit.changeClass("Medic"); changingClass = false;
+                        {
+                            selectedUnit.changeClass("Medic"); selectedUnit.Icon = UnitIcons[selectedUnit.Name]; changingClass = false;
                         }
                         if (kbPState.IsKeyDown(Keys.NumPad4))
                         {
-                            selectedUnit.changeClass("Minigun"); changingClass = false;
+                            selectedUnit.changeClass("Minigun"); selectedUnit.Icon = UnitIcons[selectedUnit.Name]; changingClass = false;
                         }
                         if (kbPState.IsKeyDown(Keys.NumPad5))
                         {
-                            selectedUnit.changeClass("Rifle"); changingClass = false;
+                            selectedUnit.changeClass("Rifle"); selectedUnit.Icon = UnitIcons[selectedUnit.Name]; changingClass = false;
                         }
                         if (kbPState.IsKeyDown(Keys.NumPad6))
                         {
-                            selectedUnit.changeClass("Shotgun"); changingClass = false;
+                            selectedUnit.changeClass("Shotgun"); selectedUnit.Icon = UnitIcons[selectedUnit.Name]; changingClass = false;
                         }
                         if (kbPState.IsKeyDown(Keys.NumPad7))
                         {
-                            selectedUnit.changeClass("Sniper"); changingClass = false;
+                            selectedUnit.changeClass("Sniper"); selectedUnit.Icon = UnitIcons[selectedUnit.Name]; changingClass = false;
                         }
                         #endregion
-                    }
-
-                    if (kbPState.IsKeyDown(Keys.Space) && kbState.IsKeyUp(Keys.Space))
-                    {   //and use the selected unit to attack if he did
-                        if (selectedUnit != null)
-                            selectedUnit.ShotgunSpray(new Vector2(currentMouse.X + cam.Pos.X * cam.CamSpeed, currentMouse.Y + cam.Pos.Y * cam.CamSpeed));
                     }
 
                     //now check to see if the player left clicked
