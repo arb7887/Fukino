@@ -72,6 +72,7 @@ namespace GreatGame
             _IS_FIRST_MOVE = true;
 
             healthbar = new HealthBar(position);
+            healthbar.MaxHealth = health;
         }
 
         public Unit(Unit newUnit)
@@ -342,7 +343,7 @@ namespace GreatGame
                 }
             }
             #endregion
-            healthbar.Update(health);
+            healthbar.Update(health, position);
         }
         
 
@@ -369,7 +370,7 @@ namespace GreatGame
         {
             if (isAlive)
             {
-                healthbar.Draw(sb);
+                healthbar.Draw(sb, font);
 
                 sb.Draw(unitsDictionary[this.name].Texture, new Rectangle((int)(position.X - radius), (int)(position.Y - radius), 50, 50), color);
             }

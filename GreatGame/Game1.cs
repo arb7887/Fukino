@@ -118,15 +118,7 @@ namespace GreatGame
                 Texture2D newTexture = Content.Load<Texture2D>(manager.AllUnits.TextureList[i]);
                 manager.UnitTextures.Add(newTexture); 
             }
-            Texture2D healthbar = Content.Load<Texture2D>("Healthbar");
-            foreach (Unit u in manager.Player1Units)
-            {
-                u.Healthbar.Texture = healthbar;
-            }
-            foreach(Unit u in manager.Enemy_Units)
-            {
-                u.Healthbar.Texture = healthbar;
-            }
+            manager.HealthbarTexture = Content.Load<Texture2D>("Healthbar");
             #region Unit Icons
             manager.UnitIcons.Add("Alien", Content.Load<Texture2D>("AlienIcon"));
             manager.UnitIcons.Add("Assassin", Content.Load<Texture2D>("AssassinIcon"));

@@ -34,6 +34,7 @@ namespace GreatGame
         private GameState curGameState;
 
         UserInterface userInterface;
+        private Texture2D healthbarTexture;
         bool changingClass;
 
         // Map stuff
@@ -59,6 +60,7 @@ namespace GreatGame
         public List<Texture2D> UnitTextures { get { return this.unitTextures; } set { this.unitTextures = value; } }
         public Dictionary<string, Texture2D> UnitIcons { get { return this.unitIcons; } set { this.unitIcons = value; } }
         public Texture2D BulletTexture { get { return this.bulletTexture; } set { this.bulletTexture = value; } }
+        public Texture2D HealthbarTexture { get { return this.healthbarTexture; } set { this.healthbarTexture = value; } }
         public MenuHandler Menu { get { return this.menu; } set { this.menu = value; } }
         public PauseMenu PMenu { get { return pausemenu; } set { pausemenu = value; } }
         public Map GameMap { get { return this.gameMap; } set { this.gameMap = value; } }
@@ -116,6 +118,7 @@ namespace GreatGame
                     textCount = 0;
                 }
                 player1Units[i].Texture = unitTextures[textCount];
+                player1Units[i].Healthbar.Texture = healthbarTexture;
                 player1Units[i].Icon = UnitIcons[player1Units[i].Name];
                 player1Units[i].SpawnLoc = gameMap.PlayerSpawnPoints[i];
                 player1Units[i].Position = player1Units[i].SpawnLoc;
