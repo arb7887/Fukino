@@ -41,6 +41,7 @@
     <Compile Include="CapturePoint.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="Grid.cs" />
+    <Compile Include="Unit\HealthBar.cs" />
     <Compile Include="Vertex.cs" />
     <Compile Include="PriorityQueue.cs" />
     <Compile Include="UI\PauseMenu.cs" />
@@ -105,6 +106,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\gridBlock.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Healthbar.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Medic.png">

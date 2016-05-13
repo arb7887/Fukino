@@ -28,6 +28,7 @@ namespace GreatGame
         private float radius;
         private float spawnTimer;
         private Dictionary<string, Unit> unitsDictionary;
+        private HealthBar healthbar;
 
         private Teams myTag;
 
@@ -69,6 +70,8 @@ namespace GreatGame
             _timeBetween = 200f;
             _timePassed = 0f;
             _IS_FIRST_MOVE = true;
+
+            healthbar = new HealthBar(position);
         }
 
         public Unit(Unit newUnit)
@@ -84,11 +87,11 @@ namespace GreatGame
         public List<Vertex> Backwards_List { get { return _backwards_List; } set { _backwards_List = value; } }
         public Vertex Destination_Vertex { get { return _Destination_Vertex; } set { _Destination_Vertex = value; } }
         public int AttackStrength { get { return attackStrength; } set { attackStrength = value; } }
-        public Double Health { get { return health; } set { health = value; } }
+        public double Health { get { return health; } set { health = value; } }
         public String Name { get { return name; } }
         public Teams Team { get { return this.myTag; } set { myTag = value; } }
         public Boolean IsSelected { get { return isSelected; } set { isSelected = value; } }
-        public Double RateOfFire { get { return this.rateOfFire; } set { this.rateOfFire = value; } }
+        public double RateOfFire { get { return this.rateOfFire; } set { this.rateOfFire = value; } }
         public bool IsAlive { get { return this.isAlive; } set { isAlive = value; } }
         public int SpawnTime { get { return respawnTime; } set { SpawnTime = value; } }
         public Vector2 SpawnLoc { get { return spawnLocation; } set { spawnLocation = value; } }
@@ -103,6 +106,7 @@ namespace GreatGame
         public float Radius { get { return radius; } set { radius = value; } }
         public Color Tint { get { return color; } set { color = value; } }
         public Vector2 Destination { get { return destination; } set { destination = value; } }
+        public HealthBar Healthbar { get { return healthbar; } set { healthbar = value; } }
         // Bullet properties=======================
         public int Size { get { return size; } set { size = value; } }
         public Texture2D BulletTexture { get { return bulletTexture; } set { bulletTexture = value; } }
@@ -300,9 +304,6 @@ namespace GreatGame
                     isAlive = false;
                     position = new Vector2(-200, -200);
                 }
-
-
-
                 if (_backwards_List != null)
                 {
                     // This makes sure that the positoin in the list is not always rest, only when it needs to be
@@ -314,8 +315,6 @@ namespace GreatGame
 
                     // This method tells the unit to update it's position
                     Move(gt);
-
-
                 }
 
                 // Bullet check
@@ -343,6 +342,7 @@ namespace GreatGame
                 }
             }
             #endregion
+            healthbar.Update(health);
         }
         
 
@@ -369,7 +369,7 @@ namespace GreatGame
         {
             if (isAlive)
             {
-                sb.DrawString(font, "HEALTH: " + this.health, new Vector2(this.position.X, this.position.Y - 20), Color.Black);
+                healthbar.Draw(sb);
 
                 sb.Draw(unitsDictionary[this.name].Texture, new Rectangle((int)(position.X - radius), (int)(position.Y - radius), 50, 50), color);
             }
