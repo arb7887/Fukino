@@ -99,7 +99,7 @@ namespace GreatGame
             sb.Draw(player1units[5].Icon, icon6, Color.White);
             sb.Draw(bottomRight, brRect, Color.White);
             sb.Draw(timer, blueRect, Color.CornflowerBlue);
-            sb.Draw(timer, redRect, new Color(255, 147, 147));
+            sb.Draw(timer, redRect, new Color(255, 130, 130));
             sb.DrawString(font, "" + map.CP.PlayerTimer, timertext1, Color.White);
             sb.DrawString(font, "" + map.CP.EnemyTimer, timertext2, Color.White);
             if (selected != null)

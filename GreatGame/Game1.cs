@@ -93,6 +93,7 @@ namespace GreatGame
             buttonTexture = Content.Load<Texture2D>("ExampleButtonA.png");
             buttonFont = Content.Load<SpriteFont>("buttonFont");
             manager.Menu.LoadContent(buttonTexture, buttonFont, GraphicsDevice);
+            manager.Menu.Title = Content.Load<Texture2D>("Title");
             manager.PMenu.LoadContent(buttonTexture, buttonFont);
 
             font = Content.Load<SpriteFont>("Arial14");
@@ -219,7 +220,7 @@ namespace GreatGame
         /// <param name="gameTime"></param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Green);
+            GraphicsDevice.Clear(Color.DarkOliveGreen);
 
             var viewMatrix = _camera.GetViewMatrix();
             // Second

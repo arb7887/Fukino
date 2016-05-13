@@ -82,7 +82,7 @@ namespace GreatGame
                 sb.Draw(texture, location, shade);
             
             if(font != null)
-                sb.DrawString(font, name, new Vector2(this.X + 5, this.Y + 5), Color.Black);
+                sb.DrawString(font, name, new Vector2(X + 10, Y + 15), Color.White);
 
         }
     }

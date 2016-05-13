@@ -16,6 +16,8 @@ namespace GreatGame
         private int numUnits;
 
         Texture2D buttonTexture;
+        Texture2D title;
+        Rectangle titleRect;
         MenuButton exit;
         MenuButton options;
         MenuButton play;
@@ -31,6 +33,7 @@ namespace GreatGame
         public bool StartGame { get { return startGame; } }
         public int NumUnits { get { return this.numUnits; } }
         public List<ClassSelectButton> ClassSelectors { get { return this.classSelectors; } }
+        public Texture2D Title { get { return title; } set { title = value; } }
 
         public MenuHandler(MenuStates startState)
         {
@@ -63,6 +66,7 @@ namespace GreatGame
             exit.Font = buttonFont;
             play.Font = buttonFont;
             options.Font = buttonFont;
+            titleRect = new Rectangle(gd.Viewport.Width / 2 - 256, 50, 512, 128);
         }
 
         public void Update(MouseState ms, GraphicsDevice gd)
@@ -127,6 +131,7 @@ namespace GreatGame
                     exit.Draw(sb);
                     play.Draw(sb);
                     options.Draw(sb);
+                    sb.Draw(title, titleRect, Color.White);
                     break;
                 case MenuStates.Options:
                     break;
