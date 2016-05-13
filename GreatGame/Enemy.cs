@@ -78,6 +78,7 @@ namespace GreatGame
         /// <param name="units"></param>
         public void Update(GameTime gt, List<Unit> units, Map map)
         {
+            this.Bounds = new BoundingSphere(new Vector3(this.Position.X, this.Position.Y, 0), 5);
             #region If  the unit is alive
             // Check if the unit is still alive
             if (this.Health > 0)
